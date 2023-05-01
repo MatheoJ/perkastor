@@ -1,28 +1,96 @@
-# Create T3 App
+# PERKASTOR
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Perkastor is a website that allows users to share and discover historical events.
+Just explore the map 😉
 
-## What's next? How do I make an app with this?
+# Run with yarn
+The recommended node version is v16.17.1.
+The recommended yarn version is 1.22.19.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Install yarn
+### On Windows
+If you don't have Node installed, you can download the .exe installer here:
+https://nodejs.org/dist/v16.17.0/node-v16.17.0-win-x64.zip
+Then open the archive and run node.exe to install it.
+If you need to have multiple versions of Node, you can use NVM (Node Version Manager).
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+To install yarn:
+1. Go to https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable
+Scroll down to **Alternatives**.
+Click "Click to expand".
+Choose operating system: Windows.
+Version: Classic Stable.
+Then Download the installer.
+2. Execute the installer.
+3. Once completed, verify the installation by printing the Yarn version:
+```
+yarn --version
+```
+4. Run the project with:
+```
+yarn run dev
+```
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+### On Ubuntu
 
-## Learn More
+To install yarn (and NodeJS):
+1. Import the repository’s GPG key and add the Yarn APT repository to your system by running the following commands:
+```
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+```
+2. Once the repository is enabled, update the package list, and install Yarn. The following commands will also install Node.js
+```
+sudo apt update
+sudo apt install yarn
+```
+If you already installed Node through nvm, skip the Node.js installation with:
+```
+sudo apt install --no-install-recommends yarn
+```
+3. Once completed, verify the installation by printing the Yarn version:
+```
+yarn --version
+```
+4. Run the project with:
+```bash
+yarn run dev
+```
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+# Run with Docker
+The recommended docker version is 20.10.17, build 100c701.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+The dependencies in each operating system would be different. To make sure our local environment won't affect the Docker environment when mirroring files, we'll isolate the container's node_modules folder on a distinct volume.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+Consequently, when creating the node_modules folder on the container, it won't create the folder on local machine environment. Run the command below in your terminal to create it:
+```
+docker volume create --name nodemodules
+```
 
-## How do I deploy this?
+## DEV environment
+docker-compose up
+```
+Then you can go to http://localhost:3000/ to see the application.
+If you modified the Dockerfile, you'll need to rebuild the image:
+```
+docker-compose up --build
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+When you make a modification, the website (localhost:3000) should automatically refresh thanks to the Hot Reload or [Fast Refresh](https://nextjs.org/docs/basic-features/fast-refresh) mecanism.
+If it doesn't work, regenerate prisma:
+```
+docker exec -it perkastor-dev bash
+yarn prisma generate
+```
+
+## PROD environment
+To build the image:
+```
+docker-compose -f docker-compose.prod.yml build
+docker images // check the image name, e.g: champif-prof
+docker run -p 80:80 --name champif-prod champif-prod
+// 80 is the nginx's exposed port
+```
+
+# License
+[License](!src/assets/license.png)
+This work is licensed under a Creative Commons Attribution 4.0 International License.
