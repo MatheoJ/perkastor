@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "start:dev": "WATCHPACK_POLLING=true next dev",
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
@@ -39,7 +40,7 @@
     "postcss": "^8.4.21",
     "prettier": "^2.8.6",
     "prettier-plugin-tailwindcss": "^0.2.6",
-    "prisma": "^4.11.0",
+    "prisma": "^4.13.0",
     "tailwindcss": "^3.3.0",
     "typescript": "^5.0.2"
   },
