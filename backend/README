@@ -1,0 +1,9 @@
+# Perkastor backend
+Run the project
+```yarn run dev```
+
+Migrate database:
+```
+npx prisma migrate dev --name "init" --preview-feature
+```
+If the migration is successful, a migrations folder will be created inside the prisma folder that was created previously. The folder will be called migrations and will contain a SQL file.
