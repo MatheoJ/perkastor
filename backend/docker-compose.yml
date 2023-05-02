@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  mongo:
+    container_name: mongo-prod
+    image: mongo:5.0.17
+    environment:
+        - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
+        - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+        - MONGO_INITDB_DATABASE=perkastor
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
+      -  mongo-data:/data/db
+    networks:
+      - public-net
+  mongo-express:
+    container_name: mongo-express-prod
+    image: mongo-express:0.54.0
+    environment:
+        - ME_CONFIG_MONGODB_SERVER=mongo
+        - ME_CONFIG_MONGODB_PORT=27017
+        - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
+        - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
+        - ME_CONFIG_MONGODB_AUTH_USERNAME=${MONGO_ROOT_USER}
+        - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MONGO_ROOT_PASSWORD}
+        - ME_CONFIG_BASICAUTH_USERNAME=${MONGOEXPRESS_LOGIN}
+        - ME_CONFIG_BASICAUTH_PASSWORD=${MONGOEXPRESS_PASSWORD}
+    networks:
+      - public-net
+    depends_on:
+        - mongo
+    ports:
+      - "8888:8081"
+  app:
+    container_name: perkastor-backend-prod
+    env_file:
+    - .env.prod
+    build:
+      target: production
+    environment:
+      PORT: 8021
+    ports:
+      - 8021:8021
+    networks:
+      - public-net
+    depends_on:
+      - mongo
+networks:
+  public-net:
+    driver: bridge
+    external: true
+  default:
+      external: true
+      name: scoobydoo
