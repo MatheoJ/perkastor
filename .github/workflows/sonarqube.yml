@@ -53,6 +53,7 @@ jobs:
         with:
           # Additional arguments for the sonarcloud scanner
           args:
+            -X
             # Unique key of your project. You can find it in SonarQube > [my project] > Project Information (top-right menu)
             # mandatory
             -Dsonar.projectKey=Perkastor
