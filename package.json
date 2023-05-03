@@ -22,8 +22,10 @@
     "maplibre-gl": "^2.4.0",
     "next": "^13.2.4",
     "next-auth": "^4.21.0",
+    "node-sass": "^7.0.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "sass": "^1.62.1",
     "superjson": "1.12.2",
     "zod": "^3.21.4"
   },

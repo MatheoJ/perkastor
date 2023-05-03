@@ -1,0 +1,62 @@
+$heading-font: "Montserrat";
+$subtitle-font: "Inter";
+$body-font: "Public Sans";
+$interactive-font: "Work Sans";
+
+h1 {
+  font-family: $heading-font;
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 78px;
+}
+
+h2{
+    @extend h1;
+
+    font-size: 40px;
+}
+
+h3{
+    @extend h1;
+
+    font-size: 24px;
+}
+
+.subtitle{
+    font-family: $subtitle-font;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    //line-height: 29px;
+}
+
+body{
+    font-family: $body-font;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    //line-height: 140%;
+}
+
+strong{
+    @extend body;
+
+    font-weight: 700;
+}
+
+.small-text{
+    font-family: $interactive-font;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+}
+
+
+.button-text{
+   @extend .small-text;
+
+   font-weight: 700;
+   font-size: 16px;
+   letter-spacing: 0.03em;
+}
