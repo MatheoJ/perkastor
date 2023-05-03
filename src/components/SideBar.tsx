@@ -1,23 +1,18 @@
 import { useState } from 'react';
 import Head from 'next/head';
 
-function Sidebar() {
-    const [isOpen, setIsOpen] = useState(true); // unused for now, maybe later if we want to hide the sidebar
-
-    const toggleSidebar = () => {
-        setIsOpen(!isOpen);
-    };
+function Sidebar({ isOpen, toggleSidebar } : { isOpen: boolean, toggleSidebar: () => void }) {
 
     // Ajouter les fonctions de contributions, favoris et recherches récentes
 
     return (
-        <div className="sidebar">
+        <div className={`sidebar ${isOpen ? 'open' : ''}`}>
             <Head>
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
             </Head>
             <div className="header">
                 <button className="toggle" onClick={toggleSidebar}>
-                    <i className="fa fa-bars"></i>
+                    <i className="fa fa-bars" style={{color: "#F1B706",}}></i>
                 </button>
             </div>
             <div className="content">
@@ -26,25 +21,25 @@ function Sidebar() {
                         <li>
                             <div className="icon">
                                 <button>
-                                    <i className="far fa-lightbulb"></i>
+                                    <i className="far fa-lightbulb" style={{color: "#F1B706",}}></i>
                                 </button>
-                                <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Contributions</span>
+                                <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center', color: 'white' }}>Contributions</span>
                             </div>
                         </li>
                         <li>
                             <div className="icon">
                                 <button>
-                                    <i className="far fa-bookmark"></i>
+                                    <i className="far fa-bookmark" style={{color: "#F1B706",}}></i>
                                 </button>
-                                <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Favoris</span>
+                                <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center', color: 'white' }}>Favoris</span>
                             </div>
                         </li>
                         <li>
                             <div className="icon">
                                 <button>
-                                    <i className="far fa-clock"></i>
+                                    <i className="far fa-clock" style={{color: "#F1B706",}}></i>
                                 </button>
-                                <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Recherches récentes</span>
+                                <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center', color: 'white' }}>Recherches récentes</span>
                             </div>
 
                         </li>
@@ -54,7 +49,7 @@ function Sidebar() {
                 <div className="bottom-content">
                     <div className="ground-icon">
                         <button>
-                            <i className="fas fa-pen"></i>
+                            <i className="fas fa-pen" style={{color: "#F1B706",}}></i>
                         </button>
                     </div>
                 </div>
