@@ -3,7 +3,7 @@ import Head from 'next/head';
 
 function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick } : { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({item} : {item : String}) => void }) {
 
-    const handleClick = ({item} : {item : String}) => {
+    const handleClick = ({item} : {item : String}) => { //Fonction qui permet d'envoyer l'item sélectionné dans la sidebar à la page mapWrapper
         onSidebarItemClick({item});
       }
 

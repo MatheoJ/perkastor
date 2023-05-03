@@ -12,7 +12,7 @@ import { api } from "~/utils/api";
 const mapWrapper: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
-  const [sidebarIsOpen, setSidebarIsOpen] = useState<boolean>(false);
+  const [sidebarIsOpen, setSidebarIsOpen] = useState<boolean>(true);
   const [selectedItem, setSelectedItem] = useState<String>(""); //Savoir quel item est sélectionné dans la sidebar
 
   const toggleSidebar = () => { //Fonction qui permet de faire apparaître ou disparaître la sidebar
