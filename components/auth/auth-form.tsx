@@ -34,6 +34,9 @@ const AuthForm: NextPage = () => {
 
   function switchAuthModeHandler() {
     setIsLogin((prevState) => !prevState);
+    if (formError !== '') {
+      setFormError('');
+    }
   }
 
   async function submitHandler(event: React.FormEvent<HTMLFormElement>) {
@@ -56,16 +59,16 @@ const AuthForm: NextPage = () => {
         if (!result?.error) {
           // set some auth state
           router.replace('/profile');
-          setFormError('');
+          setFormError("");
         } else {
           setFormError(result.error);
         }
       } else {
         try {
           const result = await createUser(enteredEmail, enteredPassword);
-          setFormError('');
+          setFormError("");
         } catch (error) {
-          setFormError(error || 'Connexion échouée, veuillez réessayer plus tard');
+          setFormError(error.message || 'Connexion échouée, veuillez réessayer plus tard');
         }
       }
     }
