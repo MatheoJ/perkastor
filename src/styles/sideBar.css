@@ -35,26 +35,43 @@
   }
   
   .icons i {
+    font-display: flex;
+    align-items: center;
     font-size: 25px;
-    justify-content: center;
   }
   
   .content {
-    padding: 10px;
+    justify-content: center;
   }
   
   .content ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     list-style: none;
-    margin: 0;
     padding: 0;
+    margin: 0;
   }
   
   .content li {
-    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+    font-size: 25px;
+  }
+
+  .content li .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     font-size: 25px;
   }
   
-  .content li:last-child {
-    border-bottom: none;
+  .content li .icon span {
+    font-size: 10px;
+    text-align: center;
   }
   
