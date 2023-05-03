@@ -25,9 +25,9 @@ const Home: NextPage = () => {
           <b> Comment contribuer ? </b>
           <p> Ce site est collaboratif, n’hésitez pas à rajouter vos propres anecdotes historiques. </p>
           <p> Le projet Perkastor étant open source, on vous invite à participer activement à son développement en vous rendant sur notre Github. </p>
-          <div>
+          <h2>
             <Link href="/mapWrapper">Explorer la carte</Link>
-          </div>        
+          </h2>        
         </div>
       </main>
     </>
