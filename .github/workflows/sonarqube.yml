@@ -1,7 +1,5 @@
 ---
 name: SonarQube analysis
-name: Build
-
 on:
   push:
     branches:
