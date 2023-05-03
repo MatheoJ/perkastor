@@ -7,8 +7,8 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import "~/styles/colors.scss";
 import "~/styles/text-styles.scss";
-import "~/styles/sideBar.css";
-import "~/styles/topBar.css";
+import "~/styles/sidebar.css";
+import "~/styles/topbar.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

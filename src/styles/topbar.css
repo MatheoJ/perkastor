@@ -3,8 +3,8 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 60px;
-    background-color: #FAFCFE;;
+    height: 50px;
+    background-color: #344453;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 9999;
   }
@@ -17,13 +17,21 @@
     padding: 0 20px;
   }
   
+  .topbar .title{
+    display: flex;
+    color : #F1B706;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+  }
+
   .topbar .title h1 {
     font-size: 24px;
     font-weight: bold;
     margin: 0;
   }
   
-  /* .topbar .logo {
+  .topbar .logo {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -32,7 +40,7 @@
     border-radius: 50%;
     background-color: #f7f7f7;
     margin-left: 10px;
-  } */
+  }
   
   .topbar .logo img {
     max-width: 100%;
