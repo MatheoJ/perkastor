@@ -3,7 +3,7 @@
 
 generator client {
     provider = "prisma-client-js"
-    binaryTargets = ["linux-musl-openssl-3.0.x"]
+    binaryTargets = ["native","linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -50,7 +50,7 @@ model Session {
 
 model User {
     id            String    @id @map("_id") @default(cuid())
-    name          String?
+    username      String?   @unique
     email         String?   @unique
     emailVerified DateTime?
     image         String?
