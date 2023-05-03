@@ -41,5 +41,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-
-yarn.lock
+backend/node_modules/
+backend/node_modules/*
