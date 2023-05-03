@@ -1,6 +1,6 @@
 .sidebar {
     position: fixed;
-    top: 0;
+    top: 50px;
     bottom: 0;
     left: -200px;
     width: 60px;
@@ -45,7 +45,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    height: calc(100% - 50px);
+    height: 100%;
   }
 
   .top-content {
@@ -67,7 +67,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 10px;
+    padding-top: 20px;
     font-size: 25px;
   }
 
