@@ -21,34 +21,45 @@ function Sidebar() {
                 </button>
             </div>
             <div className="content">
-                <ul>
-                    <li>
-                        <div className="icon">
-                            <button> 
-                                <i className="far fa-lightbulb"></i>
-                            </button>
-                            <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Contributions</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div className="icon">
-                            <button>
-                                <i className="far fa-bookmark"></i>
-                            </button>
-                            <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Favoris</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div className="icon">
-                            <button>
-                                <i className="far fa-clock"></i>
-                            </button>
-                            <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Recherches récentes</span>
-                        </div>
+                <div className="top-content">
+                    <ul className='topIcons'>
+                        <li>
+                            <div className="icon">
+                                <button>
+                                    <i className="far fa-lightbulb"></i>
+                                </button>
+                                <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Contributions</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div className="icon">
+                                <button>
+                                    <i className="far fa-bookmark"></i>
+                                </button>
+                                <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Favoris</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div className="icon">
+                                <button>
+                                    <i className="far fa-clock"></i>
+                                </button>
+                                <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Recherches récentes</span>
+                            </div>
 
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
+
+                </div>
+                <div className="bottom-content">
+                    <div className="ground-icon">
+                        <button>
+                            <i className="fas fa-pen"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
+
         </div>
     );
 }
