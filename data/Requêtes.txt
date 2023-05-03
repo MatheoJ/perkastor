@@ -1,0 +1,69 @@
+# Renvoie les lieux liés à la révolution 
+
+select distinct ?p ?name ?place where {
+?p rdfs:label ?name .
+?place dbp:events ?p.
+FILTER CONTAINS(lcase(?name), lcase("Révolution"))
+FILTER LANGMATCHES(lang(?name), 'fr')
+}
+
+
+# Renvoie des évènements historiques (n'importe quel pays)
+
+select distinct ?p where {
+?p rdf:type dbo:HistoricalEvent .
+}
+
+# Renvoie les évènements historiques liés à la France
+
+select distinct ?p where {
+?p rdf:type dbo:HistoricalEvent .
+dbr:France dbo:event ?p .
+}
+
+# Permet de récupérer des sujet sur la France 
+
+select distinct ?event where {
+?event dbp:wikiPageUsesTemplate dbt:France_topics .
+}
+
+## Permet de récupérer une description (ne marche pas pour le français)
+
+select ?event ?description where {
+?event  dbo:abstract ?description .
+?event rdfs:label ?name
+FILTER CONTAINS(lcase(?name), lcase("Carloman Ier"))
+FILTER(LANG(?description) = "en").
+}
+
+# Récupère la description de Carloman premier
+
+select ?description where {
+dbr:Carloman_I dbo:abstract ?description .
+FILTER(LANG(?description) = "fr").
+}
+
+# Récupère tous les events et leurs description 
+
+select distinct ?event ?description where {
+?event dbp:wikiPageUsesTemplate dbt:France_topics .
+?event dbo:abstract ?description .
+FILTER(LANG(?description) = "fr").
+}
+
+
+
+//
+
+select distinct ?p ?event where {
+?p rdf:type dbo:HistoricalEvent .
+dbr:France dbo:event ?p .
+?event dbo:event ?p .
+}
+
+select distinct ?p ?event where {
+?event dbo:event ?p .
+?event dbo:language dbr:French_language .
+?event foaf:name ?name .
+ FILTER CONTAINS(lcase(?name), lcase("France"))
+}
