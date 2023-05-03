@@ -8,6 +8,7 @@ import "~/styles/globals.css";
 import "~/styles/eventForm.css";
 import "~/styles/colors.scss";
 import "~/styles/text-styles.scss";
+import Layout from "../components/layout/layout";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -15,7 +16,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </SessionProvider>
   );
 };
