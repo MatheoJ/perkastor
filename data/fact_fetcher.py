@@ -116,28 +116,31 @@ def find_facts_wikipedia(url, city_name="", only_streets=False, city_id=""):
     historic_facts = detect_historical_facts_v3(histoire, only_streets)
     return {"id": city_id, "name": city_name, "facts": historic_facts}
 
+def main():
+    # Utilisez un ThreadPoolExecutor pour exécuter plusieurs appels à get_city_streets() en parallèle
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # Récupérez les rues pour chaque ville dans la liste "cities"
+        future_to_city = {executor.submit(find_facts_wikipedia, city["wikipediaUrl"], city["name"], False , city["id"]): city for city in cities}
+        
+        # Parcourez les résultats des threads et ajoutez-les à la liste "data"
+        for future in concurrent.futures.as_completed(future_to_city):
+            try:
+                data = future.result()
+                facts[data["id"]] = data["facts"]
+                print(f"Faits historiques récupérés : {data['name']} - {len(data['facts'])}")
+            
+            except Exception as e:
+                print(f"Erreur lors de l'exécution du thread: {e}")
+
+    # Enregistrez les données dans un fichier JSON
+    with open('facts2.json', 'w', encoding="utf-8") as outfile:
+        json.dump(facts, outfile, indent=4, ensure_ascii=False)
 
 facts = {}
 cities = json.load(open("citiesv2.json", "r", encoding="utf-8"))
-# Utilisez un ThreadPoolExecutor pour exécuter plusieurs appels à get_city_streets() en parallèle
-with concurrent.futures.ThreadPoolExecutor() as executor:
-    # Récupérez les rues pour chaque ville dans la liste "cities"
-    future_to_city = {executor.submit(find_facts_wikipedia, city["wikipediaUrl"], city["name"], True , city["id"]): city for city in cities}
-    
-    # Parcourez les résultats des threads et ajoutez-les à la liste "data"
-    for future in concurrent.futures.as_completed(future_to_city):
-        try:
-            data = future.result()
-            facts[data["id"]] = data["facts"]
-            print(f"Faits historiques récupérés : {data['name']} - {len(data['facts'])}")
-        except KeyboardInterrupt:
-            with open('facts2.json', 'w') as outfile:
-                json.dump(facts, outfile)
-            sys.exit()
-        except Exception as e:
-            print(f"Erreur lors de l'exécution du thread: {e}")
 
-# Enregistrez les données dans un fichier JSON
-with open('facts2.json', 'w', encoding="utf-8") as outfile:
-    json.dump(facts, outfile, indent=4, ensure_ascii=False)
-    
+try :
+    main()
+finally:
+    with open('facts2.json', 'w', encoding="utf-8") as outfile:
+        json.dump(facts, outfile, indent=4, ensure_ascii=False)
