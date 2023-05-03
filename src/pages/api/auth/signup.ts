@@ -1,5 +1,5 @@
-import { hashPassword } from '../../../../lib/auth';
-import { connectToDatabase } from '../../../../lib/db';
+import { hashPassword } from '../../../lib/auth';
+import { connectToDatabase } from '../../../lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type ResponseData = {
@@ -13,6 +13,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) 
     const data = req.body;
 
     const email: string = data?.email;
+    const username: string = data?.username;
     const password: string = data?.password;
 
     if (
@@ -22,6 +23,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) 
         res.status(422).json({
             message:
                 'Entrée invalide - Votre email doit contenir une @.',
+        });
+        return;
+    }
+
+    const usernameValidator = new RegExp('^[a-zA-Z0-9_-]*$');
+    if (
+        !username ||
+        username.trim().length < 3 ||
+        !usernameValidator.test(username) // cf https://stackoverflow.com/questions/1221985/how-to-validate-a-user-name-with-regex
+    ) {
+        res.status(422).json({
+            message:
+                'Entrée invalide - Votre pseudonyme doit faire plus de 3 caractères, ne peut contenir que des caractères aplhanumériques ainsi que des \'_\', \'-\', \' \'.',
         });
         return;
     }
@@ -42,7 +56,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) 
 
         const db = client.db();
 
-        const existingUser = await db.collection('users').findOne({ email: email });
+        const existingUser = await db.collection('users').findOne({ email: email }) || await db.collection('users').findOne({ username: username });
 
         if (existingUser) {
             res.status(422).json({ message: 'L\'utilisateur existe déjà !' });
@@ -54,6 +68,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) 
 
         const result = await db.collection('users').insertOne({
             email: email,
+            username: username,
             password: hashedPassword,
         });
 
