@@ -5,9 +5,9 @@
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
-import Marker from '../components/Marker';
-import FlyTo from '../components/FlyTo';
-import DataPoints from '../components/DataPoints';
+import Marker from './Marker';
+import FlyTo from './FlyTo';
+import DataPoints from './DataPoints';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const MapTilerApiKey = "KeNNPlHwOHbhaGFsVoos";
