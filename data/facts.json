@@ -1,0 +1,64 @@
+{
+    "Q176605": [],
+    "Q384494": [],
+    "Q323644": [],
+    "Q59254": [
+        {
+            "date": "1972",
+            "entities_loc": [],
+            "entities_per": [],
+            "entities_org": [],
+            "description": "En 1972, ses trois anciennes rues sont de nouveau tracées, une borne marquant l'emplacement de chaque maison.",
+            "coordinates": [
+                null,
+                null
+            ]
+        }
+    ],
+    "Q292246": [],
+    "Q474363": [],
+    "Q458720": [
+        {
+            "date": "9 août",
+            "entities_loc": [
+                "État"
+            ],
+            "entities_per": [],
+            "entities_org": [],
+            "description": ".\n\n\n\n\n\n\nÉtat après le 9 août 1916.\n\n\n\n\n\n\nLa grand'rue en 2008.",
+            "coordinates": [
+                null,
+                null
+            ]
+        },
+        {
+            "date": "1916",
+            "entities_loc": [
+                "État"
+            ],
+            "entities_per": [],
+            "entities_org": [],
+            "description": ".\n\n\n\n\n\n\nÉtat après le 9 août 1916.\n\n\n\n\n\n\nLa grand'rue en 2008.",
+            "coordinates": [
+                null,
+                null
+            ]
+        },
+        {
+            "date": "2008",
+            "entities_loc": [
+                "État"
+            ],
+            "entities_per": [],
+            "entities_org": [],
+            "description": ".\n\n\n\n\n\n\nÉtat après le 9 août 1916.\n\n\n\n\n\n\nLa grand'rue en 2008.",
+            "coordinates": [
+                null,
+                null
+            ]
+        }
+    ],
+    "Q681869": [],
+    "Q633275": [],
+    "Q817414": []
+}
