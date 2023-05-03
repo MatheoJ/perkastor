@@ -16,21 +16,25 @@ const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
   const getPlaceInfo = async (latitude, longitude, zoom) => {
     try {
       const response = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=${zoom}`
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=${zoom}&polygon_geojson=1`
       );
-       
-      console.log(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=${zoom}`);
 
-      console.log(response.data);
-
-      if (response.data && response.data.display_name) {
-        return response.data.display_name;
+      console.log('https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=${zoom}&polygon_geojson=1');
+      
+      if (response.data) {
+        console.log(response.data);
+        const name = response.data.display_name ;
+        const geojson = response.data.geojson;
+        console.log(name);
+        console.log(geojson);
+        
+        return { name, geojson };
       } else {
-        return 'No place found';
+        throw new Error('No response data');
       }
     } catch (error) {
       console.error(error);
-      return 'Error fetching place info';
+      return { name: 'Error fetching place info', geojson: null };
     }
   };
 
@@ -56,12 +60,41 @@ const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
     function onClick(lngLat: LngLat): void {
       coordinates.current.style.display = "block";
       coordinates.current.innerHTML = ` Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat}`;
-      getPlaceInfo(lngLat.lat, lngLat.lng, Math.round(map.getZoom())).then((placeName) => {
-        coordinates.current.innerHTML = `Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat} <br /> ${placeName}`;
+
+      getPlaceInfo(lngLat.lat, lngLat.lng, Math.round(map.getZoom())).then((placeInfo) => {
+        coordinates.current.innerHTML = `Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat} <br /> ${placeInfo.name}`;
+        
+        console.log('placeName :');
+        console.log(placeInfo.name);
+        console.log('geojson :');
+        console.log(placeInfo.geojson);
+        
+        if (placeInfo.geojson) {
+
+          if (map.getLayer('place-boundary')) {
+            map.removeLayer('place-boundary');
+            map.removeSource('place-boundary'); // Remove the associated source as well
+          }
+
+          map.addSource('place-boundary', {
+            type: 'geojson',
+            data: placeInfo.geojson
+          });
+          
+          map.addLayer({
+            id: 'place-boundary',
+            type: 'line',
+            source: 'place-boundary',
+            paint: {
+              'line-color': '#f00',
+              'line-width': 2
+            }
+          });
+        }
       });
     }
 
-    marker.on("dragend", onDragEnd);
+    //marker.on("dragend", onDragEnd);
 
     map.on("click", function(e) {
       onClick(e.lngLat);
