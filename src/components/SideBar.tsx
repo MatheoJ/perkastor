@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import Head from 'next/head';
 
-function Sidebar({ isOpen, toggleSidebar } : { isOpen: boolean, toggleSidebar: () => void }) {
+function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick } : { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({item} : {item : String}) => void }) {
 
-    // Ajouter les fonctions de contributions, favoris et recherches récentes
+    const handleClick = ({item} : {item : String}) => {
+        onSidebarItemClick({item});
+      }
 
     return (
         <div className={`sidebar ${isOpen ? 'open' : ''}`}>
@@ -20,7 +22,7 @@ function Sidebar({ isOpen, toggleSidebar } : { isOpen: boolean, toggleSidebar: (
                     <ul className='topIcons'>
                         <li>
                             <div className="icon">
-                                <button>
+                                <button onClick={() => handleClick({item: "contributions"})}>
                                     <i className="far fa-lightbulb" style={{color: "#F1B706",}}></i>
                                 </button>
                                 <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center', color: 'white' }}>Contributions</span>
@@ -28,7 +30,7 @@ function Sidebar({ isOpen, toggleSidebar } : { isOpen: boolean, toggleSidebar: (
                         </li>
                         <li>
                             <div className="icon">
-                                <button>
+                                <button onClick={() => handleClick({item: "favoris"})}>
                                     <i className="far fa-bookmark" style={{color: "#F1B706",}}></i>
                                 </button>
                                 <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center', color: 'white' }}>Favoris</span>
@@ -36,7 +38,7 @@ function Sidebar({ isOpen, toggleSidebar } : { isOpen: boolean, toggleSidebar: (
                         </li>
                         <li>
                             <div className="icon">
-                                <button>
+                                <button onClick={() => handleClick({item: "recherches"})}>
                                     <i className="far fa-clock" style={{color: "#F1B706",}}></i>
                                 </button>
                                 <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center', color: 'white' }}>Recherches récentes</span>
@@ -48,7 +50,7 @@ function Sidebar({ isOpen, toggleSidebar } : { isOpen: boolean, toggleSidebar: (
                 </div>
                 <div className="bottom-content">
                     <div className="ground-icon">
-                        <button>
+                        <button onClick={() => handleClick({item: "mode"})}>
                             <i className="fas fa-pen" style={{color: "#F1B706",}}></i>
                         </button>
                     </div>
