@@ -38,6 +38,14 @@ export default function MapPage() {
         });
     });
 
+    map.loadImage(
+      'resources/pin_event.png',
+      (error, image) => {
+        if (error) throw error;
+        map.addImage('pin_event', image);
+      }
+    );
+
     return () => {
       map.remove();
     };
