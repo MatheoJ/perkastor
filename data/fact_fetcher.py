@@ -5,7 +5,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 import sys
-
+import signal
 def detect_historical_facts_v3(text, only_street_facts=False):
 
     historical_facts = []
@@ -136,11 +136,18 @@ def main():
     with open('facts2.json', 'w', encoding="utf-8") as outfile:
         json.dump(facts, outfile, indent=4, ensure_ascii=False)
 
+
+def save_facts_and_exit(signal_number, frame):
+    print("\nInterrupted by user. Saving facts and exiting...")
+    with open('facts3.json', 'w', encoding="utf-8") as outfile:
+        json.dump(facts, outfile, indent=4, ensure_ascii=False)
+    sys.exit(0)
+
 facts = {}
 cities = json.load(open("citiesv2.json", "r", encoding="utf-8"))
 
-try :
-    main()
-finally:
-    with open('facts2.json', 'w', encoding="utf-8") as outfile:
-        json.dump(facts, outfile, indent=4, ensure_ascii=False)
+signal.signal(signal.SIGINT, save_facts_and_exit)
+signal.signal(signal.SIGHUP, save_facts_and_exit)
+signal.signal(signal.SIGTERM, save_facts_and_exit)
+
+main()
