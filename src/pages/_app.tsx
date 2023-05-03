@@ -8,6 +8,7 @@ import "~/styles/globals.css";
 import "~/styles/colors.scss";
 import "~/styles/text-styles.scss";
 import "~/styles/sideBar.css";
+import "~/styles/topBar.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
