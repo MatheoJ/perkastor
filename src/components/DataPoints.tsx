@@ -14,15 +14,7 @@ const DataPoints: React.FC<DataPointsProps> = ({ map }) => {
     
   const updateEarthquakeFilter = () => {
     const currentZoom = map.getZoom();
-    /* if (currentZoom < zoomThreshold) {
-      map.setFilter('unclustered-point', [
-        'all',
-        ['!', ['has', 'point_count']],
-        ['>=', ['get', 'mag'], highMagnitudeThreshold],
-      ]);
-    } else {
-      map.setFilter('unclustered-point', ['!', ['has', 'point_count']]);
-    } */
+ 
 
     if (currentZoom > 8) {
       map.setFilter('unclustered-point', ['!', ['has', 'point_count']]);
@@ -43,14 +35,13 @@ const DataPoints: React.FC<DataPointsProps> = ({ map }) => {
 
     map.addLayer({
       id: 'unclustered-point',
-      type: 'circle',
+      type: 'symbol',
       source: 'earthquakes',
       filter: ['!', ['has', 'point_count']],
-      paint: {
-      'circle-color': '#11b4da',
-      'circle-radius': 4,
-      'circle-stroke-width': 1,
-      'circle-stroke-color': '#fff'
+      layout: {
+        'icon-image': 'pin_event',
+        'icon-size': 0.2,
+        'icon-allow-overlap': true
       }
     });
 
