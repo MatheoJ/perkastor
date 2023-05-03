@@ -45,6 +45,7 @@ def get_streets(city_id):
       json_data = json.loads(response.text)
       #print(json_data)
   else :
+     raise Exception(f"Query failed to run by returning code of {response.status_code}")
      json_data = None
   return json_data
 
@@ -69,8 +70,8 @@ size = {
 }
 
 import json
-cities = json.load(open('./cities.json'))
-#cities = cities[:10]
+cities = json.load(open('./data2.json'))
+cities = cities[:500]
 
 import concurrent.futures
 
@@ -79,12 +80,12 @@ def get_city_streets(city):
     results = None
     while attempts < 5:
         try:
-            if city["id"] != "Q90":
-              results = get_streets(city["id"])
+            if city["city"]["id"] != "Q90":
+              results = get_streets(city["city"]["id"])
             #print(city["name"], end='/')
             break
         except Exception as e:
-            print(e, city["name"], end='/')
+            print(e, city["city"]["name"], end='/')
             attempts += 1
     streets = []
     seen = set()
@@ -96,14 +97,14 @@ def get_city_streets(city):
                 seen.add(result['locationLabel']['value'])
     else:
         results = []
-    return {"city": city, "streets": streets}
+    return {"city": city["city"], "streets": streets}
 
 data = []
 
 # Utilisez un ThreadPoolExecutor pour exécuter plusieurs appels à get_city_streets() en parallèle
 with concurrent.futures.ThreadPoolExecutor() as executor:
     # Récupérez les rues pour chaque ville dans la liste "cities"
-    future_to_city = {executor.submit(get_city_streets, city): city for city in cities}
+    future_to_city = {executor.submit(get_city_streets, city): city for city in cities if len(city["streets"]) == 0}
     
     # Parcourez les résultats des threads et ajoutez-les à la liste "data"
     for future in concurrent.futures.as_completed(future_to_city):
@@ -115,6 +116,6 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
             print(f"Erreur lors de l'exécution du thread: {e}")
 
 # Enregistrez les données dans un fichier JSON
-with open('data2.json', 'w') as outfile:
+with open('data3.json', 'w') as outfile:
     json.dump(data, outfile)
     
