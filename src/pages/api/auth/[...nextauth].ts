@@ -7,6 +7,15 @@ import { connectToDatabase } from '../../../lib/db';
 type Awaitable<T> = T | PromiseLike<T>;
 
 export default NextAuth({
+    session: {
+        strategy: "jwt",
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        updateAge: 24 * 60 * 60, // 24 hours
+        jwt: {
+            maxAge: 60 * 60 * 24 * 30,
+        },
+        secret: process.env.NEXTAUTH_SECRET,
+    },
     providers: [
         CredentialsProvider({
             // The name to display on the sign in form (e.g. "Sign in with...")
