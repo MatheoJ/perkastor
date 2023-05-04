@@ -90,6 +90,9 @@ model Fact {
     bannerImg String?
     verified  Boolean  @default(false)
 
+    video     String[]
+    audio     String[]
+
     author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId  String   @db.ObjectId
 
