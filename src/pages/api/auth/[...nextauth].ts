@@ -1,34 +1,38 @@
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from "next-auth/providers/credentials";
+import GithubProvider from "next-auth/providers/github"
+import GoogleProvider from "next-auth/providers/google"
+import FacebookProvider from "next-auth/providers/facebook"
 
 import { verifyPassword } from '../../../lib/auth';
 import { connectToDatabase } from '../../../lib/db';
 
-type Awaitable<T> = T | PromiseLike<T>;
-
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt",
         maxAge: 30 * 24 * 60 * 60, // 30 days
         updateAge: 24 * 60 * 60, // 24 hours
-        jwt: {
-            maxAge: 60 * 60 * 24 * 30,
-        },
-        secret: process.env.NEXTAUTH_SECRET,
     },
+    jwt: {
+        maxAge: 60 * 60 * 24 * 30,
+    },
+    secret: process.env.NEXTAUTH_SECRET,
     providers: [
+        /*
+        GithubProvider({
+            clientId: process.env.GITHUB_ID,
+            clientSecret: process.env.GITHUB_SECRET,
+        }),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_ID,
+            clientSecret: process.env.GOOGLE_SECRET,
+        }),
+        FacebookProvider({
+            clientId: process.env.FACEBOOK_ID,
+            clientSecret: process.env.FACEBOOK_SECRET,
+        }),
+        */
         CredentialsProvider({
-            // The name to display on the sign in form (e.g. "Sign in with...")
-            name: "Identifiants",
-            // `credentials` is used to generate a form on the sign in page.
-            // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-            // e.g. domain, username, password, 2FA token, etc.
-            // You can pass any HTML attribute to the <input> tag through the object.
-            credentials: {
-                email: { label: "Email", type: "email", placeholder: "Email" },
-                username: { label: "Nom d'utilisateur", type: "text", placeholder: "Nom d'utilisateur" },
-                password: { label: "Mot de passe", type: "password" },
-            },
             async authorize(credentials, req) {
                 let client;
                 try {
@@ -73,4 +77,20 @@ export default NextAuth({
             },
         }),
     ],
-});
+    callbacks: {
+        async jwt({ token, account }) {
+            // Persist the OAuth access_token to the token right after signin
+            if (account) {
+                token.accessToken = account.access_token
+            }
+            return token
+        },
+        async session({ session, token, user }) {
+            // Send properties to the client, like an access_token from a provider.
+            session['accessToken'] = token.accessToken
+            return session
+        }
+    }
+}
+
+export default NextAuth(authOptions);
