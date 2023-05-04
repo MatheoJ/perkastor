@@ -1,3 +1,9 @@
+.row {
+  display: flex;
+  direction: row;
+  align-items: center;
+}
+
 .topbar {
     position: fixed;
     top: 0;
@@ -9,7 +15,7 @@
     z-index: 9999;
   }
   
-  .topbar .header {
+  .topbar .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -49,15 +55,23 @@
     border-radius: 50%;
   }
   
-  .topbar .connexion button {
+  .topbar .connection {
     border: none;
     background-color: transparent;
     font-size: 20px;
-    color: #333;
+    color: rgb(252, 118, 118);
+    cursor: pointer;
+  }
+
+  .topbar .connected {
+    border: none;
+    background-color: transparent;
+    font-size: 20px;
+    color: rgb(101, 255, 124);
     cursor: pointer;
   }
   
-  .topbar .connexion button:hover {
+  .topbar .connection:hover {
     color: #666;
   }
   

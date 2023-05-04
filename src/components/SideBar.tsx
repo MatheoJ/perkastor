@@ -27,24 +27,24 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                             <div className="icon">
                                 <button onClick={() => handleClick({ item: "contributions" })}>
                                     <i className="far fa-lightbulb" style={{ color: "#F1B706", }}></i>
+                                    <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Contributions</span>
                                 </button>
-                                <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Contributions</span>
                             </div>
                         </li>
                         <li>
                             <div className="icon">
                                 <button onClick={() => handleClick({ item: "favoris" })}>
                                     <i className="far fa-bookmark" style={{ color: "#F1B706", }}></i>
+                                    <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Favoris</span>
                                 </button>
-                                <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Favoris</span>
                             </div>
                         </li>
                         <li>
                             <div className="icon">
                                 <button onClick={() => handleClick({ item: "recherches" })}>
                                     <i className="far fa-clock" style={{ color: "#F1B706", }}></i>
+                                    <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Recherches récentes</span>
                                 </button>
-                                <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Recherches récentes</span>
                             </div>
 
                         </li>
