@@ -11,6 +11,12 @@ datasource db {
     url      = env("mongodb+srv://antoninmarxer:9qQrN3FfHArcQTES@cluster0.a0nfhg5.mongodb.net/test?retryWrites=true&w=majority")
 }
 
+model Example {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid()) @map("_id") @db.ObjectId
