@@ -30,25 +30,25 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                     <ul className='topIcons'>
                         <li>
                             <div className="icon">
-                                <button onClick={() => handleClick({ item: "contributions" })}>
+                                <button title='Accéder à mes contributions' onClick={() => handleClick({ item: "contributions" })}>
                                     <i className="far fa-lightbulb" style={{ color: "#F1B706", }}></i>
-                                    <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Contributions</span>
+                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Contributions</span>
                                 </button>
                             </div>
                         </li>
                         <li>
                             <div className="icon">
-                                <button onClick={() => handleClick({ item: "favoris" })}>
+                                <button title='Accéder à mes favoris' onClick={() => handleClick({ item: "favoris" })}>
                                     <i className="far fa-bookmark" style={{ color: "#F1B706", }}></i>
-                                    <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Favoris</span>
+                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Favoris</span>
                                 </button>
                             </div>
                         </li>
                         <li>
                             <div className="icon">
-                                <button onClick={() => handleClick({ item: "recherches" })}>
+                                <button title='Accéder à mes recherches récentes' onClick={() => handleClick({ item: "recherches" })}>
                                     <i className="far fa-clock" style={{ color: "#F1B706", }}></i>
-                                    <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Recherches récentes</span>
+                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Recherches récentes</span>
                                 </button>
                             </div>
 

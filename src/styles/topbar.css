@@ -1,3 +1,9 @@
+nav {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+}
+
 .row {
   display: flex;
   direction: row;
@@ -5,73 +11,79 @@
 }
 
 .topbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50px;
-    background-color: #344453;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 9999;
-  }
-  
-  .topbar .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-    padding: 0 20px;
-  }
-  
-  .topbar .title{
-    display: flex;
-    color : #F1B706;
-    align-items: center;
-    text-align: center;
-    height: 100%;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background-color: #344453;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+}
 
-  .topbar .title h1 {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
-  }
-  
-  .topbar .logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #f7f7f7;
-    margin-left: 10px;
-  }
-  
-  .topbar .logo img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-  }
-  
-  .topbar .connection {
-    border: none;
-    background-color: transparent;
-    font-size: 20px;
-    color: rgb(252, 118, 118);
-    cursor: pointer;
-  }
+.topbar-container {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
 
-  .topbar .connected {
-    border: none;
-    background-color: transparent;
-    font-size: 20px;
-    color: rgb(101, 255, 124);
-    cursor: pointer;
-  }
-  
-  .topbar .connection:hover {
-    color: #666;
-  }
-  
+.topbar .leftrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.topbar .title {
+  display: flex;
+  color: #F1B706;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+}
+
+.topbar .title h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.topbar .logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f7f7f7;
+  margin-left: 10px;
+}
+
+.topbar .logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.topbar .connection {
+  border: none;
+  background-color: transparent;
+  font-size: 20px;
+  color: rgb(252, 118, 118);
+  cursor: pointer;
+}
+
+.topbar .connected {
+  border: none;
+  background-color: transparent;
+  font-size: 20px;
+  color: rgb(101, 255, 124);
+  cursor: pointer;
+}
+
+.topbar .connection:hover {
+  color: #666;
+}

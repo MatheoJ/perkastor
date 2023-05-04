@@ -120,14 +120,16 @@ def main():
     # Utilisez un ThreadPoolExecutor pour exécuter plusieurs appels à get_city_streets() en parallèle
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # Récupérez les rues pour chaque ville dans la liste "cities"
-        future_to_city = {executor.submit(find_facts_wikipedia, city["wikipediaUrl"], city["name"], False , city["id"]): city for city in cities}
+        future_to_city = {executor.submit(find_facts_wikipedia, city["wikipediaUrl"], city["name"], False , city["id"]): city for city in cities[:10000]}
         
         # Parcourez les résultats des threads et ajoutez-les à la liste "data"
+        i = 1
         for future in concurrent.futures.as_completed(future_to_city):
             try:
                 data = future.result()
                 facts[data["id"]] = data["facts"]
-                print(f"Faits historiques récupérés : {data['name']} - {len(data['facts'])}")
+                print(f"Faits historiques récupérés : {data['name']} - {len(data['facts'])} - [{i}/{10000}]")
+                i += 1
             
             except Exception as e:
                 print(f"Erreur lors de l'exécution du thread: {e}")
@@ -147,7 +149,6 @@ facts = {}
 cities = json.load(open("citiesv2.json", "r", encoding="utf-8"))
 
 signal.signal(signal.SIGINT, save_facts_and_exit)
-signal.signal(signal.SIGHUP, save_facts_and_exit)
 signal.signal(signal.SIGTERM, save_facts_and_exit)
 
 main()
