@@ -1,54 +1,73 @@
 import { useState } from 'react';
 import Head from 'next/head';
+import { boolean } from 'zod';
 
-function Sidebar() {
-    const [isOpen, setIsOpen] = useState(true); // unused for now, maybe later if we want to hide the sidebar
+function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setInsertMode }:
+    { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({ item }: { item: String }) => void, insertMode: boolean, setInsertMode: ({ insertMode }: { insertMode: boolean }) => void }) {
 
-    const toggleSidebar = () => {
-        setIsOpen(!isOpen);
-    };
 
-    // Ajouter les fonctions de contributions, favoris et recherches récentes
+    const handleClick = ({ item }: { item: String }) => { //Fonction qui permet d'envoyer l'item sélectionné dans la sidebar à la page mapWrapper
+        onSidebarItemClick({ item });
+        if (item == "modeInsertion" && insertMode == false) {
+            setInsertMode({ insertMode: true });
+        } else {
+            setInsertMode({ insertMode: false });
+        }
+    }
 
     return (
-        <div className="sidebar">
+        <div className={`sidebar ${isOpen ? 'open' : ''}`}>
             <Head>
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
             </Head>
-            <div className="header">
-                <button className="toggle" onClick={toggleSidebar}>
-                    <i className="fa fa-bars"></i>
-                </button>
-            </div>
             <div className="content">
-                <ul>
-                    <li>
-                        <div className="icon">
-                            <button> 
-                                <i className="far fa-lightbulb"></i>
-                            </button>
-                            <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Contributions</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div className="icon">
-                            <button>
-                                <i className="far fa-bookmark"></i>
-                            </button>
-                            <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Favoris</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div className="icon">
-                            <button>
-                                <i className="far fa-clock"></i>
-                            </button>
-                            <span style={{ fontSize: '10px', marginTop: '5px', textAlign: 'center' }}>Recherches récentes</span>
-                        </div>
+                <div className="top-content">
+                    <ul className='topIcons'>
+                        <li>
+                            <div className="icon">
+                                <button onClick={() => handleClick({ item: "contributions" })}>
+                                    <i className="far fa-lightbulb" style={{ color: "#F1B706", }}></i>
+                                </button>
+                                <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Contributions</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div className="icon">
+                                <button onClick={() => handleClick({ item: "favoris" })}>
+                                    <i className="far fa-bookmark" style={{ color: "#F1B706", }}></i>
+                                </button>
+                                <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Favoris</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div className="icon">
+                                <button onClick={() => handleClick({ item: "recherches" })}>
+                                    <i className="far fa-clock" style={{ color: "#F1B706", }}></i>
+                                </button>
+                                <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Recherches récentes</span>
+                            </div>
 
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
+
+                </div>
+                <div className="bottom-content">
+                    <div className="ground-icon">
+
+                        {insertMode ? (
+                            <button title="Quitter le mode insertion" onClick={() => handleClick({ item: "modeInsertion" })}>
+                                <i className="fas fa-pen" style={{ color: "black", }}></i>
+                            </button>
+                        ) : (
+                            <button title="Mode insertion : ajouter des anecdotes et évènements sur la carte" onClick={() => handleClick({ item: "modeInsertion" })}>
+                                <i className="fas fa-pen" style={{ color: "#F1B706", }}></i>
+                            </button>
+                        )}
+
+                    </div>
+                </div>
             </div>
+
         </div>
     );
 }
