@@ -15,12 +15,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -54,8 +48,19 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+
+    userType      UserType @relation(fields: [userTypeId], references: [id], onDelete: Cascade)
+    userTypeId    Int
+
     accounts      Account[]
     sessions      Session[]
+    facts         Fact[]
+}
+
+model UserType {
+    id        Int      @id @default(autoincrement())
+    name      String   @unique
+    users     User[]
 }
 
 model VerificationToken {
@@ -64,4 +69,43 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Tag {
+    id        String   @id @default(cuid())
+    name      String   @unique
+    hexColor  String
+
+    FactTags  FactTags[]
+}
+
+model Fact {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    title     String
+    shortDesc String?
+    content   String
+
+    from      DateTime?
+    until     DateTime?
+
+
+    bannerImg String?
+    verified  Boolean  @default(false)
+
+    author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    authorId  String
+
+    FactTags  FactTags[]
+}
+
+model FactTags {
+    factId String
+    tagId  String
+
+    @@id([factId, tagId])
+    fact   Fact @relation(fields: [factId], references: [id], onDelete: Cascade)
+    tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
 }
