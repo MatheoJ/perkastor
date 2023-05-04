@@ -1,56 +1,54 @@
-/* pages/event.module.css */
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  label {
-    font-weight: bold;
-  }
-  
-  input {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-  }
-  
-  .error-message {
-    color: red;
-    font-size: 0.9rem;
-  }
-  
-  button {
-    background-color: #4a90e2;
-    border: none;
-    border-radius: 4px;
-    color: rgb(0, 0, 0);
-    font-weight: bold;
-    font-size: 1rem;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    margin-top: 1rem;
-    display: inline-block;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #3b7ac9;
-    color: rgb(255, 255, 255);
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
-  }
-  
+pages/event.module.css .container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.container h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.container label {
+  font-weight: bold;
+}
+
+.container input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.container .error-message {
+  color: red;
+  font-size: 0.9rem;
+}
+
+.container button {
+  background-color: #4a90e2;
+  border: none;
+  border-radius: 4px;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  display: inline-block;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container button:hover {
+  background-color: #3b7ac9;
+  color: rgb(255, 255, 255);
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+}
