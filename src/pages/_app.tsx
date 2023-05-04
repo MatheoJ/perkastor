@@ -8,6 +8,8 @@ import "~/styles/globals.css";
 import "~/styles/eventForm.css";
 import "~/styles/colors.scss";
 import "~/styles/text-styles.scss";
+import "~/styles/sidebar.css";
+import "~/styles/topbar.css";
 import Layout from "../components/layout/layout";
 
 const MyApp: AppType<{ session: Session | null }> = ({

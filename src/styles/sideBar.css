@@ -1,0 +1,104 @@
+.sidebar button {
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0;
+}
+
+.sidebar {
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    width: 70px;
+    background-color: #344453;
+    transition: all 0.3s ease;
+  }
+  
+  .open {
+    left: 0;
+  }
+  
+  .sidebar .header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+  }
+  
+  .toggle {
+    background: none;
+    border: none;
+    font-size: 25px;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .icons i {
+    font-display: flex;
+    align-items: center;
+    font-size: 25px;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+  }
+
+  .top-content {
+    justify-content: center;
+    height: 100%;
+  }
+  
+  .top-content ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .top-content li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+    font-size: 25px;
+  }
+
+  .top-content li .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 25px;
+  }
+  
+  .top-content li .icon span {
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .ground-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
