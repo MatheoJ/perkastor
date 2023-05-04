@@ -9,8 +9,8 @@ function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
 
     return (
         <div className="topbar">
-            <div className="container">
-                <div className="left row">
+            <div className="topbar-container">
+                <div className="leftrow">
                     <div className="icon">
                         <button className="toggle" onClick={toggleSidebar}>
                             <i className="fa fa-bars" style={{ color: "#F1B706", }}></i>
