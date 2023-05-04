@@ -1,39 +1,37 @@
 import Link from 'next/link';
 
-import classes from './main-navigation.module.css';
 import { type NextPage } from 'next';
-import { signOut, useSession } from 'next-auth/react';
+import TopBar from '../TopBar';
+import SideBar from '../SideBar';
+import { useState } from 'react';
 
 const MainNavigation: NextPage = () => {
-  const { data: session } = useSession()
+  const [selectedItem, setSelectedItem] = useState<String>(""); // Keep track of the selected item in the sidebar
+  const [insertMode, setInsertMode] = useState<boolean>(false); // Keep track of the insert mode / view mode
+  const [sidebarIsOpen, setSidebarIsOpen] = useState<boolean>(false);
+  const toggleSidebar = () => { // hide / show sidebar
+    setSidebarIsOpen(!sidebarIsOpen);
+  };
 
-  function logoutHandler() {
-    signOut();
+  const handleSidebarItemClick = ({ item }: { item: String }) => { // Change the selected item in the sidebar
+    console.log("selectedItem : " + item);
+    setSelectedItem(item);
   }
 
+  const setInsertModeHandler = ({ insertMode }: { insertMode: boolean }) => {
+    setInsertMode(() => insertMode);
+  };
+
   return (
-    <header className={classes.header}>
-      <Link href='/'>
-        <div className={classes.logo}>Next Auth</div>
-      </Link>
-      <nav>
-        <ul>
-          {session ? (
-            <>
-              <li>
-                <Link href='/profile'>Profile</Link>
-              </li>
-              <li>
-                <button onClick={logoutHandler}>Logout</button>
-              </li>
-            </>
-          ) : (
-            <li>
-              <Link href='/auth'>Login</Link>
-            </li>
-          )}
-        </ul>
-      </nav>
+    <header>
+      <TopBar toggleSidebar={toggleSidebar} />
+      <SideBar
+        isOpen={sidebarIsOpen}
+        toggleSidebar={toggleSidebar}
+        onSidebarItemClick={handleSidebarItemClick}
+        insertMode={insertMode}
+        setInsertMode={setInsertModeHandler}
+      />
     </header>
   );
 }

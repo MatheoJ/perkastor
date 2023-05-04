@@ -4,6 +4,8 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
+import Button from "~/components/buttons/Button";
+import CustomLink from "~/components/links/CustomLink";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -20,7 +22,12 @@ const Home: NextPage = () => {
           <p> Le projet Perkastor étant open source, on vous invite à participer activement à son développement en vous rendant sur notre Github. </p>
           <div>
             <Link href="/mapWrapper">Explorer la carte</Link>
-          </div>        
+          </div>
+          <Button>BUTTON</Button>    
+          <Button color="secondary">BUTTON</Button>    
+          <Button color="tertiary">BUTTON</Button>
+          <Button disabled>BUTTON</Button>
+          <CustomLink href="">Test</CustomLink>            
         </div>
       </main>
     </>
