@@ -1,15 +1,19 @@
-import { getSession } from 'next-auth/react';
-
 import { hashPassword, verifyPassword } from '../../../lib/auth';
 import { connectToDatabase } from '../../../lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'PATCH') {
     return;
   }
 
-  const session = await getSession({ req: req });
+  // check if the user is logged in
+
+  // use getServerSession instead of getSession to avoid an extra fetch to an API route
+  // if we didn't need the user info (here its email), we could just use getToken
+  const session: {expires: string, user: {email: string}} = await getServerSession(req, res, authOptions)
 
   if (!session) {
     res.status(401).json({ message: 'Non authentifié !' });
@@ -37,7 +41,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const passwordsAreEqual = await verifyPassword(oldPassword, currentPassword);
 
   if (!passwordsAreEqual) {
-    res.status(403).json({ message: 'Mot de passe invalide.' });
+    res.status(403).json({ message: 'Votre ancien mot de passe est invalide.' });
     client.close();
     return;
   }
