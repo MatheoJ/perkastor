@@ -9,6 +9,7 @@
 
     background-color: $primary-color;
     border-radius: 8px;
+    transition: 0.3s;
 
     &:hover{
         opacity: 0.8;
@@ -53,4 +54,8 @@
         background-color: darken($light-color, 2%);
         border-color: darken($primary-color, 5%);
     }
+}
+
+.link-btn{
+    color: $secondary-color;
 }
