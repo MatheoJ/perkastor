@@ -13,6 +13,11 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
         } else {
             setInsertMode({ insertMode: false });
         }
+
+        if (item == "addEvent"){
+            
+            window.location.href = "/eventForm";
+        }
     }
 
     return (
@@ -44,6 +49,16 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                                 <button onClick={() => handleClick({ item: "recherches" })}>
                                     <i className="far fa-clock" style={{ color: "#F1B706", }}></i>
                                     <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Recherches récentes</span>
+                                </button>
+                            </div>
+
+                        </li>
+
+                        <li>
+                            <div className="icon">
+                                <button onClick={() => handleClick({ item: "addEvent" })}>
+                                    <i className="far fa-google-plus" style={{ color: "#F1B706", }}></i>
+                                    <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter un évènement</span>
                                 </button>
                             </div>
 
