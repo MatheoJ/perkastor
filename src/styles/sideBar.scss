@@ -1,3 +1,5 @@
+$sidebar-left-offset: 60px;
+
 .sidebar button {
   background-color: transparent;
   display: flex;
@@ -13,7 +15,7 @@
     top: 50px;
     bottom: 0;
     left: -200px;
-    width: 60px;
+    width: $sidebar-left-offset;
     background-color: #344453;
     transition: all 0.3s ease;
     z-index: 9999;

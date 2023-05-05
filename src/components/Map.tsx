@@ -9,12 +9,15 @@ import Marker from './Marker';
 import FlyTo from './FlyTo';
 import DataPoints from './DataPoints';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import Batf from './batf/Batf';
+import Button from './buttons/Button';
 
 const MapTilerApiKey = "KeNNPlHwOHbhaGFsVoos";
 
 export default function MapPage() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
+  const [fullscreen, setFullscreen] = useState<boolean>(false);
   
 
   useEffect(() => {
@@ -58,6 +61,8 @@ export default function MapPage() {
       <Head>
         <title>MapLibre with TypeScript and Next.js</title>
       </Head>
+      <Batf>
+      </Batf>
       <div ref={mapContainer} style={{ width: '100vw', height: '100vh' }} />
         {mapInstance && <Marker map={mapInstance} />}
         {mapInstance && <FlyTo map={mapInstance} />}
