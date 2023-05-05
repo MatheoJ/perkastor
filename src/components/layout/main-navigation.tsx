@@ -2,7 +2,8 @@ import Link from 'next/link';
 
 import { type NextPage } from 'next';
 import TopBar from '../TopBar';
-import SideBar from '../SideBar'; // Import the sidebar component                                                                                                                                                                                                                                                                                                                   
+import SideBar from '../SideBar';
+import Batf from '../batf/Batf';
 import { useState } from 'react';
 
 const MainNavigation: NextPage = () => {
@@ -32,6 +33,7 @@ const MainNavigation: NextPage = () => {
         insertMode={insertMode}
         setInsertMode={setInsertModeHandler}
       />
+      <Batf>d</Batf>
     </header>
   );
 }

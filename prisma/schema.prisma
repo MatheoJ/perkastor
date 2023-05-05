@@ -90,8 +90,8 @@ model Fact {
     bannerImg String?
     verified  Boolean  @default(false)
 
-    video     String[]
-    audio     String[]
+    video     String[] // can be initialized to an empty array
+    audio     String[] // can be initialized to an empty array
 
     author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId  String   @db.ObjectId
@@ -111,12 +111,17 @@ model FactTags {
 }
 
 model Location {
-    id        String   @id @default(cuid()) @map("_id") @db.ObjectId
-    name      String   @unique
-    latitude  Float
-    longitude Float
+    id              String   @id @default(cuid()) @map("_id") @db.ObjectId
 
-    FactLocations FactLocation[]
+    FactLocations   FactLocation[]
+    geometry        String // "Point"
+    coordinates     Float[] // [longitude, latitude]
+    area            Float // in square kilometers
+    type            String // "ville", "pays", "region", "departement", "commune", "lieu-dit", "autre
+    name            String // "Paris", "France", "Ile-de-France", "Seine"
+
+    // location is unique based on its coordinates and name
+    @@unique([coordinates, name])
 }
 
 model FactLocation {
@@ -140,11 +145,11 @@ model FactHistoricalPerson {
 model HistoricalPerson {
     id        String   @id @default(cuid()) @map("_id") @db.ObjectId
     name      String   @unique
-    birthDate DateTime
+    birthDate DateTime?
     deathDate DateTime?
     image     String?
     shortDesc String?
-    content   String
+    content   String?
 
     FactHistoricalPerson FactHistoricalPerson[]
 }
