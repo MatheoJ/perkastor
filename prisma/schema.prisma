@@ -97,7 +97,7 @@ model Fact {
     authorId  String   @db.ObjectId
 
     tags  FactTags[]
-    locations FactLocation
+    location FactLocation
     personsInvolved FactHistoricalPerson[]
 }
 
@@ -111,28 +111,36 @@ model FactTags {
 }
 
 model Geometry {
-    id     String      @id @default(cuid()) @map("_id") @db.ObjectId
     type        String
-    coordinates Int[]
+    coordinates Int[] @id
 }
 
 model Properties {
-    id     String      @id @default(cuid()) @map("_id") @db.ObjectId
     type    String
-    name    String
+    name    String     @unique @id
 }
 
 model GeoObj {
     id     String      @id @default(cuid()) @map("_id") @db.ObjectId
-    geometry    Geometry
-    properties  Properties
+    geometryId    Geometry
+    propertiesId  Properties
+}
+
+model Location {
+    id        String   @id @default(cuid()) @map("_id") @db.ObjectId
+    geoObjId String   @db.ObjectId
+
+    FactLocations FactLocation[]
+    geoObj GeoObj @relation(fields: [geoObjId], references: [id], onDelete: Cascade)
 }
 
 model FactLocation {
-    id          String           @id @default(cuid()) @map("_id") @db.ObjectId
+    id     String           @id @default(cuid()) @map("_id") @db.ObjectId
+    factId String           @db.ObjectId
     locationId  String      @db.ObjectId
-    facts       Fact[]
-    geoObj      GeoObj
+
+    fact   Fact @relation(fields: [factId], references: [id], onDelete: Cascade)
+    location    Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
 }
 
 model FactHistoricalPerson {
