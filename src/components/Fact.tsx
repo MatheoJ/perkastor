@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface FactProps {
     fact: {
@@ -34,6 +34,7 @@ interface FactProps {
 }
 
 const Fact: React.FC<FactProps> = ({ fact }) => {
+
     return (
         <div className="fact">
             <div className="factHead">
@@ -42,33 +43,37 @@ const Fact: React.FC<FactProps> = ({ fact }) => {
                 </div>
                 <div className="factHeadBottom">
                     <div className="factHeadBottomLeft">
-                        <h2>
+                        <ul>
                             {fact.locations.map((location) => (
                                 <li key={location.id}>{location.name}</li>
                             ))
                             }
 
-                        </h2>
+                        </ul>
                     </div>
                     <div className="factHeadBottomRight">
                         <h2>
-                            Les dates de l'event
+                            19 mai 1952
                         </h2>
                     </div>
                 </div>
             </div>
             <div className="factBody">
-                <p>{fact.content}</p>
-                <ul>
-                    {fact.personsInvolved.map((person) => (
-                        <li key={person.id}>{person.name}</li>
-                    ))}
-                </ul>
-                <ul>
-                    {fact.tags.map((tag) => (
-                        <li key={tag.id}>{tag.name}</li>
-                    ))}
-                </ul>
+                <div className='content-left'>
+                    <p>{fact.content}</p>
+                </div>
+                <div className='content-right'>
+                    <ul>
+                        {fact.personsInvolved.map((person) => (
+                            <li key={person.id}>{person.name}</li>
+                        ))}
+                    </ul>
+                    <ul>
+                        {fact.tags.map((tag) => (
+                            <li key={tag.id}>{tag.name}</li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </div>
     );
