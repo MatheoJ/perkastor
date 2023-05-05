@@ -1,0 +1,28 @@
+.descriptionHome {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20%;
+    margin-right: 20%;
+    text-align: center;
+}
+
+.headerHomeImage {
+    position: fixed;
+    height: 300px;
+    width: 100%;
+    overflow: hidden;
+    z-index: -1;
+    objectFit: cover !important;
+}
+
+.headerHomeTitre {
+    margin: 0;
+    line-height: 3rem;
+    text-align: center;
+    padding-top: 40vh;
+}
+
+
+.divHome {
+    display: flex;
+}

@@ -6,7 +6,7 @@ import Map from "../components/Map";
 
 import { api } from "~/utils/api";
 
-const mapWrapper: NextPage = () => {
+const MapWrapper: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
   return (
@@ -16,6 +16,6 @@ const mapWrapper: NextPage = () => {
   );
 };
 
-export default mapWrapper;
+export default MapWrapper;
 
 
