@@ -90,14 +90,14 @@ model Fact {
     bannerImg String?
     verified  Boolean  @default(false)
 
-    video     String[]
-    audio     String[]
+    video     String[] // can be initialized to an empty array
+    audio     String[] // can be initialized to an empty array
 
     author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId  String   @db.ObjectId
 
     tags  FactTags[]
-    location FactLocation
+    locations FactLocation[]
     personsInvolved FactHistoricalPerson[]
 }
 
@@ -110,28 +110,18 @@ model FactTags {
     tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
 }
 
-model Geometry {
-    type        String
-    coordinates Int[] @id
-}
-
-model Properties {
-    type    String
-    name    String     @unique @id
-}
-
-model GeoObj {
-    id     String      @id @default(cuid()) @map("_id") @db.ObjectId
-    geometryId    Geometry
-    propertiesId  Properties
-}
-
 model Location {
-    id        String   @id @default(cuid()) @map("_id") @db.ObjectId
-    geoObjId String   @db.ObjectId
+    id              String   @id @default(cuid()) @map("_id") @db.ObjectId
 
-    FactLocations FactLocation[]
-    geoObj GeoObj @relation(fields: [geoObjId], references: [id], onDelete: Cascade)
+    FactLocations   FactLocation[]
+    geometry        String // "Point"
+    coordinates     Float[] // [longitude, latitude]
+    area            Float // in square kilometers
+    type            String // "ville", "pays", "region", "departement", "commune", "lieu-dit", "autre
+    name            String // "Paris", "France", "Ile-de-France", "Seine"
+
+    // location is unique based on its coordinates and name
+    @@unique([coordinates, name])
 }
 
 model FactLocation {
