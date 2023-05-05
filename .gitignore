@@ -43,3 +43,6 @@ yarn-error.log*
 
 backend/node_modules/
 backend/node_modules/*
+
+data/*.json
+data/oldfiles/*.json
