@@ -4,8 +4,11 @@ import MapCoordPicker from '~/components/MapCoordPicker';
 
 interface EventData {
   name: string;
-  coordinates: string;
+  coordinatesLat: number;
+  coordinatesLong: number;
   description: string;
+  dateStart: Date;
+  dateEnd: Date;
 }
 
 
@@ -28,7 +31,7 @@ const Event = () => {
     <div className="container" >
       <h1>Ajout d'un évènement</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="name">Nom de l'évènement:</label>
+        <label htmlFor="name">Nom de l'évènement*</label>
         <input
           type="text"
           id="name"
@@ -36,7 +39,7 @@ const Event = () => {
         />
         {errors.name && <p className="error-message">Le nom est requis.</p>}
 
-        <label htmlFor="description">Event Description:</label>
+        <label htmlFor="description">Description de l'évènement*</label>
         <input
           type="text"
           id="description"
@@ -46,7 +49,7 @@ const Event = () => {
 
         <h3>Coordonées de l'évènement</h3>
 
-        <label htmlFor="coordinatesLong">Longitude :</label>
+        <label htmlFor="coordinatesLong">Longitude*</label>
         <input
           type="text"
           id="coordinatesLong"
@@ -54,7 +57,7 @@ const Event = () => {
         />
         {errors.coordinates && <p className="error-message">La longitude est requise.</p>}
 
-        <label htmlFor="coordinatesLat">Latitude :</label>
+        <label htmlFor="coordinatesLat">Latitude*</label>
         <input
           type="text"
           id="coordinatesLat"
@@ -63,6 +66,21 @@ const Event = () => {
         {errors.coordinates && <p className="error-message">La latitude est requise.</p>}
 
         <MapCoordPicker onMapClick={handleMapClick} />
+
+        <label htmlFor="dateStart">Date de début</label>
+        <input
+          type="date"
+          id="dateStart"
+          {...register('dateStart', { required: false })}
+        />
+
+        <label htmlFor="dateEnd">Date de fin</label>
+        <input
+          type="date"
+          id="dateEnd"
+          {...register('dateEnd', { required: false })}
+        />
+
 
         <button type="submit">Submit</button>
       </form>
