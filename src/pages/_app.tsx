@@ -11,6 +11,7 @@ import "~/styles/text-styles.scss";
 import "~/components/buttons/Button.scss";
 import "~/styles/sideBar.css";
 import "~/styles/topbar.css";
+import "~/styles/fact.css";
 import Layout from "../components/layout/layout";
 
 const MyApp: AppType<{ session: Session | null }> = ({
