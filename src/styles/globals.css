@@ -4,10 +4,10 @@
 
 .BAFTtest {
     position: absolute;
-    top:25%;
+    top:15%;
     left:50%;
     z-index: 1000;
-    height: 300px;
-    width: 400px;
+    height: 70%;
+    width: 40%;
     background-color: grey;
 }
