@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 interface FactProps {
     fact: {
@@ -63,6 +64,9 @@ const Fact: React.FC<FactProps> = ({ fact }) => {
                     <p>{fact.content}</p>
                 </div>
                 <div className='content-right'>
+                    <div className="factImage">
+                        <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                    </div>
                     <ul>
                         {fact.personsInvolved.map((person) => (
                             <li key={person.id}>{person.name}</li>
