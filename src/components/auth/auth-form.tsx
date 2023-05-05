@@ -1,9 +1,16 @@
 import { useState, useRef, FormEventHandler } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import {
+  Google,
+  Facebook,
+  GitHub,
+  Twitter,
+} from "@mui/icons-material";
 
 import classes from './auth-form.module.css';
 import { type NextPage } from "next";
+import Button from "~/components/buttons/Button";
 
 async function createUser(email: string, username: string, password: string) {
   console.log("createUser");
@@ -106,10 +113,19 @@ const AuthForm: NextPage = () => {
       <h1>{isLogin ? 'Connexion' : 'Inscription'}</h1>
       <form onSubmit={submitHandler}>
         {isLogin ?
+        <>
           <div className={classes.control}>
             <label htmlFor='email'> Email / Pseudonyme </label>
             < input type='text' id='emailOrUsername' required ref={emailOrPseudoInputRef} />
           </div>
+          <div className={classes.control}>
+            <Button onClick={() => signIn('github')}><GitHub/>Github</Button>
+            <Button onClick={() => signIn('google')}><Google/>Google</Button>
+            <Button onClick={() => signIn('facebook')}><Facebook/>Facebook</Button>
+            <Button onClick={() => signIn('twitter')}><Twitter/>Twitter</Button>
+            <Button onClick={() => signIn('discord')}>Discord</Button>
+          </div>
+          </>
           : <>
             <div className={classes.control}>
               <label htmlFor='email'> Email </label>
