@@ -120,7 +120,7 @@ def main():
     # Utilisez un ThreadPoolExecutor pour exécuter plusieurs appels à get_city_streets() en parallèle
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # Récupérez les rues pour chaque ville dans la liste "cities"
-        future_to_city = {executor.submit(find_facts_wikipedia, city["wikipediaUrl"], city["name"], False , city["id"]): city for city in cities[:10000]}
+        future_to_city = {executor.submit(find_facts_wikipedia, reg_d["wikipediaUrl"], reg_d["name"], False , reg_d["id"]): reg_d for reg_d in reg_dep.values()}
         
         # Parcourez les résultats des threads et ajoutez-les à la liste "data"
         i = 1
@@ -128,25 +128,33 @@ def main():
             try:
                 data = future.result()
                 facts[data["id"]] = data["facts"]
-                print(f"Faits historiques récupérés : {data['name']} - {len(data['facts'])} - [{i}/{10000}]")
+                print(f"Faits historiques récupérés : {data['name']} - {len(data['facts'])} - [{i}]")
                 i += 1
             
             except Exception as e:
                 print(f"Erreur lors de l'exécution du thread: {e}")
 
     # Enregistrez les données dans un fichier JSON
-    with open('facts2.json', 'w', encoding="utf-8") as outfile:
+    with open('facts_dep_reg.json', 'w', encoding="utf-8") as outfile:
         json.dump(facts, outfile, indent=4, ensure_ascii=False)
 
 
 def save_facts_and_exit(signal_number, frame):
     print("\nInterrupted by user. Saving facts and exiting...")
-    with open('facts3.json', 'w', encoding="utf-8") as outfile:
+    with open('facts_dep_reg.json', 'w', encoding="utf-8") as outfile:
         json.dump(facts, outfile, indent=4, ensure_ascii=False)
     sys.exit(0)
 
 facts = {}
-cities = json.load(open("citiesv2.json", "r", encoding="utf-8"))
+with open('regions.json', encoding="utf-8") as json_file:
+    regions = json.load(json_file)
+
+with open('departements.json', encoding="utf-8") as json_file:
+    departements = json.load(json_file)
+
+#concatenate regions and departements dicts
+reg_dep = {**regions, **departements}
+
 
 signal.signal(signal.SIGINT, save_facts_and_exit)
 signal.signal(signal.SIGTERM, save_facts_and_exit)
