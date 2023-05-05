@@ -23,12 +23,12 @@ function ProfileForm(props: any) {
   return (
     <form className={classes.form} onSubmit={submitHandler}>
       <div className={classes.control}>
-        <label htmlFor='new-password'>Nouveau mot de passe</label>
-        <input type='password' id='new-password' ref={newPasswordRef} />
-      </div>
-      <div className={classes.control}>
         <label htmlFor='old-password'>Ancien mot de passe</label>
         <input type='password' id='old-password' ref={oldPasswordRef} />
+      </div>
+      <div className={classes.control}>
+        <label htmlFor='new-password'>Nouveau mot de passe</label>
+        <input type='password' id='new-password' ref={newPasswordRef} />
       </div>
       {props.formError && <span className="px-4 py-3" style={{color: "#f56565"}}>{props.formError}</span>}
       {props.formSuccess && <span className="px-4 py-3" style={{color: "#90EE90"}}>{props.formSuccess}</span>}

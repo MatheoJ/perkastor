@@ -8,8 +8,10 @@ import "~/styles/globals.css";
 import "~/styles/eventForm.css";
 import "~/styles/colors.scss";
 import "~/styles/text-styles.scss";
-import "~/styles/sidebar.css";
+import "~/components/buttons/Button.scss";
+import "~/styles/sideBar.scss";
 import "~/styles/topbar.css";
+import "~/components/batf/Batf.scss";
 import Layout from "../components/layout/layout";
 
 const MyApp: AppType<{ session: Session | null }> = ({

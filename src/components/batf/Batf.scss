@@ -1,0 +1,26 @@
+@import '../../styles/colors.scss';
+@import '../../styles/sideBar.scss';
+
+.batf{
+    position: fixed;
+    width: 30em;
+    right: 0;
+    top: 50px;
+    bottom: 0;
+    z-index: 1000;
+
+
+    /*display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-around;*/
+
+    background-color: $light-color;
+    transition: 0.3s;
+}
+
+.batf-fullscreen{
+    @extend .batf;
+
+    width: calc(100% - $sidebar-left-offset);
+}

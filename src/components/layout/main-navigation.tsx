@@ -3,12 +3,13 @@ import Link from 'next/link';
 import { type NextPage } from 'next';
 import TopBar from '../TopBar';
 import SideBar from '../SideBar';
+import Batf from '../batf/Batf';
 import { useState } from 'react';
 
 const MainNavigation: NextPage = () => {
   const [selectedItem, setSelectedItem] = useState<String>(""); // Keep track of the selected item in the sidebar
   const [insertMode, setInsertMode] = useState<boolean>(false); // Keep track of the insert mode / view mode
-  const [sidebarIsOpen, setSidebarIsOpen] = useState<boolean>(true);
+  const [sidebarIsOpen, setSidebarIsOpen] = useState<boolean>(false);
   const toggleSidebar = () => { // hide / show sidebar
     setSidebarIsOpen(!sidebarIsOpen);
   };
@@ -32,6 +33,7 @@ const MainNavigation: NextPage = () => {
         insertMode={insertMode}
         setInsertMode={setInsertModeHandler}
       />
+      <Batf>d</Batf>
     </header>
   );
 }
