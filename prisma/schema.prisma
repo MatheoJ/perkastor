@@ -145,11 +145,11 @@ model FactHistoricalPerson {
 model HistoricalPerson {
     id        String   @id @default(cuid()) @map("_id") @db.ObjectId
     name      String   @unique
-    birthDate DateTime
+    birthDate DateTime?
     deathDate DateTime?
     image     String?
     shortDesc String?
-    content   String
+    content   String?
 
     FactHistoricalPerson FactHistoricalPerson[]
 }
