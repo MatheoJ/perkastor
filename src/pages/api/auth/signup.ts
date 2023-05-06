@@ -1,6 +1,7 @@
 import { hashPassword } from '../../../lib/auth';
 import { connectToDatabase } from '../../../lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { PrismaClient } from '@prisma/client';
 
 type ResponseData = {
     message: string
@@ -52,28 +53,29 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) 
     }
 
     try {
-        const client = await connectToDatabase();
+        // initialize prisma client
+        const client = new PrismaClient();
 
-        const db = client.db();
-
-        const existingUser = await db.collection('users').findOne({ email: email }) || await db.collection('users').findOne({ name: name });
+        const existingUser = await client.user.findFirst({
+            where: {OR: [{email: email},{name: name}]}
+           });
 
         if (existingUser) {
             res.status(422).json({ message: 'L\'utilisateur existe déjà !' });
-            client.close();
             return;
         }
 
         const hashedPassword = await hashPassword(password);
 
-        const result = await db.collection('users').insertOne({
-            email: email,
-            name: name,
-            password: hashedPassword,
+        const result = await client.user.create({
+            data: {
+                email: email,
+                name: name,
+                password: hashedPassword,
+            },
         });
 
         res.status(201).json({ message: 'Utilisateur crée !' });
-        client.close();
     } catch (error) {
         res.status(500).json({ message: 'Impossible de se connecter à la base de données !' });
         return;

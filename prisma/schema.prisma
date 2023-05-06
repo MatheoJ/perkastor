@@ -62,6 +62,8 @@ model User {
     sessions      Session[]
     facts         Fact[]
 
+    password      String?
+
     @@map("users")
 }
 
@@ -124,6 +126,7 @@ model Fact {
     location    Location @relation("FactLocation", fields: [locationId], references: [id])
     locationId  String   @db.ObjectId @map("location_id")
     personsInvolved FactHistoricalPerson[]
+    sources     String[] // can be initialized to an empty array
 
     @@map("facts")
 }

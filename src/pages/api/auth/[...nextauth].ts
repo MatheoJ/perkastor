@@ -74,167 +74,169 @@ async function refreshAccessToken(token) {
     }
 }
 
-let userT = "";
-let userData = {};
+// let userT = "user";
+// let userData = {};
+
+export const authOptions: NextAuthOptions = {
+    adapter: prismaAdapter,
+    session: {
+        strategy: "jwt",
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        updateAge: 24 * 60 * 60, // 24 hours
+    },
+    jwt: {
+        maxAge: 60 * 60 * 24 * 30,
+    },
+    secret: process.env.NEXTAUTH_SECRET,
+    providers: [
+        GithubProvider({
+            clientId: process.env.GITHUB_CLIENT_ID!,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+        }),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            authorization: {
+                params: {
+                    access_type: "offline",
+                    prompt: "consent",
+                    response_type: "code",
+                    userType: "user" || "admin",
+                },
+            }
+        }),
+        FacebookProvider({
+            clientId: process.env.FACEBOOK_CLIENT_ID!,
+            clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+        }),
+        TwitterProvider({
+            clientId: process.env.TWITTER_CLIENT_ID!,
+            clientSecret: process.env.TWITTER_CLIENT_SECRET!,
+        }),
+        DiscordProvider({
+            clientId: process.env.DISCORD_CLIENT_ID!,
+            clientSecret: process.env.DISCORD_CLIENT_SECRET!,
+        }),
+        CredentialsProvider({
+            // The name to display on the sign in form (e.g. "Sign in with...")
+            name: "Identifiants",
+            // `credentials` is used to generate a form on the sign in page.
+            // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+            // e.g. domain, name, password, 2FA token, etc.
+            // You can pass any HTML attribute to the <input> tag through the object.
+            credentials: {
+                email: { label: "Email", type: "email", placeholder: "Email" },
+                name: { label: "Nom d'utilisateur", type: "text", placeholder: "Nom d'utilisateur" },
+                password: { label: "Mot de passe", type: "password" },
+            },
+            async authorize(credentials, req) {
+                let user;
+                if (credentials.email) {
+                    // find a user by email using prisma
+                    user = await client.user.findUnique({
+                        where: {
+                            email: credentials.email,
+                        },
+                    });
+                } else if (credentials.name) {
+                    // find a user by name using prisma
+                    user = await client.user.findUnique({
+                        where: {
+                            name: credentials.name,
+                        },
+                    });
+                }
+
+                if (!user) {
+                    throw new Error('Aucun utilisateur trouvé !');
+                }
+
+                const isValid = await verifyPassword(
+                    credentials?.password!,
+                    user.password
+                );
+
+                if (!isValid) {
+                    throw new Error('Impossible de vous connecter. Veuillez vérifier votre mot de passe !');
+                }
+
+                return { email: user.email! };
+
+            },
+        }),
+    ],
+    callbacks: {
+        /*
+        
+        async signIn({ user, account, profile, email, credentials }) {
+            console.log("Check if the user already exists in the database");
+            userData = await client.user.findUnique({
+                where: {
+                    email: profile.email,
+                },
+            })
+            if (userData) {
+                console.log("User already exists in the database")
+                return true;
+            }
+            console.log("User doesn't exist in the database");
+            // register the user
+            try {
+                userData = await client.user.create({
+                    data: {
+                        id: ObjectID().toHexString(),
+                        fullName: profile.name,
+                        email: profile.email,
+                        active: true,
+                        image: profile.image,
+                        provider: account.provider,
+                        role: userT,
+                    }
+                })
+                console.log("user created successfully: " + userData)
+                return true;
+            } catch (error) {
+                console.log(
+                    "ERROR While adding new User from Google SignIn callback: " + error
+                );
+                return false;
+            }
+        },
+        */
+        async jwt({ token, user, account, profile }) {
+            // Persist the OAuth access_token to the token right after signin
+            // if (user) {
+            //     token.id = user.id;
+            // }
+            if (account) {
+                token.accessToken = account.access_token
+                token.refreshToken = account.refresh_token
+            }
+            if (user) {
+                token.uid = user.id;
+                // check if the user's role is defined
+                token.role = user['role'] || "user";
+            }
+            token.accessTokenExpires = Number(account?.exp || account?.expires_at) * 1000
+
+            // Return previous token if the access token has not expired yet
+            if (Date.now() < Number(token.accessTokenExpires)) {
+                return token
+            }
+
+            return refreshAccessToken(token)
+        },
+        async session({ session, token, user }) {
+            if (session?.user) {
+                session.user.token = token.accessToken as string;
+                session.user.id = token.uid as string;
+                session.user['role'] = token.role as string;
+            }
+            return session;
+        },
+    }
+};
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-    // Do whatever you want here, before the request is passed down to `NextAuth`
-
-    // save user data only if not undefined, so it doesn't overwrite
-    if (req.body.userType !== undefined) {
-        userT = req.body.userType;
-    } else {
-        userT = "user";
-    }
-
-    return await NextAuth(req, res, {
-        adapter: prismaAdapter,
-        session: {
-            strategy: "jwt",
-            maxAge: 30 * 24 * 60 * 60, // 30 days
-            updateAge: 24 * 60 * 60, // 24 hours
-        },
-        jwt: {
-            maxAge: 60 * 60 * 24 * 30,
-        },
-        secret: process.env.NEXTAUTH_SECRET,
-        providers: [
-            GithubProvider({
-                clientId: process.env.GITHUB_CLIENT_ID!,
-                clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-            }),
-            GoogleProvider({
-                clientId: process.env.GOOGLE_CLIENT_ID!,
-                clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-                authorization: {
-                    params: {
-                        access_type: "offline",
-                        prompt: "consent",
-                        response_type: "code",
-                        userType: "user" || "admin",
-                    },
-                }
-            }),
-            FacebookProvider({
-                clientId: process.env.FACEBOOK_CLIENT_ID!,
-                clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
-            }),
-            TwitterProvider({
-                clientId: process.env.TWITTER_CLIENT_ID!,
-                clientSecret: process.env.TWITTER_CLIENT_SECRET!,
-            }),
-            DiscordProvider({
-                clientId: process.env.DISCORD_CLIENT_ID!,
-                clientSecret: process.env.DISCORD_CLIENT_SECRET!,
-            }),
-            CredentialsProvider({
-                // The name to display on the sign in form (e.g. "Sign in with...")
-                name: "Identifiants",
-                // `credentials` is used to generate a form on the sign in page.
-                // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-                // e.g. domain, name, password, 2FA token, etc.
-                // You can pass any HTML attribute to the <input> tag through the object.
-                credentials: {
-                    email: { label: "Email", type: "email", placeholder: "Email" },
-                    name: { label: "Nom d'utilisateur", type: "text", placeholder: "Nom d'utilisateur" },
-                    password: { label: "Mot de passe", type: "password" },
-                },
-                async authorize(credentials, req) {
-                    let user;
-                    if (credentials.email) {
-                        // find a user by email using prisma
-                        user = await client.user.findUnique({
-                            where: {
-                                email: credentials.email,
-                            },
-                        });
-                    } else if (credentials.name) {
-                        // find a user by name using prisma
-                        user = await client.user.findUnique({
-                            where: {
-                                name: credentials.name,
-                            },
-                        });
-                    }
-
-                    if (!user) {
-                        throw new Error('Aucun utilisateur trouvé !');
-                    }
-
-                    const isValid = await verifyPassword(
-                        credentials?.password!,
-                        user.password
-                    );
-
-                    if (!isValid) {
-                        throw new Error('Impossible de vous connecter. Veuillez vérifier votre mot de passe !');
-                    }
-
-                    return { email: user.email! };
-
-                },
-            }),
-        ],
-        callbacks: {
-            /*
-            
-            async signIn({ user, account, profile, email, credentials }) {
-                console.log("Check if the user already exists in the database");
-                userData = await client.user.findUnique({
-                    where: {
-                        email: profile.email,
-                    },
-                })
-                if (userData) {
-                    console.log("User already exists in the database")
-                    return true;
-                }
-                console.log("User doesn't exist in the database");
-                // register the user
-                try {
-                    userData = await client.user.create({
-                        data: {
-                            id: ObjectID().toHexString(),
-                            fullName: profile.name,
-                            email: profile.email,
-                            active: true,
-                            image: profile.image,
-                            provider: account.provider,
-                            role: userT,
-                        }
-                    })
-                    console.log("user created successfully: " + userData)
-                    return true;
-                } catch (error) {
-                    console.log(
-                        "ERROR While adding new User from Google SignIn callback: " + error
-                    );
-                    return false;
-                }
-            },
-            */
-            async jwt({ token, user, account, profile }) {
-                // Persist the OAuth access_token to the token right after signin
-                // if (user) {
-                //     token.id = user.id;
-                // }
-                if (account) {
-                    token.accessToken = account.access_token
-                    token.refreshToken = account.refresh_token
-                }
-                token.accessTokenExpires = Number(account?.exp || account?.expires_at) * 1000
-
-                // Return previous token if the access token has not expired yet
-                if (Date.now() < Number(token.accessTokenExpires)) {
-                    return token
-                }
-
-                return refreshAccessToken(token)
-            },
-            async session({ session, token, user }) {
-                session.user.token = token.accessToken as string;
-                return session;
-            },
-        }
-    });
+    return await NextAuth(req, res, authOptions);
 }
