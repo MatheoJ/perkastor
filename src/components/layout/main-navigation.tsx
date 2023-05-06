@@ -33,7 +33,6 @@ const MainNavigation: NextPage = () => {
         insertMode={insertMode}
         setInsertMode={setInsertModeHandler}
       />
-      <Batf>d</Batf>
     </header>
   );
 }
