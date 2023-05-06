@@ -22,6 +22,9 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
 
     return (
         <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+            <Head>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+            </Head>
             <div className="content">
                 <div className="top-content">
                     <ul className='topIcons'>
