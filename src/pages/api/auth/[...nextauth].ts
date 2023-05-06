@@ -12,6 +12,7 @@ import { connectToDatabase } from '../../../lib/db';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next/types';
+import ObjectID from 'bson-objectid';
 
 const GOOGLE_AUTHORIZATION_URL =
     "https://accounts.google.com/o/oauth2/v2/auth?" +
@@ -79,6 +80,8 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     // save user data only if not undefined, so it doesn't overwrite
     if (req.body.userType !== undefined) {
         userT = req.body.userType;
+    } else {
+        userT = "user";
     }
 
     return await NextAuth(req, res, {
@@ -122,30 +125,36 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
                 clientSecret: process.env.DISCORD_CLIENT_SECRET!,
             }),
             CredentialsProvider({
+                // The name to display on the sign in form (e.g. "Sign in with...")
+                name: "Identifiants",
+                // `credentials` is used to generate a form on the sign in page.
+                // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+                // e.g. domain, username, password, 2FA token, etc.
+                // You can pass any HTML attribute to the <input> tag through the object.
+                credentials: {
+                    email: { label: "Email", type: "email", placeholder: "Email" },
+                    username: { label: "Nom d'utilisateur", type: "text", placeholder: "Nom d'utilisateur" },
+                    password: { label: "Mot de passe", type: "password" },
+                },
                 async authorize(credentials, req) {
-                    let client;
-                    try {
-                        client = await connectToDatabase();
-                    } catch (error) {
-                        console.log("Impossible de se connecter à la base de données: ");
-                        console.log(error);
-                        throw new Error('Impossible de se connecter à la base de données !');
-                    }
-
-                    const usersCollection = client.db().collection('users');
                     let user;
                     if (credentials.email) {
-                        user = await usersCollection.findOne({
-                            email: credentials.email,
+                        // find a user by email using prisma
+                        user = await client.user.findUnique({
+                            where: {
+                                email: credentials.email,
+                            },
                         });
                     } else if (credentials.username) {
-                        user = await usersCollection.findOne({
-                            username: credentials.username,
+                        // find a user by username using prisma
+                        user = await client.user.findUnique({
+                            where: {
+                                username: credentials.username,
+                            },
                         });
                     }
 
                     if (!user) {
-                        client.close();
                         throw new Error('Aucun utilisateur trouvé !');
                     }
 
@@ -155,11 +164,8 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
                     );
 
                     if (!isValid) {
-                        client.close();
                         throw new Error('Impossible de vous connecter. Veuillez vérifier votre mot de passe !');
                     }
-
-                    client.close();
 
                     return { email: user.email! };
 
@@ -168,31 +174,35 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         ],
         callbacks: {
             async signIn({ user, account, profile, email, credentials }) {
+                console.log("Check if the user already exists in the database");
                 userData = await client.user.findUnique({
                     where: {
                         email: profile.email,
                     },
                 })
                 if (userData) {
+                    console.log("User already exists in the database")
                     return true;
                 }
+                console.log("User doesn't exist in the database");
                 // register the user
                 try {
                     userData = await client.user.create({
                         data: {
+                            id: ObjectID().toHexString(),
                             fullName: profile.name,
                             email: profile.email,
                             active: true,
                             image: profile.image,
                             provider: account.provider,
-                            id: "",
                             role: userT,
                         }
                     })
+                    console.log("user created successfully: " + userData)
                     return true;
                 } catch (error) {
                     console.log(
-                        "ERROR While adding new User from Google SignIn callback"
+                        "ERROR While adding new User from Google SignIn callback: " + error
                     );
                     return false;
                 }

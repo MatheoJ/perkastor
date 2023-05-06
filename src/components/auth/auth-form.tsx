@@ -32,6 +32,7 @@ async function createUser(email: string, username: string, password: string) {
 }
 
 const AuthForm: NextPage = () => {
+  const CALLBACK_URL = `${window.location.origin}/mapWrapper`
   const [formSuccess, setFormSuccess] = useState<string>();
   const [formError, setFormError] = useState<string>();
   const emailOrPseudoInputRef = useRef<HTMLInputElement>(null);
@@ -59,16 +60,19 @@ const AuthForm: NextPage = () => {
     const enteredPassword = passwordInputRef.current?.value;
 
     // optional: Add validation
-    let credentials: { redirect: boolean; email?: string; password: string; username?: string; };
+    let credentials: any;
     if (enteredEmailOrPseudo) {
       if (enteredEmailOrPseudo.includes('@')) {
         credentials = {
+          callbackUrl: CALLBACK_URL,
           redirect: false,
           email: enteredEmailOrPseudo,
           password: enteredPassword,
+
         }
       } else {
         credentials = {
+          callbackUrl: CALLBACK_URL,
           redirect: false,
           username: enteredEmailOrPseudo,
           password: enteredPassword,
@@ -76,6 +80,7 @@ const AuthForm: NextPage = () => {
       }
     } else {
       credentials = {
+        callbackUrl: CALLBACK_URL,
         redirect: false,
         email: enteredEmail,
         username: enteredUsername,
@@ -84,7 +89,6 @@ const AuthForm: NextPage = () => {
     }
 
     if (isLogin) {
-      console.log("signIn")
       const result = await signIn('credentials', credentials);
 
       if (!result?.error) {
@@ -119,11 +123,11 @@ const AuthForm: NextPage = () => {
             < input type='text' id='emailOrUsername' required ref={emailOrPseudoInputRef} />
           </div>
           <div className={classes.control}>
-            <Button onClick={() => signIn('github')}><GitHub/>Github</Button>
-            <Button onClick={() => signIn('google')}><Google/>Google</Button>
-            <Button onClick={() => signIn('facebook')}><Facebook/>Facebook</Button>
-            <Button onClick={() => signIn('twitter')}><Twitter/>Twitter</Button>
-            <Button onClick={() => signIn('discord')}>Discord</Button>
+            <Button onClick={() => signIn('github', {callbackUrl: CALLBACK_URL})}><GitHub/>Github</Button>
+            <Button onClick={() => signIn('google', {callbackUrl: CALLBACK_URL})}><Google/>Google</Button>
+            <Button onClick={() => signIn('facebook', {callbackUrl: CALLBACK_URL})}><Facebook/>Facebook</Button>
+            <Button onClick={() => signIn('twitter', {callbackUrl: CALLBACK_URL})}><Twitter/>Twitter</Button>
+            <Button onClick={() => signIn('discord', {callbackUrl: CALLBACK_URL})}>Discord</Button>
           </div>
           </>
           : <>
