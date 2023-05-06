@@ -71,9 +71,17 @@ model Tag {
     name      String   @unique
     hexColor  String
 
-    tags  FactTags[]
+    //tags  FactTags[]
 }
 
+model FactTags {
+    id     String      @id @default(cuid()) @map("_id") @db.ObjectId
+    factId String      @db.ObjectId
+    tagId  String      @db.ObjectId
+
+    //fact   Fact @relation(fields: [factId], references: [id], onDelete: Cascade)
+    //tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+}
 model Fact {
     id        String   @id @default(cuid()) @map("_id") @db.ObjectId
 
@@ -96,41 +104,25 @@ model Fact {
     author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId  String   @db.ObjectId
 
-    tags  FactTags[]
-    locations FactLocation[]
+    //tags  FactTags[]
+    location    Location @relation("FactLocation", fields: [locationId], references: [id])
+    locationId  String   @db.ObjectId
     personsInvolved FactHistoricalPerson[]
 }
 
-model FactTags {
-    id     String      @id @default(cuid()) @map("_id") @db.ObjectId
-    factId String      @db.ObjectId
-    tagId  String      @db.ObjectId
-
-    fact   Fact @relation(fields: [factId], references: [id], onDelete: Cascade)
-    tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
-}
 
 model Location {
     id              String   @id @default(cuid()) @map("_id") @db.ObjectId
 
-    FactLocations   FactLocation[]
     geometry        String // "Point"
     coordinates     Float[] // [longitude, latitude]
     area            Float // in square kilometers
     type            String // "ville", "pays", "region", "departement", "commune", "lieu-dit", "autre
     name            String // "Paris", "France", "Ile-de-France", "Seine"
+    facts           Fact[] @relation("FactLocation")
 
     // location is unique based on its coordinates and name
     @@unique([coordinates, name])
-}
-
-model FactLocation {
-    id     String           @id @default(cuid()) @map("_id") @db.ObjectId
-    factId String           @db.ObjectId
-    locationId  String      @db.ObjectId
-
-    fact   Fact @relation(fields: [factId], references: [id], onDelete: Cascade)
-    location    Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
 }
 
 model FactHistoricalPerson {
