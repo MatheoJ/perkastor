@@ -32,6 +32,9 @@ const prismaAdapter = PrismaAdapter(client);
  * returns the old token and an error property
  */
 async function refreshAccessToken(token) {
+    if (token.refreshToken === undefined) {
+        return token
+    }
     try {
         const url =
             "https://oauth2.googleapis.com/token?" +
@@ -62,7 +65,7 @@ async function refreshAccessToken(token) {
             refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
         }
     } catch (error) {
-        console.log(error)
+        console.log("Couldn't refresh Google authentication token: " + error)
 
         return {
             ...token,
@@ -129,11 +132,11 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
                 name: "Identifiants",
                 // `credentials` is used to generate a form on the sign in page.
                 // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-                // e.g. domain, username, password, 2FA token, etc.
+                // e.g. domain, name, password, 2FA token, etc.
                 // You can pass any HTML attribute to the <input> tag through the object.
                 credentials: {
                     email: { label: "Email", type: "email", placeholder: "Email" },
-                    username: { label: "Nom d'utilisateur", type: "text", placeholder: "Nom d'utilisateur" },
+                    name: { label: "Nom d'utilisateur", type: "text", placeholder: "Nom d'utilisateur" },
                     password: { label: "Mot de passe", type: "password" },
                 },
                 async authorize(credentials, req) {
@@ -145,11 +148,11 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
                                 email: credentials.email,
                             },
                         });
-                    } else if (credentials.username) {
-                        // find a user by username using prisma
+                    } else if (credentials.name) {
+                        // find a user by name using prisma
                         user = await client.user.findUnique({
                             where: {
-                                username: credentials.username,
+                                name: credentials.name,
                             },
                         });
                     }
@@ -173,6 +176,8 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             }),
         ],
         callbacks: {
+            /*
+            
             async signIn({ user, account, profile, email, credentials }) {
                 console.log("Check if the user already exists in the database");
                 userData = await client.user.findUnique({
@@ -207,16 +212,17 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
                     return false;
                 }
             },
+            */
             async jwt({ token, user, account, profile }) {
                 // Persist the OAuth access_token to the token right after signin
-                if (user) {
-                    token.id = user.id;
-                }
+                // if (user) {
+                //     token.id = user.id;
+                // }
                 if (account) {
                     token.accessToken = account.access_token
                     token.refreshToken = account.refresh_token
                 }
-                token.accessTokenExpires = Date.now() + Number(account.expires_in) * 1000
+                token.accessTokenExpires = Number(account?.exp || account?.expires_at) * 1000
 
                 // Return previous token if the access token has not expired yet
                 if (Date.now() < Number(token.accessTokenExpires)) {
@@ -226,19 +232,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
                 return refreshAccessToken(token)
             },
             async session({ session, token, user }) {
-                const getToken = await client.account.findFirst({
-                    where: {
-                        userId: user.id,
-                    },
-                });
-
-                let accessToken: string | null = null;
-                if (getToken) {
-                    accessToken = getToken.access_token!;
-                }
-
-                session.user.token = accessToken;
-
+                session.user.token = token.accessToken as string;
                 return session;
             },
         }

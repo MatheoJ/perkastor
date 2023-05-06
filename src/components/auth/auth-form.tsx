@@ -12,11 +12,10 @@ import classes from './auth-form.module.css';
 import { type NextPage } from "next";
 import Button from "~/components/buttons/Button";
 
-async function createUser(email: string, username: string, password: string) {
-  console.log("createUser");
+async function createUser(email: string, name: string, password: string) {
   const response = await fetch('/api/auth/signup', {
     method: 'POST',
-    body: JSON.stringify({ email, username, password }),
+    body: JSON.stringify({ email, name, password }),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -37,7 +36,7 @@ const AuthForm: NextPage = () => {
   const [formError, setFormError] = useState<string>();
   const emailOrPseudoInputRef = useRef<HTMLInputElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
-  const usernameInputRef = useRef<HTMLInputElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
 
   const [isLogin, setIsLogin] = useState(true);
@@ -56,7 +55,7 @@ const AuthForm: NextPage = () => {
 
     const enteredEmailOrPseudo = emailOrPseudoInputRef.current?.value;
     const enteredEmail = emailInputRef.current?.value;
-    const enteredUsername = usernameInputRef.current?.value;
+    const enteredName = nameInputRef.current?.value;
     const enteredPassword = passwordInputRef.current?.value;
 
     // optional: Add validation
@@ -74,7 +73,7 @@ const AuthForm: NextPage = () => {
         credentials = {
           callbackUrl: CALLBACK_URL,
           redirect: false,
-          username: enteredEmailOrPseudo,
+          name: enteredEmailOrPseudo,
           password: enteredPassword,
         }
       }
@@ -83,7 +82,7 @@ const AuthForm: NextPage = () => {
         callbackUrl: CALLBACK_URL,
         redirect: false,
         email: enteredEmail,
-        username: enteredUsername,
+        name: enteredName,
         password: enteredPassword,
       }
     }
@@ -102,7 +101,7 @@ const AuthForm: NextPage = () => {
       }
     } else {
       try {
-        const result = await createUser(enteredEmail, enteredUsername, enteredPassword);
+        const result = await createUser(enteredEmail, enteredName, enteredPassword);
         setIsLogin(true);
         setFormSuccess('Compte créé avec succès, veuillez vous connecter');
         setFormError('');
@@ -120,7 +119,7 @@ const AuthForm: NextPage = () => {
         <>
           <div className={classes.control}>
             <label htmlFor='email'> Email / Pseudonyme </label>
-            < input type='text' id='emailOrUsername' required ref={emailOrPseudoInputRef} />
+            < input type='text' id='emailOrName' required ref={emailOrPseudoInputRef} />
           </div>
           <div className={classes.control}>
             <Button onClick={() => signIn('github', {callbackUrl: CALLBACK_URL})}><GitHub/>Github</Button>
@@ -136,8 +135,8 @@ const AuthForm: NextPage = () => {
               < input type='email' id='email' required ref={emailInputRef} />
             </div>
             <div className={classes.control}>
-              <label htmlFor='username'> Pseudonyme (visible publiquement) </label>
-              < input type='username' id='username' required ref={usernameInputRef} />
+              <label htmlFor='name'> Pseudonyme (visible publiquement) </label>
+              < input type='name' id='name' required ref={nameInputRef} />
             </div>
           </>}
 

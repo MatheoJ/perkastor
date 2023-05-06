@@ -13,7 +13,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) 
     const data = req.body;
 
     const email: string = data?.email;
-    const username: string = data?.username;
+    const name: string = data?.name;
     const password: string = data?.password;
 
     if (
@@ -27,11 +27,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) 
         return;
     }
 
-    const usernameValidator = new RegExp('^[a-zA-Z0-9_-]*$');
+    const nameValidator = new RegExp('^[a-zA-Z0-9_-]*$');
     if (
-        !username ||
-        username.trim().length < 3 ||
-        !usernameValidator.test(username) // cf https://stackoverflow.com/questions/1221985/how-to-validate-a-user-name-with-regex
+        !name ||
+        name.trim().length < 3 ||
+        !nameValidator.test(name) // cf https://stackoverflow.com/questions/1221985/how-to-validate-a-user-name-with-regex
     ) {
         res.status(422).json({
             message:
@@ -56,7 +56,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) 
 
         const db = client.db();
 
-        const existingUser = await db.collection('users').findOne({ email: email }) || await db.collection('users').findOne({ username: username });
+        const existingUser = await db.collection('users').findOne({ email: email }) || await db.collection('users').findOne({ name: name });
 
         if (existingUser) {
             res.status(422).json({ message: 'L\'utilisateur existe déjà !' });
@@ -68,7 +68,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) 
 
         const result = await db.collection('users').insertOne({
             email: email,
-            username: username,
+            name: name,
             password: hashedPassword,
         });
 

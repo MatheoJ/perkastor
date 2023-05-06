@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToDatabase } from '../../lib/db';
 
-export async function handler(req, res) {
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
 
     const { fid } = req.query; // fact id
@@ -14,7 +15,7 @@ export async function handler(req, res) {
                 if (fid) {
                     res = await client.fact.findUnique({
                         where: {
-                            id: fid
+                            id: Array.isArray(fid) ? fid[0] : fid
                         },
                     });
                     if (res) {
@@ -59,7 +60,6 @@ export async function handler(req, res) {
                 res.status(405).end(`Method ${method} Not Allowed`);
                 return;
         }
-        client.close();
         res.status(200).json(res);
     } catch (error) {
         res.status(500).json({ statusCode: 500, message: 'Impossible de se connecter à la base de données !' });
