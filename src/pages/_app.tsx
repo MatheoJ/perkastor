@@ -13,6 +13,8 @@ import "~/styles/sideBar.css";
 import "~/styles/topbar.css";
 import "~/styles/fact.css";
 import Layout from "../components/layout/layout";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

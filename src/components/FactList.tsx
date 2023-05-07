@@ -1,41 +1,82 @@
-import { useEffect, useRef, useState } from 'react';
-import Card from './Card';
+import React, { useEffect, useState } from 'react';
+import Fact from './Fact';
+import Slider from 'react-slick';
 
-const FactList = ({ cards }) => {
-  //display 5 cards at a time
-  const [current, setCurrent] = useState(0);
-  const [cardsToDisplay, setCardsToDisplay] = useState(cards.slice(0, 5));
-  const [isNextDisabled, setIsNextDisabled] = useState(false);
-  const [isPrevDisabled, setIsPrevDisabled] = useState(true);
+interface FactListProps {
+  facts: {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    title: string;
+    shortDesc?: string;
+    content: string;
+    from?: string;
+    until?: string;
+    bannerImg?: string;
+    verified: boolean;
+    video: string[];
+    audio: string[];
+    author: {
+      id: string;
+      name: string;
+    };
+    tags: {
+      id: string;
+      name: string;
+    }[];
+    locations: {
+      id: string;
+      name: string;
+    }[];
+    personsInvolved: {
+      id: string;
+      name: string;
+    }[];
+  }[];
+}
 
-  const next = () => {
-    setCurrent(current + 1);
-    setCardsToDisplay(cards.slice(current + 1, current + 6));
-    setIsPrevDisabled(false);
-    if (current + 6 >= cards.length) {
-      setIsNextDisabled(true);
-    }
+const FactList: React.FC<FactListProps> = ({ facts }) => {
+
+  const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
+  const [items, setItems] = useState(facts.slice(0, 10));
+
+  const fetchMoreData = () => {
+    setTimeout(() => {
+      setItems(items.concat(facts.slice(items.length, items.length + 10)));
+    }, 1500);
   };
 
-  const prev = () => {
-    setCurrent(current - 1);
-    setCardsToDisplay(cards.slice(current - 1, current + 4));
-    setIsNextDisabled(false);
-    if (current - 1 <= 0) {
-      setIsPrevDisabled(true);
-    }
-  }
+  const sortedFacts = facts.sort((a, b) => new Date(a.from).getTime() - new Date(b.from).getTime());
+
+
+  useEffect(() => {
+    console.log('Visible facts:', visibleFacts);
+  }, [visibleFacts]);
+  
+  const settings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    vertical: true,
+    verticalSwiping: true,
+    swipeToSlide: true,
+    centerMode: true
+  };
+
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <button onClick={prev} disabled={isPrevDisabled}>Prev</button>
-        <button onClick={next} disabled={isNextDisabled}>Next</button>
-      </div>
-      {cardsToDisplay.map((card) => (
-        <Card key={card.id} title={card.title} description={card.description} />
-      ))}
+      <Slider {...settings}>
+        {sortedFacts.map((fact) => (
+          <div key={fact.id}>
+          <Fact fact={fact} />
+        </div>
+        ))}
+      </Slider>
     </div>
   );
 };
 
+export default FactList;
