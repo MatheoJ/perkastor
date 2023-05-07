@@ -27,8 +27,6 @@ function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
         return () => window.removeEventListener("visibilitychange", visibilityHandler, false)
     }, [update])
 
-    console.log(session);
-
     return (
         <div className="topbar">
             <div className="topbar-container">
