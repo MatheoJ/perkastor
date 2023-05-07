@@ -5,6 +5,7 @@ interface Props {
   children: React.ReactNode;
   color?: "primary" | "secondary" | "tertiary";
   disabled?: boolean;
+  hidden?: boolean;
 }
 
 const ButtonType = {
@@ -17,11 +18,12 @@ const Button: React.FC<Props> = ({
   children,
   onClick,
   disabled = false,
+  hidden=false,
   color = "primary",
 }) => {
   return (
     <button
-      className={`btn ${ButtonType[color]} btn-text`}
+      className={`btn ${ButtonType[color]} btn-text ${hidden ? "btn-hidden" : ''}`}
       onClick={onClick}
       disabled={disabled}
     >
