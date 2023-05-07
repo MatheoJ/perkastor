@@ -23,6 +23,7 @@
 }
 
 
-.divHome {
-    display: flex;
-}
+
+header.scrolled {
+    background-image: url('/resources/fondHome.jpg');
+  }
