@@ -70,7 +70,16 @@ size = {
 
 import json
 cities = json.load(open('./citiesv3.json'))
-
+citiesWeWant = {}
+i = 0
+for key, value in cities.items():
+    if len(value["streets"]) == 0:
+        i += 1
+    if i > 1000:
+        citiesWeWant[value["id"]] = value
+    if i == 2000:
+        break
+cities = citiesWeWant
 import concurrent.futures
 import signal
 import sys
@@ -99,7 +108,7 @@ def get_city_streets(city):
         for result in results["results"]["bindings"]:
             if not result['locationLabel']['value'] in seen:
                 streetArea = size[result['locationLabel']['value'].split(" ")[0].lower()] if result['locationLabel']['value'].split(" ")[0].lower() in size else None
-                streets.append({"link" : result['location']['value'], "label" : result['locationLabel']['value'], "wikipediaUrl" : result['wikipediaUrl']['value'] if 'wikipediaUrl' in result else None, "coordinates": result['coord']['value'], "area": streetArea})
+                streets.append({"link" : result['location']['value'], "label" : result['locationLabel']['value'], "wikipediaUrl" : result['wikipediaUrl']['value'] if 'wikipediaUrl' in result else None, "coordinates": result['coord']['value'], "area": streetArea, "streetId": result['location']['value'].split("/")[-1]})
                 seen.add(result['locationLabel']['value'])
     else:
         results = []
@@ -109,9 +118,9 @@ data = []
 
 signal.signal(signal.SIGINT, save_facts_and_exit)
 signal.signal(signal.SIGTERM, save_facts_and_exit)
-
+import time
 # Utilisez un ThreadPoolExecutor pour exécuter plusieurs appels à get_city_streets() en parallèle
-with concurrent.futures.ThreadPoolExecutor() as executor:
+with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
     # Récupérez les rues pour chaque ville dans la liste "cities"
     future_to_city = {executor.submit(get_city_streets, city): city for city in cities.values() if len(city["streets"]) == 0}
     
@@ -123,6 +132,7 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
             print(f"Rues récupérées pour {city_data.keys()}")
         except Exception as e:
             print(f"Erreur lors de l'exécution du thread: {e}")
+        time.sleep(0.3)
 
 
 # Enregistrez les données dans un fichier JSON
