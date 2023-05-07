@@ -12,6 +12,8 @@ import "~/components/buttons/Button.scss";
 import "~/styles/sideBar.scss";
 import "~/styles/topbar.css";
 import "~/components/batf/Batf.scss";
+import "~/styles/mapStyle.scss";
+
 import Layout from "../components/layout/layout";
 
 const MyApp: AppType<{ session: Session | null }> = ({
