@@ -8,6 +8,9 @@ import Marker from './Marker';
 import FlyTo from './FlyTo';
 import DataPoints from './DataPoints';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import Batf from './batf/Batf';
+import Button from './buttons/Button';
+import DisplayLocation from './DisplayLocation';
 
 const MapTilerApiKey = process.env.MAPTILER_API_KEY;
 
@@ -35,6 +38,7 @@ export default function MapPage() {
             data: 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson',
             cluster: false
         });
+
     });
 
     map.loadImage(
@@ -56,7 +60,7 @@ export default function MapPage() {
       <div ref={mapContainer} className={'map-container'}>
         {mapInstance && <Marker map={mapInstance} />}
         {mapInstance && <FlyTo map={mapInstance} />}
-        {mapInstance && <DataPoints map={mapInstance} />}
-      </div>
+        {mapInstance && <DisplayLocation map={mapInstance} />}
+    </div>
   );
 }
