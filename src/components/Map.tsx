@@ -10,7 +10,7 @@ import DataPoints from './DataPoints';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Batf from './batf/Batf';
 import Button from './buttons/Button';
-import DataPoints2 from './DataPoints2';
+import DisplayLocation from './DisplayLocation';
 
 const MapTilerApiKey = process.env.MAPTILER_API_KEY;
 
@@ -60,8 +60,7 @@ export default function MapPage() {
       <div ref={mapContainer} className={'map-container'}>
         {mapInstance && <Marker map={mapInstance} />}
         {mapInstance && <FlyTo map={mapInstance} />}
-        {mapInstance && <DataPoints map={mapInstance} />}
-        {mapInstance && <DataPoints2 map={mapInstance} />}
+        {mapInstance && <DisplayLocation map={mapInstance} />}
     </div>
   );
 }
