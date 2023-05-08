@@ -11,6 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const { fid } = req.query; // historical person id
     const { fname } = req.query; // historical person name
+    const { flifeDate } = req.query; // historical person date comprise between birth date and death date
     const { fbirthDate, fdeathDate } = req.query; // historical person dates
     console.log(req.query)
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
@@ -41,6 +42,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(200).json({ statusCode: 200, data: prismaResult });
                     } else {
                         res.status(422).json({ message: `Le personnage historique de nom ${fname} n\'existe pas.` });
+                    }
+                } else if (flifeDate) {
+                    prismaResult = await client.historicalPerson.findMany({
+                        where: {
+                            AND: [
+                                {
+                                    birthDate: {
+                                        lte: Array.isArray(flifeDate) ? flifeDate[0] : flifeDate+"T00:00:00.000Z"
+                                    },
+                                },
+                                {
+                                    deathDate: {
+                                        gte: Array.isArray(flifeDate) ? flifeDate[0] : flifeDate+"T00:00:00.000Z"
+                                    },
+                                },
+                            ],
+                        },
+                    });
+                    if (prismaResult) {
+                        res.status(200).json({ statusCode: 200, data: prismaResult });
+                    } else {
+                        res.status(422).json({ message: `Le personnage historique de ayant vécu cette année là ${flifeDate} n\'existe pas.` });
                     }
                 } else if (fbirthDate && fdeathDate) {                    
                     prismaResult = await client.historicalPerson.findMany({
