@@ -6,6 +6,11 @@ import FacebookProvider from "next-auth/providers/facebook"
 import TwitterProvider from "next-auth/providers/twitter"
 import DiscordProvider from "next-auth/providers/discord"
 
+// Modules needed to support key generation, token encryption, and HTTP cookie manipulation 
+import { randomUUID } from 'crypto'
+import Cookies from 'cookies'
+import { encode, decode } from 'next-auth/jwt'
+
 import { verifyPassword } from '../../../lib/auth';
 import { connectToDatabase } from '../../../lib/db';
 
@@ -13,6 +18,12 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next/types';
 import ObjectID from 'bson-objectid';
+import { prisma } from '~/server/db';
+
+// calculate the maxAge for a cookie from a expiresIn value in seconds
+const fromDate = (time: number, date = Date.now()) => {
+    return new Date(date + time * 1000)
+}
 
 const GOOGLE_AUTHORIZATION_URL =
     "https://accounts.google.com/o/oauth2/v2/auth?" +
@@ -25,6 +36,14 @@ const GOOGLE_AUTHORIZATION_URL =
 // An Adapter in NextAuth.js connects your application to whatever database or backend system you want to use to store data for users, their accounts, sessions, etc.
 const client = new PrismaClient();
 const prismaAdapter = PrismaAdapter(client);
+
+// Helper functions to generate unique keys and calculate the expiry dates for session cookies
+const generateSessionToken = () => {
+    // Use `randomUUID` if available. (Node 15.6++)
+    return randomUUID?.() || ObjectID().toHexString();
+}
+
+
 
 /**
  * Takes a token, and returns a new token with updated
@@ -80,12 +99,9 @@ async function refreshAccessToken(token) {
 export const authOptions: NextAuthOptions = {
     adapter: prismaAdapter,
     session: {
-        strategy: "jwt",
+        strategy: "database",
         maxAge: 30 * 24 * 60 * 60, // 30 days
         updateAge: 24 * 60 * 60, // 24 hours
-    },
-    jwt: {
-        maxAge: 60 * 60 * 24 * 30,
     },
     secret: process.env.NEXTAUTH_SECRET,
     providers: [
@@ -160,7 +176,7 @@ export const authOptions: NextAuthOptions = {
                     throw new Error('Impossible de vous connecter. Veuillez vérifier votre mot de passe !');
                 }
 
-                return { email: user.email! };
+                return { email: user.email!, id: user.id! };
 
             },
         }),
@@ -203,6 +219,7 @@ export const authOptions: NextAuthOptions = {
             }
         },
         */
+
         async jwt({ token, user, account, profile }) {
             // Persist the OAuth access_token to the token right after signin
             // if (user) {
@@ -227,10 +244,17 @@ export const authOptions: NextAuthOptions = {
             return refreshAccessToken(token)
         },
         async session({ session, token, user }) {
+            console.log("user: ")
+            console.log(user)
+            console.log(session)
             if (session?.user) {
-                session.user.token = token.accessToken as string;
-                session.user.id = token.uid as string;
-                session.user['role'] = token.role as string;
+                session.user.id = user.id;
+                session.user['role'] = user['role'] as string;
+                session.user.emailVerified = user?.emailVerified;
+                session.user.firstName = user['firstName'] as string;
+                session.user.lastName = user['lastName'] as string;
+                session.user.image = user?.image;
+                session.user.fullName = user['fullName'] as string;
             }
             return session;
         },
@@ -238,5 +262,57 @@ export const authOptions: NextAuthOptions = {
 };
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
+    authOptions.callbacks.signIn = async ({ user, account, profile, email, credentials }) => {
+        // Check if this sign in callback is being called in the credentials authentication flow. If so, use the next-auth adapter to create a session entry in the database (SignIn is called after authorize so we can safely assume the user is valid and already authenticated).
+        if (req.query.nextauth.includes('callback') && req.query.nextauth.includes('credentials') && req.method === 'POST') {
+            if (user) {
+                const sessionToken = generateSessionToken()
+                const sessionExpiry = fromDate(authOptions.session.maxAge)
+
+                const session = await client.session.create({
+                    data: {
+                        id: ObjectID().toHexString(),
+                        sessionToken: sessionToken,
+                        userId: user.id,
+                        expires: sessionExpiry
+                    }
+                })
+
+                console.log('next-auth.session-token:')
+                console.log(session);
+
+                const cookies = new Cookies(req, res)
+
+                cookies.set('next-auth.session-token', session.sessionToken, {
+                    Expires: session.expires, SameSite: 'Lax', HttpOnly: true, Path: '/'
+                })
+
+                res.setHeader('Set-Cookie', [`next-auth.session-token=${session.sessionToken}; Path=/; Expires=${session.expires}; HttpOnly; SameSite=Lax`])
+            }
+        }
+        return true;
+    }
+
+    // Customize the JWT encode and decode functions to overwrite the default behaviour of storing the JWT token in the session  cookie when using credentials providers. Instead we will store the session token reference to the session in the database.
+    authOptions.callbacks.jwt['encode'] = async (token, secret, maxAge) => {
+        if (req.query.nextauth.includes('callback') && req.query.nextauth.includes('credentials') && req.method === 'POST') {
+            const cookies = new Cookies(req, res)
+
+            const cookie = cookies.get('next-auth.session-token')
+
+            if (cookie) return cookie; else return '';
+
+        }
+        // Revert to default behaviour when not in the credentials provider callback flow
+        return encode({ token, secret, maxAge })
+    },
+        authOptions.callbacks.jwt['decode'] = async (token, secret) => {
+            if (req.query.nextauth.includes('callback') && req.query.nextauth.includes('credentials') && req.method === 'POST') {
+                return null
+            }
+
+            // Revert to default behaviour when not in the credentials provider callback flow
+            return decode({ token, secret })
+        }
     return await NextAuth(req, res, authOptions);
 }

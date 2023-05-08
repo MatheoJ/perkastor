@@ -24,6 +24,13 @@ declare module "next-auth" {
       id: string;
       token?: accessToken;
       role: string; // "user" or "admin"
+      emailVerified?: Date;
+      firstName?: string;
+      lastName?: string;
+      fullName?: string;
+      email: string;
+      image?: string;
+
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
