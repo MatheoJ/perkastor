@@ -45,8 +45,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 } else if (fbirthDate && fdeathDate) {                    
                     prismaResult = await client.historicalPerson.findMany({
                         where: {
-                            birthDate: Array.isArray(fbirthDate) ? fbirthDate[0] : fbirthDate,
-                            deathDate: Array.isArray(fdeathDate) ? fdeathDate[0] : fdeathDate
+                            birthDate: Array.isArray(fbirthDate) ? fbirthDate[0] : fbirthDate+"T00:00:00.000Z",
+                            deathDate: Array.isArray(fdeathDate) ? fdeathDate[0] : fdeathDate+"T00:00:00.000Z"
                         },
                     });
                     if (prismaResult) {
