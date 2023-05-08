@@ -40,7 +40,7 @@ function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
                         <div className="title">
                             <h1>PERKASTOR</h1>
                             <div className="logo" style={{ backgroundColor: "transparent" }}>
-                                <Image src={logo} alt="logo" width={40} height={40} />
+                                <Image src={logo} alt="logo" width={40} height={40}/>
                             </div>
                         </div>
                     </Link>

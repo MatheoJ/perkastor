@@ -14,8 +14,8 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
             setInsertMode({ insertMode: false });
         }
 
-        if (item == "addEvent"){
-            
+        if (item == "addEvent") {
+
             window.location.href = "/eventForm";
         }
     }
