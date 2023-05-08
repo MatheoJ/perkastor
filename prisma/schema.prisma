@@ -187,10 +187,10 @@ model FactChain {
 model FactChainItem {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   position    Int
-
+  title      String?
   factChainId String   @db.ObjectId @map("fact_chain_id")
   factChain   FactChain @relation(fields: [factChainId], references: [id], onDelete: Cascade)
-
+  comment    String?
   factId      String   @db.ObjectId @map("fact_id")
   fact        Fact     @relation("FactChainItems", fields: [factId], references: [id], onDelete: Cascade)
 
