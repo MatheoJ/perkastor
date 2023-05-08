@@ -60,7 +60,7 @@ model User {
 
     accounts      Account[]
     sessions      Session[]
-    facts         Fact[]
+    facts         Fact[] @relation("UserFacts")
 
     password      String?
 
@@ -119,7 +119,7 @@ model Fact {
     audio     String[] // can be initialized to an empty array
 
     authorId  String?   @db.ObjectId @map("author_id")
-    author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+    author    User?    @relation("UserFacts", fields: [authorId], references: [id], onDelete: SetNull)
 
     //tags  FactTags[]
     location    Location @relation("FactLocation", fields: [locationId], references: [id])
