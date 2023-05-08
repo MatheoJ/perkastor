@@ -110,8 +110,7 @@ model Fact {
     shortDesc String? @map("short_desc")
     content   String
 
-    from      DateTime @default(now()) @db.Timestamp
-    until     DateTime? @db.Timestamp
+    keyDates DateTime[] @map("key_dates") // can be initialized to an empty array
 
     bannerImg String? @map("banner_img")
     verified  Boolean @default(false)
@@ -119,8 +118,8 @@ model Fact {
     video     String[] // can be initialized to an empty array
     audio     String[] // can be initialized to an empty array
 
-    author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    authorId  String   @db.ObjectId @map("author_id")
+    authorId  String?   @db.ObjectId @map("author_id")
+    author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
     //tags  FactTags[]
     location    Location @relation("FactLocation", fields: [locationId], references: [id])

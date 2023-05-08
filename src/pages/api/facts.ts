@@ -5,7 +5,8 @@ import { ExtendedSession } from 'types/types';
 import { connectToDatabase } from '../../lib/db';
 import { authOptions } from './auth/[...nextauth]';
 
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    console.log(req);
     const { method } = req;
 
     const { fid } = req.query; // fact id
@@ -14,23 +15,23 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     try {
         const client = new PrismaClient();
-        let res;
+        let prismaResult;
         switch (method) {
             case "GET":
                 if (fid) {
-                    res = await client.fact.findUnique({
+                    prismaResult = await client.fact.findUnique({
                         where: {
                             id: Array.isArray(fid) ? fid[0] : fid
                         },
                     });
-                    if (res) {
-                        res.status(200).json({ statusCode: 200, data: res });
+                    if (prismaResult) {
+                        res.status(200).json({ statusCode: 200, data: prismaResult });
                     } else {
                         res.status(422).json({ message: `Le fait historique d'id ${fid} n\'existe pas.` });
                     }
                 } else {
-                    res = await client.fact.findMany();
-                    res.status(200).json({ statusCode: 200, data: res });
+                    prismaResult = await client.fact.findMany();
+                    res.status(200).json({ statusCode: 200, data: prismaResult });
                 }
                 break;
             case "POST":
@@ -117,13 +118,12 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
                 }
 
                 // Create a new fact
-                res = await client.fact.create({
+                prismaResult = await client.fact.create({
                     data: {
                         title: req.body.title,
                         shortDesc: req.body.shortDesc,
                         content: req.body.content,
-                        from: req.body.from,
-                        until: req.body.until,
+                        keyDates : req.body.keyDates || [],
                         bannerImg: req.body.bannerImg,
                         video: req.body.video || [],
                         audio: req.body.audio || [],
@@ -133,8 +133,8 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
                         sources: req.body.sources || []
                     },
                 });
-                if (res) {
-                    res.status(201).json({ statusCode: 201, data: res });
+                if (prismaResult) {
+                    res.status(201).json({ statusCode: 201, data: prismaResult });
                 } else {
                     res.status(422).json({ message: `Le fait historique n\'a pas pu être créé.` });
                 }
@@ -182,7 +182,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
 
                 // the difference between http put and http patch is that put is idempotent
                 // so we can't use put to update a fact, we have to use patch
-                res = await client.fact.update({
+                prismaResult = await client.fact.update({
                     where: {
                         id: Array.isArray(fid) ? fid[0] : fid
                     },
@@ -202,8 +202,8 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
                     },
                 });
 
-                if (res) {
-                    res.status(200).json({ statusCode: 200, data: res });
+                if (prismaResult) {
+                    res.status(200).json({ statusCode: 200, data: prismaResult });
                 } else {
                     res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être mis à jour.` });
                 }
@@ -268,7 +268,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
                 if (req.body.sources) {
                     patchData["sources"] = req.body.sources
                 }
-                res = await client.fact.update({
+                prismaResult = await client.fact.update({
                     where: {
                         id: Array.isArray(fid) ? fid[0] : fid
                     },
@@ -276,7 +276,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
                 });
 
                 if (res) {
-                    res.status(200).json({ statusCode: 200, data: res });
+                    res.status(200).json({ statusCode: 200, data: prismaResult });
                 } else {
                     res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être mis à jour.` });
                 }
@@ -305,7 +305,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
 
                 // if the user is an admin, he can delete a fact for another user
                 if (session.user.role === "admin" || session.user.id === fact.authorId) {
-                    res = await client.fact.delete({
+                    prismaResult = await client.fact.delete({
                         where: {
                             id: Array.isArray(fid) ? fid[0] : fid
                         },
@@ -321,7 +321,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
                 res.status(405).end(`Method ${method} Not Allowed`);
                 return;
         }
-        res.status(200).json(res);
+        res.status(200).json(prismaResult);
     } catch (error) {
         res.status(500).json({ statusCode: 500, message: JSON.stringify(error) });
     }
