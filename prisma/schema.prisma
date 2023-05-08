@@ -135,14 +135,15 @@ model Location {
     id              String   @id @default(auto()) @map("_id") @db.ObjectId
 
     geometry        String // "Point"
-    coordinates     Float[] // [longitude, latitude]
+    latitude        Float
+    longitude       Float
     area            Float // in square kilometers
     type            String // "ville", "pays", "region", "departement", "commune", "lieu-dit", "autre
     name            String // "Paris", "France", "Ile-de-France", "Seine"
     facts           Fact[] @relation("FactLocation")
 
     // location is unique based on its coordinates and name
-    @@unique([coordinates, name])
+    @@unique([latitude, longitude, name])
     @@map("locations")
 }
 

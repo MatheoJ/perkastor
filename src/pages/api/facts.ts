@@ -10,7 +10,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { method } = req;
 
     const { fid } = req.query; // fact id
-
+    const { topLeft, bottomRight } = req.query;
+    console.log(req.query)
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
 
     try {
@@ -29,6 +30,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     } else {
                         res.status(422).json({ message: `Le fait historique d'id ${fid} n\'existe pas.` });
                     }
+                } else if (topLeft && bottomRight) {
+                    const [topLeftLat, topLeftLng] = (typeof topLeft === 'string' ? topLeft : topLeft[0]).split(',').map(parseFloat);
+                    const [bottomRightLat, bottomRightLng] = (typeof bottomRight === 'string' ? bottomRight : bottomRight[0]).split(',').map(parseFloat);
+
+            
+                    if (isNaN(topLeftLat) || isNaN(topLeftLng) || isNaN(bottomRightLat) || isNaN(bottomRightLng)) {
+                        res.status(422).json({ message: `Les coordonnées fournies sont invalides.` });
+                        return;
+                    }
+                    // print attributes of LocationWhereInput
+                    
+                    prismaResult = await client.fact.findMany({
+                        where: {
+                          location: {
+                            AND: [
+                              {
+                                latitude: {
+                                  lte: topLeftLat,
+                                  gte: bottomRightLat,
+                                },
+                              },
+                              {
+                                longitude: {
+                                  gte: topLeftLng,
+                                  lte: bottomRightLng,
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      });
+                      
+                    res.status(200).json({ statusCode: 200, data: prismaResult });
                 } else {
                     prismaResult = await client.fact.findMany();
                     res.status(200).json({ statusCode: 200, data: prismaResult });
