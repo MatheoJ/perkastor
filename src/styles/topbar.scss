@@ -10,15 +10,39 @@ nav {
   align-items: center;
 }
 
+html {
+  height: 100%;
+  
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  
+  > div {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    header {
+      flex: 0 1 auto;
+    }
+    
+    > main {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
 .topbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   height: 50px;
   background-color: #344453;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 9999;
 }
 
 .topbar-container {
@@ -86,4 +110,24 @@ nav {
 
 .topbar .connection:hover {
   color: #666;
+}
+
+input {
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 1px solid #344453;
+  min-width: 64px;
+  padding: 5px 15px;
+  border-radius: 4px;
+  width: 100%;
+}
+
+label {
+  width: 100%;
+  text-align: left;
+}
+
+li {
+  list-style-type: none;
 }
