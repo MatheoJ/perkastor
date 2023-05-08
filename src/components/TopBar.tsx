@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import logo from "src/images/perecastor.png";
 import Link from 'next/link';
+import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
 
 function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
@@ -26,8 +27,6 @@ function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
         return () => window.removeEventListener("visibilitychange", visibilityHandler, false)
     }, [update])
 
-    console.log(session);
-
     return (
         <div className="topbar">
             <div className="topbar-container">
@@ -40,8 +39,8 @@ function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
                     <Link href='/'>
                         <div className="title">
                             <h1>PERKASTOR</h1>
-                            <div className="logo">
-                                <img src="src/images/perecastor.png" alt="logo" />
+                            <div className="logo" style={{ backgroundColor: "transparent" }}>
+                                <Image src={logo} alt="logo" width={40} height={40} />
                             </div>
                         </div>
                     </Link>

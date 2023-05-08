@@ -1,0 +1,3 @@
+[submodule "prisma-perkastor"]
+	path = prisma-perkastor
+	url = https://github.com/PheonBest/prisma-perkastor.git

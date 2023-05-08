@@ -1,25 +1,44 @@
 import { type NextPage } from "next";
 import { useState } from 'react';
-import Head from "next/head";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
 import Map from "../components/Map";
 import SideBar from "../components/SideBar";
-import TopBar from "../components/TopBar";
+import Batf from "../components/batf/Batf";
 
 import { api } from "~/utils/api";
 
-const mapWrapper: NextPage = () => {
+export default function mapWrapperPage() {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+
+  const [selectedItem, setSelectedItem] = useState<string>(""); // Keep track of the selected item in the sidebar
+  const [insertMode, setInsertMode] = useState<boolean>(false); // Keep track of the insert mode / view mode
+  const [sidebarIsOpen, setSidebarIsOpen] = useState<boolean>(false);
+  const toggleSidebar = () => { // hide / show sidebar
+    setSidebarIsOpen(!sidebarIsOpen);
+  };
+
+  const handleSidebarItemClick = ({ item }: { item:string }) => { // Change the selected item in the sidebar
+    setSelectedItem(item);
+  }
+
+  const setInsertModeHandler = ({ insertMode }: { insertMode: boolean }) => {
+    setInsertMode(() => insertMode);
+  };
+
 
   return (
     <> {/* TODO: Insert a flex parent component that divides the width in half */}
+      <SideBar
+        isOpen={true}
+        toggleSidebar={null}
+        onSidebarItemClick={handleSidebarItemClick}
+        insertMode={insertMode}
+        setInsertMode={setInsertModeHandler}
+      />
       <Map />
-      {/* TODO: Insert the BATF here */}
+      {<Batf>
+      </Batf>}
     </>
-  );
-};
-
-export default mapWrapper;
+  )
+}
 
 

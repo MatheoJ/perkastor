@@ -8,19 +8,64 @@
     top: 50px;
     bottom: 0;
     z-index: 1000;
+    height: 100%;
 
+    display: flex;
 
-    /*display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    justify-content: space-around;*/
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 
-    background-color: $light-color;
-    transition: 0.3s;
+    background-color: $primary-color;
+    transition: 0.5s;
+    color: white;
 }
 
 .batf-fullscreen{
     @extend .batf;
 
     width: calc(100% - $sidebar-left-offset);
+}
+
+.batf-minimized{
+    @extend .batf;
+
+    width: 2em;
+    height: 4em;
+    border-radius: 10px 0 0 10px;
+    bottom: 0;
+}
+
+.batf-minimized-btn{
+    top: 20%;
+    left: 15%;
+    position: absolute;
+}
+
+.batf-minimized-btn > i{
+    color: $secondary-color;
+}
+
+
+.batf-toolbar{
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.batf-tab{
+    background-color: $primary-color;
+
+    color: white;
+    padding: 10px;
+
+    &:hover{
+        opacity: 0.8;
+    }
+}
+
+.batf-selectedtab{
+    @extend .batf-tab;
+    
+    background-color: $secondary-color;
+
+    color: $text-color;
 }
