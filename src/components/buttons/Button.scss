@@ -26,6 +26,10 @@
     }
 }
 
+.btn-hidden{
+    visibility: hidden;
+}
+
 .btn--primary{
     @extend .btn;
     color: white;

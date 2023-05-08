@@ -2,7 +2,6 @@
     return <div>About us</div>
 } */
 
-import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import Marker from './Marker';
@@ -13,12 +12,11 @@ import Batf from './batf/Batf';
 import Button from './buttons/Button';
 import DataPoints2 from './DataPoints2';
 
-const MapTilerApiKey = "KeNNPlHwOHbhaGFsVoos";
+const MapTilerApiKey = process.env.MAPTILER_API_KEY;
 
 export default function MapPage() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
-  const [fullscreen, setFullscreen] = useState<boolean>(false);
   
 
   useEffect(() => {
@@ -59,13 +57,7 @@ export default function MapPage() {
 
 
   return (
-    <div>
-      <Head>
-        <title>MapLibre with TypeScript and Next.js</title>
-      </Head>
-      <Batf>
-      </Batf>
-      <div ref={mapContainer} style={{ width: '100vw', height: '100vh' }} />
+      <div ref={mapContainer} className={'map-container'}>
         {mapInstance && <Marker map={mapInstance} />}
         {mapInstance && <FlyTo map={mapInstance} />}
         {mapInstance && <DataPoints map={mapInstance} />}
