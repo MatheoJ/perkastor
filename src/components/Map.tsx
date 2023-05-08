@@ -11,6 +11,7 @@ import DataPoints from './DataPoints';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Batf from './batf/Batf';
 import Button from './buttons/Button';
+import DataPoints2 from './DataPoints2';
 
 const MapTilerApiKey = "KeNNPlHwOHbhaGFsVoos";
 
@@ -39,6 +40,7 @@ export default function MapPage() {
             data: 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson',
             cluster: false
         });
+
     });
 
     map.loadImage(
@@ -67,6 +69,7 @@ export default function MapPage() {
         {mapInstance && <Marker map={mapInstance} />}
         {mapInstance && <FlyTo map={mapInstance} />}
         {mapInstance && <DataPoints map={mapInstance} />}
+        {mapInstance && <DataPoints2 map={mapInstance} />}
     </div>
   );
 }
