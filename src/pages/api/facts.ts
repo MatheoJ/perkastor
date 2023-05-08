@@ -96,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
                 // search location by [coordinates, name] pair
                 else {
-                    if (!req.body.location.coordinates) {
+                    if (!req.body.location.latitude || !req.body.location.longitude) {
                         res.status(422).json({ message: `Les coordonnées du lieu ne sont pas renseignées.` });
                         return;
                     }
@@ -108,8 +108,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     location = await client.location.findFirst({
                         where: {
                             AND: [
-                                { coordinates: req.body.location.coordinates },
-                                { name: req.body.location.name }
+                                {
+                                    latitude: req.body.location.latitude
+                                },
+                                {
+                                    longitude: req.body.location.longitude
+                                },
+                                {
+                                    name: req.body.location.name
+                                }
                             ]
                         },
                     });
