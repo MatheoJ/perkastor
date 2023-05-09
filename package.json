@@ -49,13 +49,10 @@
     "react-dom": "18.2.0",
     "react-easy-crop": "^4.7.4",
     "react-hook-form": "^7.43.9",
-<<<<<<< HEAD
     "react-infinite-scroll-component": "^6.1.0",
     "react-intersection-observer": "^9.4.3",
     "react-slick": "^0.29.0",
-=======
     "react-multi-date-picker": "^4.0.0",
->>>>>>> main
     "sass": "^1.62.1",
     "slick-carousel": "^1.8.1",
     "superjson": "1.12.2",
