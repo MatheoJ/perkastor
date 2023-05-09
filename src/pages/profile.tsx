@@ -1,3 +1,4 @@
+import { getToken } from 'next-auth/jwt';
 import { getSession } from 'next-auth/react';
 
 import UserProfile from '../components/profile/user-profile';
@@ -7,8 +8,8 @@ function ProfilePage() {
 }
 
 export async function getServerSideProps(context: any) {
-  const session = await getSession({ req: context.req });
-
+  const session = await getSession({ req: context.req })
+  
   if (!session) {
     return {
       redirect: {

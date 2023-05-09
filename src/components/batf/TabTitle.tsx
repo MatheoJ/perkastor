@@ -2,17 +2,39 @@ import React from "react"
 
 type Props = {
   title: string
-  selectedTab: string,
-  onClick?: () => void;
+  index: number;
+  setSelectedTab: (index: number) => void;
+  className: string;
+  selectedTab: number;
 }
 
-const TabTitle: React.FC<Props> = ({ title, selectedTab, onClick }) => {
-
-  return (
-    <li className={`batf-tab ${selectedTab === title ? 'batf-selectedtab' : ''}`}>
-      <button onClick={onClick}>{title}</button>  
-    </li>
-  )
+interface TabTitleState{
+  selectedTab: number;
 }
 
-export default TabTitle
+export default class TabTitle extends React.Component<Props, TabTitleState> {
+
+  constructor(props: Props){
+    super(props);
+
+    this.state = {
+      selectedTab: 0
+    }
+  }
+
+  classAssigner(){
+    if (this.state.selectedTab == this.props.index){
+      return 'batf-selectedtab';
+    }
+
+    return '';
+  }
+
+  render() {
+    return (<li className={`batf-tab ${this.classAssigner()}`}>
+      <button onClick={() => {
+        this.setState({selectedTab: this.props.index})
+      }}>{this.props.title}</button>  
+    </li>)
+  }
+}

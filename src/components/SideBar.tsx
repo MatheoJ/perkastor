@@ -14,8 +14,8 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
             setInsertMode({ insertMode: false });
         }
 
-        if (item == "addEvent"){
-            
+        if (item == "addEvent") {
+
             window.location.href = "/eventForm";
         }
     }
@@ -65,21 +65,6 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                         </li>
                     </ul>
 
-                </div>
-                <div className="bottom-content">
-                    <div className="ground-icon">
-
-                        {insertMode ? (
-                            <button title="Quitter le mode insertion" onClick={() => handleClick({ item: "modeInsertion" })}>
-                                <i className="fas fa-pen" style={{ color: "black", }}></i>
-                            </button>
-                        ) : (
-                            <button title="Mode insertion : ajouter des anecdotes et évènements sur la carte" onClick={() => handleClick({ item: "modeInsertion" })}>
-                                <i className="fas fa-pen" style={{ color: "#F1B706", }}></i>
-                            </button>
-                        )}
-
-                    </div>
                 </div>
             </div>
 

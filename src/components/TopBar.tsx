@@ -4,6 +4,7 @@ import logo from "src/images/perecastor.png";
 import Link from 'next/link';
 import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
+import { AccountCircle, VerifiedUserOutlined } from '@mui/icons-material';
 
 function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
     const { data: session, status, update } = useSession({
@@ -40,7 +41,7 @@ function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
                         <div className="title">
                             <h1>PERKASTOR</h1>
                             <div className="logo" style={{ backgroundColor: "transparent" }}>
-                                <Image src={logo} alt="logo" width={40} height={40} />
+                                <Image src={logo} alt="logo" width={40} height={40}/>
                             </div>
                         </div>
                     </Link>
@@ -51,14 +52,14 @@ function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
                             <button className="secondary-text" onClick={() => signOut()}>Déconnexion</button>
                             <Link href='/profile'>
                                 <li className="connected">
-                                    <i className="fas fa-user" style={{ color: "#F1B706", }} />
+                                    <AccountCircle style={{ color: "#F1B706", }}/>
                                 </li>
                             </Link>
                         </>
                     ) : (
                         <Link href='/auth'>
                             <li className="connection">
-                                <i className="fas fa-user" style={{ color: "#F1B706", }} />
+                                <AccountCircle style={{ color: "#F1B706", }}/>
                             </li>
                         </Link>
                     )}

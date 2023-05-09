@@ -38,7 +38,7 @@ export default class Batf extends React.Component<BatfProps, BatfState> {
         });
     }
 
-    stateHandler(){
+    classAssigner(){
         if (this.state.state != "minimized" && this.state.state != "fullscreen"){
             return '';
         }
@@ -51,7 +51,7 @@ export default class Batf extends React.Component<BatfProps, BatfState> {
         const { state } = this.state;
 
         return (
-            <div className={`batf ${this.stateHandler()}`}>
+            <div className={`batf ${this.classAssigner()}`}>
                 {
                     (() => {
                         if (state != "minimized"){

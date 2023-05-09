@@ -10,7 +10,7 @@ import {
 
 import classes from './auth-form.module.css';
 import { type NextPage } from "next";
-import Button from "~/components/buttons/Button";
+import { Button } from '@mui/material';
 
 async function createUser(email: string, name: string, password: string) {
   const response = await fetch('/api/auth/signup', {
@@ -31,7 +31,7 @@ async function createUser(email: string, name: string, password: string) {
 }
 
 const AuthForm: NextPage = () => {
-  const CALLBACK_URL = `${window.location.origin}/mapWrapper`
+  const CALLBACK_URL = `${window.location.origin}/profile`
   const [formSuccess, setFormSuccess] = useState<string>();
   const [formError, setFormError] = useState<string>();
   const emailOrPseudoInputRef = useRef<HTMLInputElement>(null);
@@ -90,7 +90,7 @@ const AuthForm: NextPage = () => {
     if (isLogin) {
       const result = await signIn('credentials', credentials);
 
-      if (!result?.error) {
+      if (result.status === 200) {
         // set some auth state
         router.replace('/profile');
         setFormError('');
@@ -113,21 +113,38 @@ const AuthForm: NextPage = () => {
 
   return (
     <section className={classes.auth}>
-      <h1>{isLogin ? 'Connexion' : 'Inscription'}</h1>
+      <h2>{isLogin ? 'Connexion' : 'Inscription'}</h2>
       <form onSubmit={submitHandler}>
         {isLogin ?
-        <>
-          <div className={classes.control}>
-            <label htmlFor='email'> Email / Pseudonyme </label>
-            < input type='text' id='emailOrName' required ref={emailOrPseudoInputRef} />
-          </div>
-          <div className={classes.control}>
-            <Button onClick={() => signIn('github', {callbackUrl: CALLBACK_URL})}><GitHub/>Github</Button>
-            <Button onClick={() => signIn('google', {callbackUrl: CALLBACK_URL})}><Google/>Google</Button>
-            <Button onClick={() => signIn('facebook', {callbackUrl: CALLBACK_URL})}><Facebook/>Facebook</Button>
-            <Button onClick={() => signIn('twitter', {callbackUrl: CALLBACK_URL})}><Twitter/>Twitter</Button>
-            <Button onClick={() => signIn('discord', {callbackUrl: CALLBACK_URL})}>Discord</Button>
-          </div>
+          <>
+            <div className={classes.control}>
+              <label htmlFor='email'> Email / Pseudonyme </label>
+              < input type='text' id='emailOrName' required ref={emailOrPseudoInputRef} />
+            </div>
+
+            <div className={classes.control}>
+              <label htmlFor='password'>Mot de passe</label>
+              <input
+                type='password'
+                id='password'
+                required
+                ref={passwordInputRef}
+              />
+            </div>
+
+            {/* Add */}
+            <div className={classes.providers}>
+              <Button variant={"outlined"} color={"primary"} startIcon={<GitHub />}
+                onClick={() => signIn('github', { callbackUrl: CALLBACK_URL })}>Github</Button>
+              <Button variant={"outlined"} color={"primary"} startIcon={<Google />}
+                onClick={() => signIn('google', { callbackUrl: CALLBACK_URL })}>Google</Button>
+              <Button variant={"outlined"} color={"primary"} startIcon={<Facebook />}
+                onClick={() => signIn('facebook', { callbackUrl: CALLBACK_URL })}>Facebook</Button>
+              <Button variant={"outlined"} color={"primary"} startIcon={<img src="resources/discord.png" height='18px' width='18px' />}
+                onClick={() => signIn('discord', { callbackUrl: CALLBACK_URL })}>Discord</Button>
+              <Button variant={"outlined"} color={"primary"} startIcon={<Twitter />}
+                onClick={() => signIn('twitter', { callbackUrl: CALLBACK_URL })}>Twitter</Button>
+            </div>
           </>
           : <>
             <div className={classes.control}>
@@ -138,19 +155,19 @@ const AuthForm: NextPage = () => {
               <label htmlFor='name'> Pseudonyme (visible publiquement) </label>
               < input type='name' id='name' required ref={nameInputRef} />
             </div>
+            <div className={classes.control}>
+              <label htmlFor='password'>Mot de passe</label>
+              <input
+                type='password'
+                id='password'
+                required
+                ref={passwordInputRef}
+              />
+            </div>
           </>}
 
-        <div className={classes.control}>
-          <label htmlFor='password'>Mot de passe</label>
-          <input
-            type='password'
-            id='password'
-            required
-            ref={passwordInputRef}
-          />
-        </div>
-        <span id="error" className="px-4 py-3" style={{ color: "#f56565" }}>{formError}</span>
-        <span id="success" className="px-4 py-3" style={{ color: "#90EE90" }}>{formSuccess}</span>
+        <span id="error" className="px-4 py-3" style={{ display: 'block', color: "#f56565" }}>{formError}</span>
+        <span id="success" className="px-4 py-3" style={{ display: 'block', color: "#90EE90" }}>{formSuccess}</span>
         <div className={classes.actions}>
           <button>{isLogin ? 'Connexion' : 'Créer un compte'}</button>
           <button

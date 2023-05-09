@@ -4,13 +4,11 @@ import { getServerSession } from 'next-auth/next';
 import { ExtendedSession } from 'types/types';
 import { connectToDatabase } from '../../lib/db';
 import { authOptions } from './auth/[...nextauth]';
-
+//const { hasSome } = require('prisma-multi-tenant');
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    console.log(req);
     const { method } = req;
 
-    const { fid } = req.query; // fact id
-    const { topLeft, bottomRight } = req.query;
+    const { fid, userId, description, startDate, endDate, histPersonName, histPersonId, locationId, locationName } = req.query;
     console.log(req.query)
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
 
@@ -30,39 +28,202 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     } else {
                         res.status(422).json({ message: `Le fait historique d'id ${fid} n\'existe pas.` });
                     }
-                } else if (topLeft && bottomRight) {
-                    const [topLeftLat, topLeftLng] = (typeof topLeft === 'string' ? topLeft : topLeft[0]).split(',').map(parseFloat);
-                    const [bottomRightLat, bottomRightLng] = (typeof bottomRight === 'string' ? bottomRight : bottomRight[0]).split(',').map(parseFloat);
-
-            
-                    if (isNaN(topLeftLat) || isNaN(topLeftLng) || isNaN(bottomRightLat) || isNaN(bottomRightLng)) {
-                        res.status(422).json({ message: `Les coordonnées fournies sont invalides.` });
-                        return;
+                } else if (userId) {
+                    prismaResult = await client.user.findUnique({
+                        where: {
+                            id: Array.isArray(userId) ? userId[0] : userId
+                        },
+                        include: {
+                            facts: true
+                        }
+                    });
+                    if (prismaResult) {
+                        res.status(200).json({ statusCode: 200, data: prismaResult });
+                    } else {
+                        res.status(422).json({ message: `L'utilisateur d'id ${userId} n\'existe pas.` });
                     }
-                    // print attributes of LocationWhereInput
-                    
+                } else if (description) {
                     prismaResult = await client.fact.findMany({
                         where: {
-                          location: {
-                            AND: [
-                              {
-                                latitude: {
-                                  lte: topLeftLat,
-                                  gte: bottomRightLat,
-                                },
-                              },
-                              {
-                                longitude: {
-                                  gte: topLeftLng,
-                                  lte: bottomRightLng,
-                                },
-                              },
-                            ],
-                          },
+                            content: {
+                                contains: Array.isArray(description) ? description[0] : description
+                            }
                         },
-                      });
-                      
-                    res.status(200).json({ statusCode: 200, data: prismaResult });
+                    });
+                    if (prismaResult) {
+                        res.status(200).json({ statusCode: 200, data: prismaResult });
+                    } else {
+                        res.status(422).json({ message: `Aucun fait historique ne contient la description ${description}.` });
+                    }
+                } else if (startDate && !endDate || endDate && !startDate) {
+                    let date = startDate || endDate;
+                    // Extraire l'année de la date passée en paramètre
+                    const inputDate = new Date(Array.isArray(date) ? date[0] : date);
+                    console.log(inputDate);
+                    // Utiliser la fonction findMany avec une condition pour vérifier si l'une des keyDates a la même année que l'année extraite
+                    const allFacts = await client.fact.findMany();
+                    // add 1 year to the input date
+                    const inputEndDate = new Date(inputDate.getFullYear() + 1, inputDate.getMonth(), inputDate.getDate());
+                    prismaResult = allFacts.filter((fact) => {
+                        return fact.keyDates.some((date) => {
+                            return date >= inputDate && date < inputEndDate;
+                        });
+                    });
+
+                    /*
+                    prismaResult = await client.fact.findMany({
+                    where: {
+                        AND: [
+                        hasSome({
+                            keyDates: {
+                            gte: inputYearStart,
+                            },
+                        }),
+                        hasSome({
+                            keyDates: {
+                            lt: inputYearEnd,
+                            },
+                        }),
+                        ],
+                    },
+                    });
+                    */
+
+                    if (prismaResult) {
+                        res.status(200).json({ statusCode: 200, data: prismaResult });
+                    } else {
+                        res.status(422).json({ message: `Aucun fait historique ne contient la date ${date}.` });
+                    }
+                } else if (startDate && endDate) {
+                    let dateStart = startDate;
+                    let dateEnd = endDate;
+                    // Extraire l'année de la date passée en paramètre
+                    const inputDateStart = new Date(Array.isArray(dateStart) ? dateStart[0] : dateStart);
+                    const inputDateEnd = new Date(Array.isArray(dateEnd) ? dateEnd[0] : dateEnd);
+                    // Utiliser la fonction findMany avec une condition pour vérifier si l'une des keyDates a la même année que l'année extraite
+                    const allFacts = await client.fact.findMany();
+
+                    prismaResult = allFacts.filter((fact) => {
+                        return fact.keyDates.some((date) => {
+                            return date >= inputDateStart && date < inputDateEnd;
+                        });
+                    });
+
+                    /*
+                    prismaResult = await client.fact.findMany({
+                    where: {
+                        AND: [
+                        hasSome({
+                            keyDates: {
+                            gte: inputYearStart,
+                            },
+                        }),
+                        hasSome({
+                            keyDates: {
+                            lt: inputYearEnd,
+                            },
+                        }),
+                        ],
+                    },
+                    });
+                    */
+
+                    if (prismaResult) {
+                        res.status(200).json({ statusCode: 200, data: prismaResult });
+                    } else {
+                        res.status(422).json({ message: `Aucun fait historique ne contient la date ${dateStart} et ${dateEnd}.` });
+                    }
+                } else if (histPersonName) {
+                    prismaResult = await client.historicalPerson.findMany({
+                        where: {
+                            name: {
+                                contains: Array.isArray(histPersonName) ? histPersonName[0] : histPersonName,
+                                mode: 'insensitive', // Case insensitive search
+                            },
+                        },
+                        include: {
+                            FactHistoricalPerson: {
+                                select: {
+                                    fact: {
+                                        include: {
+                                            personsInvolved: {
+                                                select: {
+                                                    historicalPerson: true,
+                                                },
+                                            },
+                                            location: true,
+                                            author: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    });
+                    if (prismaResult) {
+                        res.status(200).json({ statusCode: 200, data: prismaResult });
+                    } else {
+                        res.status(422).json({ message: `Aucun personnage historique ne contient le nom ${histPersonName}.` });
+                    }
+                } else if (histPersonId) {
+                    prismaResult = await client.historicalPerson.findMany({
+                        where: {
+                            name: {
+                                contains: Array.isArray(histPersonId) ? histPersonId[0] : histPersonId,
+                                mode: 'insensitive', // Case insensitive search
+                            },
+                        },
+                        include: {
+                            FactHistoricalPerson: {
+                                select: {
+                                    fact: {
+                                        include: {
+                                            personsInvolved: {
+                                                select: {
+                                                    historicalPerson: true,
+                                                },
+                                            },
+                                            location: true,
+                                            author: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    });
+                    if (prismaResult) {
+                        res.status(200).json({ statusCode: 200, data: prismaResult });
+                    } else {
+                        res.status(422).json({ message: `Le personnage historique d'id ${histPersonId} n\'existe pas.` });
+                    }
+
+                } else if (locationId) {
+                    prismaResult = await client.location.findUnique({
+                        where: {
+                            id: Array.isArray(locationId) ? locationId[0] : locationId
+                        },
+                        include: {
+                            facts: true
+                        }
+                    });
+                    if (prismaResult) {
+                        res.status(200).json({ statusCode: 200, data: prismaResult });
+                    } else {
+                        res.status(422).json({ message: `Le lieu d'id ${locationId} n\'existe pas.` });
+                    }
+                } else if (locationName) {
+                    prismaResult = await client.location.findMany({
+                        where: {
+                            name: Array.isArray(locationName) ? locationName[0] : locationName
+                        },
+                        include: {
+                            facts: true
+                        }
+                    });
+                    if (prismaResult) {
+                        res.status(200).json({ statusCode: 200, data: prismaResult });
+                    } else {
+                        res.status(422).json({ message: `Le lieu de nom ${locationName} n\'existe pas.` });
+                    }
                 } else {
                     prismaResult = await client.fact.findMany();
                     res.status(200).json({ statusCode: 200, data: prismaResult });
@@ -164,7 +325,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         title: req.body.title,
                         shortDesc: req.body.shortDesc,
                         content: req.body.content,
-                        keyDates : req.body.keyDates || [],
+                        keyDates: req.body.keyDates || [],
                         bannerImg: req.body.bannerImg,
                         video: req.body.video || [],
                         audio: req.body.audio || [],
@@ -231,8 +392,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         title: req.body.title,
                         shortDesc: req.body.shortDesc,
                         content: req.body.content,
-                        from: req.body.from,
-                        until: req.body.until,
+                        keyDates: req.body.keyDates,
                         bannerImg: req.body.bannerImg,
                         video: req.body.video || [],
                         audio: req.body.audio || [],
@@ -281,11 +441,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (req.body.content) {
                     patchData["content"] = req.body.content
                 }
-                if (req.body.from) {
-                    patchData["from"] = req.body.from
-                }
-                if (req.body.until) {
-                    patchData["until"] = req.body.until
+                if (req.body.keyDates) {
+                    patchData["keyDates"] = req.body.keyDates
                 }
                 if (req.body.bannerImg) {
                     patchData["bannerImg"] = req.body.bannerImg

@@ -57,10 +57,10 @@ model User {
 
     userType      UserType? @relation(fields: [userTypeId], references: [name], onDelete: Cascade)
     userTypeId    String?   @map("user_type_id") @db.ObjectId
-
+    factChains FactChain[]
     accounts      Account[]
     sessions      Session[]
-    facts         Fact[]
+    facts         Fact[] @relation("UserFacts")
 
     password      String?
 
@@ -119,8 +119,8 @@ model Fact {
     audio     String[] // can be initialized to an empty array
 
     authorId  String?   @db.ObjectId @map("author_id")
-    author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
-
+    author    User?    @relation("UserFacts", fields: [authorId], references: [id], onDelete: SetNull)
+    factChainItems FactChainItem[] @relation("FactChainItems")
     //tags  FactTags[]
     location    Location @relation("FactLocation", fields: [locationId], references: [id])
     locationId  String   @db.ObjectId @map("location_id")
@@ -169,3 +169,32 @@ model HistoricalPerson {
     FactHistoricalPerson FactHistoricalPerson[]
     @@map("historicalpersons")
 }
+model FactChain {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  description String?
+  visibility String @default("private") // "public", "private", "unlisted"
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp
+
+  userId    String   @db.ObjectId @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  items     FactChainItem[]
+
+  @@map("factchains")
+}
+
+model FactChainItem {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  position    Int
+  title      String?
+  factChainId String   @db.ObjectId @map("fact_chain_id")
+  factChain   FactChain @relation(fields: [factChainId], references: [id], onDelete: Cascade)
+  comment    String?
+  factId      String   @db.ObjectId @map("fact_id")
+  fact        Fact     @relation("FactChainItems", fields: [factId], references: [id], onDelete: Cascade)
+
+  @@map("factchainitems")
+}
+

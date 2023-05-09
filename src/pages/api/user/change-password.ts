@@ -51,7 +51,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   } else {
     res.status(500).json({ message: 'Erreur serveur.' });
   }
-  
+
 }
 
 export default handler;

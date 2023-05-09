@@ -7,9 +7,11 @@ type Props = {
 }
 
 const Tabs: React.FC<Props> = ({ children }) => {
-  const [selectedTab, setSelectedTab] = useState<string>("Événements")
+  const [selectedTab, setSelectedTab] = useState<number>(0)
 
-  function handleTabChange(tab: string){
+
+
+  function handleTabChange(tab: number){
     setSelectedTab(tab);
   }
 
@@ -20,12 +22,15 @@ const Tabs: React.FC<Props> = ({ children }) => {
           <TabTitle
             key={index}
             title={item.props.title}
+            index={index}
+            setSelectedTab={handleTabChange}
             selectedTab={selectedTab}
-            onClick={() => handleTabChange(item.props.title)}
           />
         ))}
       </ul>
-      {children[selectedTab]}
+      <div className="batf-content">
+         {children[selectedTab]}
+      </div>
     </div>
   )
 }

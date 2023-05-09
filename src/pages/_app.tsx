@@ -10,7 +10,8 @@ import "~/styles/colors.scss";
 import "~/styles/text-styles.scss";
 import "~/components/buttons/Button.scss";
 import "~/styles/sideBar.scss";
-import "~/styles/topbar.css";
+import "~/styles/topbar.scss";
+import "~/styles/fact.css";
 import "~/components/batf/Batf.scss";
 import "~/styles/mapStyle.scss";
 
