@@ -52,27 +52,28 @@ const FactList: React.FC<FactListProps> = ({ facts }) => {
   useEffect(() => {
     console.log('Visible facts:', visibleFacts);
   }, [visibleFacts]);
-  
+
   const settings = {
     dots: true,
     infinite: false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    vertical: true,
-    verticalSwiping: true,
+    horizontal: true,
+    horizontalSwiping: true,
     swipeToSlide: true,
-    centerMode: true
+    centerMode: true,
+    arrows: true,
   };
 
 
   return (
     <div>
-      <Slider {...settings}>
+      <Slider className='sliderFactList' {...settings}>
         {sortedFacts.map((fact) => (
-          <div key={fact.id}>
-          <Fact fact={fact} />
-        </div>
+          <div className='sortedFact' key={fact.id}>
+            <Fact fact={fact} />
+          </div>
         ))}
       </Slider>
     </div>

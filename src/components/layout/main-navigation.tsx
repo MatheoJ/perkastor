@@ -6,6 +6,7 @@ import SideBar from '../SideBar';
 import Fact from '../Fact';
 import FactList from '../FactList';
 import { useState } from 'react';
+import FactChain from '../FactChain';
 
 const MainNavigation: NextPage = () => {
   const [selectedItem, setSelectedItem] = useState<String>(""); // Keep track of the selected item in the sidebar
