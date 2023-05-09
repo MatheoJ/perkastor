@@ -1,0 +1,45 @@
+  .factContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .factTitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .factActions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  
+  .arrow {
+    margin-right: 10px;
+  }
+  
+  .deleteBtn {
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+
+  .addFactBtn {
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  
+  
