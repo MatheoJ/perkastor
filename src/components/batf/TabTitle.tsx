@@ -8,22 +8,15 @@ type Props = {
   selectedTab: number;
 }
 
-interface TabTitleState{
-  selectedTab: number;
-}
-
-export default class TabTitle extends React.Component<Props, TabTitleState> {
+export default class TabTitle extends React.Component<Props> {
 
   constructor(props: Props){
     super(props);
 
-    this.state = {
-      selectedTab: 0
-    }
   }
 
   classAssigner(){
-    if (this.state.selectedTab == this.props.index){
+    if (this.props.selectedTab == this.props.index){
       return 'batf-selectedtab';
     }
 
@@ -32,9 +25,7 @@ export default class TabTitle extends React.Component<Props, TabTitleState> {
 
   render() {
     return (<li className={`batf-tab ${this.classAssigner()}`}>
-      <button onClick={() => {
-        this.setState({selectedTab: this.props.index})
-      }}>{this.props.title}</button>  
+      <button onClick={()=>this.props.setSelectedTab(this.props.index)}>{this.props.title}</button>  
     </li>)
   }
 }

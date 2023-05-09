@@ -104,7 +104,7 @@ const Event = () => {
         )}
 
         <h3>Lieu de l'évènement</h3>
-
+        <MapCoordPicker onMapClick={handleMapClick} locationSelected={locationSelected} onLocationSelect={handlelLocationSelected} />
         <label htmlFor="NomLieux">Nom du lieu*</label>
         <input
           type="text"
