@@ -178,8 +178,8 @@ model FactChain {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp
 
-  userId    String   @db.ObjectId @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  authorId    String   @db.ObjectId @map("user_id")
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   items     FactChainItem[]
 
