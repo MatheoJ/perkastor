@@ -270,10 +270,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         where: {
                             AND: [
                                 {
-                                    latitude: req.body.location.latitude
+                                    latitude: req.body.location.latitude as number  
                                 },
                                 {
-                                    longitude: req.body.location.longitude
+                                    longitude: req.body.location.longitude as number
                                 },
                                 {
                                     name: req.body.location.name

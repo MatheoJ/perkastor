@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Fact } from '@prisma/client'
+import { Fact as FactType } from '@prisma/client'
 
-interface FactProps extends Fact {
+interface FactProps extends FactType {
     author: {
         id: string;
         name: string;
