@@ -12,7 +12,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { userId, chainId } = req.query;
     console.log(req.query)
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
-
     try {
         const client = new PrismaClient();
         switch (method) {
@@ -49,13 +48,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 break;
             case 'POST':
                 // Create data in your database
-                const { title, description, factItems } = req.body;
+                const { title, description, factItems, authorId } = req.body;
                 var factChainId = ObjectID().toHexString();
                 const newFactChain = await client.factChain.create({
                     data: {
                         id: factChainId,
                         title: title,
-                        userId: "6458ea3e34ee2ae7924d3813",
+                        userId: session.user.id || authorId,
                         description: description,
                     },
                 });

@@ -1,0 +1,57 @@
+/* Home.module.css */
+.main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.bgImage {
+  position: absolute;
+  top: 2%;
+  left: 4%;
+  width: 90vw;
+  height: 90vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: -1;
+}
+
+.bgText {
+  background-color: rgb(52, 68, 83, 0.7);
+  backdrop-filter: blur(3px);
+  color: #ffffff;
+  font-weight: bold;
+  border: 3px solid #f1f1f1;
+  position: relative;
+  z-index: 1;
+  width: 80%;
+  max-width: 800px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 100px;
+}
+
+.bgText h1 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+}
+
+.bgText b {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+}
+
+.bgText p {
+  font-size: 1.2rem;
+  margin: 1.5rem 0;
+}
+
+.bgText a {
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
