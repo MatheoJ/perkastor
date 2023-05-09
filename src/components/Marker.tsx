@@ -3,6 +3,9 @@ import maplibregl from "maplibre-gl";
 import { LngLat } from 'maplibre-gl';
 import axios from "axios";
 
+import { selectMapEvent } from "../events/map/SelectMapEvent";
+import { bus } from "../utils/bus";
+
 import "maplibre-gl/dist/maplibre-gl.css";
 
 interface MarkerProps {
@@ -14,9 +17,25 @@ const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
   const coordinates = React.useRef<HTMLPreElement | null>(null);
 
   const getPlaceInfo = async (latitude, longitude, zoom) => {
+
+  let detail;
+  
+  if(zoom > 13){
+    detail = 17;
+  }
+  else if(zoom> 8){
+    detail = 10;
+  }
+  else if(zoom > 6){
+    detail = 8;
+  }
+  else{
+    detail = 5;
+  }
+
     try {
       const response = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=${zoom}&polygon_geojson=1`
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=${detail}&polygon_geojson=1`
       );
 
       console.log('https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=${zoom}&polygon_geojson=1');
@@ -52,7 +71,7 @@ const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
       const lngLat = marker.getLngLat();
       coordinates.current.style.display = "block";      
       coordinates.current.innerHTML = ` Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat}`;
-      getPlaceInfo(lngLat.lat, lngLat.lng, Math.round(map.getZoom())).then((placeName) => {
+      void getPlaceInfo(lngLat.lat, lngLat.lng, Math.round(map.getZoom())).then((placeName) => {
         coordinates.current.innerHTML = `Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat} <br /> ${placeName}`;
       });
     }
@@ -61,7 +80,7 @@ const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
       coordinates.current.style.display = "block";
       coordinates.current.innerHTML = ` Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat}`;
 
-      getPlaceInfo(lngLat.lat, lngLat.lng, Math.round(map.getZoom())).then((placeInfo) => {
+      void getPlaceInfo(lngLat.lat, lngLat.lng, Math.round(map.getZoom())).then((placeInfo) => {
         coordinates.current.innerHTML = `Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat} <br /> ${placeInfo.name}`;
         
         console.log('placeName :');
@@ -91,6 +110,8 @@ const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
             }
           });
         }
+
+        bus.publish(selectMapEvent({ lat: lngLat.lat, lng: lngLat.lng}));
       });
     }
 

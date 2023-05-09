@@ -2,19 +2,30 @@
     return <div>About us</div>
 } */
 
-import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import Marker from './Marker';
 import FlyTo from './FlyTo';
 import DataPoints from './DataPoints';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import Batf from './batf/Batf';
+import Button from './buttons/Button';
+import DisplayLocation from './DisplayLocation';
 
-const MapTilerApiKey = "KeNNPlHwOHbhaGFsVoos";
+const MapTilerApiKey = process.env.MAPTILER_API_KEY;
 
-export default function MapPage() {
+interface MapPageProps {
+  locationSelected : any;
+  onLocationSelect : (locSelected : any) => void;  
+}
+
+const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
+  const [idSelected, setIdSelected] = useState('');
+
+  const handleSelectLocation = (location : any) => {
+  };
   
 
   useEffect(() => {
@@ -23,8 +34,8 @@ export default function MapPage() {
     const map = new maplibregl.Map({
       container: mapContainer.current,
       style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=KeNNPlHwOHbhaGFsVoos',
-      center: [0, 0],
-      zoom: 2,
+      center: [2.3, 43.5],
+      zoom: 4,
     });
 
     map.on('load', () => {
@@ -36,6 +47,7 @@ export default function MapPage() {
             data: 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson',
             cluster: false
         });
+
     });
 
     map.loadImage(
@@ -54,14 +66,13 @@ export default function MapPage() {
 
 
   return (
-    <div>
-      <Head>
-        <title>MapLibre with TypeScript and Next.js</title>
-      </Head>
-      <div ref={mapContainer} style={{ width: '100vw', height: '100vh' }} />
+      <div ref={mapContainer} className={'map-container'}>
         {mapInstance && <Marker map={mapInstance} />}
         {mapInstance && <FlyTo map={mapInstance} />}
-        {mapInstance && <DataPoints map={mapInstance} />}
+        {mapInstance && <DisplayLocation map={mapInstance} locationSelected={locationSelected} onLocationSelect={handleSelectLocation}  />}
     </div>
   );
 }
+
+export default MapPage;
+

@@ -45,3 +45,7 @@ backend/node_modules/
 backend/node_modules/*
 
 data/*.json
+data/oldfiles/*.json
+yarn.lock
+
+prisma-perkastor

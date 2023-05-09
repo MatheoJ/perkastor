@@ -114,39 +114,49 @@ def find_facts_wikipedia(url, city_name="", only_streets=False, city_id=""):
     regex_list = [r'(?i)\bhist', r'(?i)\bcultur', r'(?i)\bpatrimo']
     histoire = get_section_contents(url, regex_list)
     historic_facts = detect_historical_facts_v3(histoire, only_streets)
-    return {"id": city_id, "name": city_name, "facts": historic_facts}
+    return {"id": city_name, "name": city_name, "facts": historic_facts}
 
 def main():
     # Utilisez un ThreadPoolExecutor pour exécuter plusieurs appels à get_city_streets() en parallèle
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # Récupérez les rues pour chaque ville dans la liste "cities"
-        future_to_city = {executor.submit(find_facts_wikipedia, city["wikipediaUrl"], city["name"], False , city["id"]): city for city in cities[:10000]}
+        future_to_city = {executor.submit(find_facts_wikipedia, loc["wikipediaUrl"], loc["name"], False): loc for loc in data.values()}
         
         # Parcourez les résultats des threads et ajoutez-les à la liste "data"
         i = 1
         for future in concurrent.futures.as_completed(future_to_city):
             try:
-                data = future.result()
-                facts[data["id"]] = data["facts"]
-                print(f"Faits historiques récupérés : {data['name']} - {len(data['facts'])} - [{i}/{10000}]")
+                donnee = future.result()
+                facts[donnee["id"]] = donnee["facts"]
+                print(f"Faits historiques récupérés : {donnee['name']} - {len(donnee['facts'])} - [{i}]")
                 i += 1
             
             except Exception as e:
                 print(f"Erreur lors de l'exécution du thread: {e}")
 
     # Enregistrez les données dans un fichier JSON
-    with open('facts2.json', 'w', encoding="utf-8") as outfile:
+    with open('campus.json', 'w', encoding="utf-8") as outfile:
         json.dump(facts, outfile, indent=4, ensure_ascii=False)
 
 
 def save_facts_and_exit(signal_number, frame):
     print("\nInterrupted by user. Saving facts and exiting...")
-    with open('facts3.json', 'w', encoding="utf-8") as outfile:
+    with open('facts_rues.json', 'w', encoding="utf-8") as outfile:
         json.dump(facts, outfile, indent=4, ensure_ascii=False)
     sys.exit(0)
 
 facts = {}
-cities = json.load(open("citiesv2.json", "r", encoding="utf-8"))
+
+data = {
+    "Insa Lyon": {
+        "name": "Insa Lyon",
+        "wikipediaUrl": "https://fr.wikipedia.org/wiki/Institut_national_des_sciences_appliqu%C3%A9es_de_Lyon"
+    },
+    "Campus de la Doua": {
+        "name": "Campus de la Doua",
+        "wikipediaUrl": "https://fr.wikipedia.org/wiki/Campus_de_la_Doua"
+    }
+}
 
 signal.signal(signal.SIGINT, save_facts_and_exit)
 signal.signal(signal.SIGTERM, save_facts_and_exit)

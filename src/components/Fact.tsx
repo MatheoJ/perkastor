@@ -1,40 +1,32 @@
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { Fact } from '@prisma/client'
 
-interface FactProps {
-    fact: {
+interface FactProps extends Fact {
+    author: {
         id: string;
-        createdAt: string;
-        updatedAt: string;
-        title: string;
-        shortDesc?: string;
-        content: string;
-        from?: string;
-        until?: string;
-        bannerImg?: string;
-        verified: boolean;
-        video: string[];
-        audio: string[];
-        author: {
-            id: string;
-            name: string;
-        };
-        tags: {
-            id: string;
-            name: string;
-        }[];
-        locations: {
-            id: string;
-            name: string;
-        }[];
-        personsInvolved: {
-            id: string;
-            name: string;
-        }[];
+        name: string;
     };
+    tags: {
+        id: string;
+        name: string;
+    }[];
+    locations: {
+        id: string;
+        name: string;
+    }[];
+    personsInvolved: {
+        id: string;
+        name: string;
+    }[];
 }
 
-const Fact: React.FC<FactProps> = ({ fact }) => {
+interface Props {
+    fact: FactProps;
+}
 
+const Fact: React.FC<Props> = ( props ) => {
+    const { fact } = props;
     return (
         <div className="fact">
             <div className="factHead">
@@ -63,6 +55,9 @@ const Fact: React.FC<FactProps> = ({ fact }) => {
                     <p>{fact.content}</p>
                 </div>
                 <div className='content-right'>
+                    <div className="factImage">
+                        <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                    </div>
                     <ul>
                         {fact.personsInvolved.map((person) => (
                             <li key={person.id}>{person.name}</li>

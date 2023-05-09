@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import { type NextPage } from 'next';
 import TopBar from '../TopBar';
 import SideBar from '../SideBar';
