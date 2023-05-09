@@ -1,16 +1,28 @@
-import React from "react";
+import React, {useState} from "react";
 import Tabs from "./Tabs";
 import Tab from "./Tab";
+
+import { bus } from "../../utils/bus";
+import { selectMapEvent } from "~/events/map/SelectMapEvent";
 
 interface BaftTabContainerProps{
     onMinimizeClick?: () => void;
     onFullScreenClick?: () => void;
-    selectedTab?: "events" | "anecdotes" | "chains";
+    selectedTab?: number;
 }
 
 export default class TabContainer extends React.Component<BaftTabContainerProps> {
+    markerSelected: boolean;
+
     constructor(props: BaftTabContainerProps) {
         super(props);
+        this.markerSelected = false;
+
+        bus.subscribe(selectMapEvent, event => {
+            const { lat, lng } = event.payload; // Event is typed
+            
+            this.markerSelected = true;
+        });
     }
 
     render() {
@@ -26,7 +38,7 @@ export default class TabContainer extends React.Component<BaftTabContainerProps>
                 </div>
                 <Tabs>
                     <Tab title="Événements">
-                        {/* TODO INSERT EVENTS LIST HERE*/}
+                        test
                     </Tab>
                     <Tab title="Anecdotes">
                         {/* TODO INSERT ANECDOTES LIST HERE*/}
