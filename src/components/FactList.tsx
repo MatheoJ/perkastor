@@ -36,7 +36,7 @@ interface FactListProps {
 }
 
 const FactList: React.FC<FactListProps> = ({ facts }) => {
-
+  console.log('Facts:', facts);
   const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
   const [items, setItems] = useState(facts.slice(0, 10));
 

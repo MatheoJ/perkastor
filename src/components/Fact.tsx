@@ -11,10 +11,10 @@ interface FactProps extends FactType {
         id: string;
         name: string;
     }[];
-    locations: {
+    location: {
         id: string;
         name: string;
-    }[];
+    };
     personsInvolved: {
         id: string;
         name: string;
@@ -36,11 +36,7 @@ const Fact: React.FC<Props> = ( props ) => {
                 <div className="factHeadBottom">
                     <div className="factHeadBottomLeft">
                         <ul>
-                            {fact.locations.map((location) => (
-                                <li key={location.id}>{location.name}</li>
-                            ))
-                            }
-
+                            <li key={fact.location.id}>{fact.location.name}</li>
                         </ul>
                     </div>
                     <div className="factHeadBottomRight">
@@ -63,11 +59,7 @@ const Fact: React.FC<Props> = ( props ) => {
                             <li key={person.id}>{person.name}</li>
                         ))}
                     </ul>
-                    <ul>
-                        {fact.tags.map((tag) => (
-                            <li key={tag.id}>{tag.name}</li>
-                        ))}
-                    </ul>
+                    
                 </div>
             </div>
         </div>

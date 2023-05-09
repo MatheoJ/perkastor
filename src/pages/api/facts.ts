@@ -8,7 +8,7 @@ import { authOptions } from './auth/[...nextauth]';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
 
-    const { fid, userId, description, startDate, endDate, histPersonName, histPersonId, locationId, locationName } = req.query;
+    const { fid, userId, description, startDate, endDate, histPersonName, histPersonId, locationId, locationName, latitude, longitude} = req.query;
     console.log(req.query)
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
 
@@ -196,35 +196,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(422).json({ message: `Le personnage historique d'id ${histPersonId} n\'existe pas.` });
                     }
 
-                } else if (locationId) {
-                    prismaResult = await client.location.findUnique({
-                        where: {
-                            id: Array.isArray(locationId) ? locationId[0] : locationId
-                        },
-                        include: {
-                            facts: true
-                        }
-                    });
-                    if (prismaResult) {
-                        res.status(200).json({ statusCode: 200, data: prismaResult });
-                    } else {
-                        res.status(422).json({ message: `Le lieu d'id ${locationId} n\'existe pas.` });
-                    }
-                } else if (locationName) {
+                } else if (locationId || locationName || (latitude && longitude)){
                     prismaResult = await client.location.findMany({
                         where: {
-                            name: Array.isArray(locationName) ? locationName[0] : locationName
+                            OR: [
+                                {
+                                    id: locationId as string
+                                },
+                                {
+                                    name: locationName as string
+                                },
+                                {
+                                    latitude: parseFloat(latitude as string) || 0,
+                                    longitude: parseFloat(longitude as string) || 0,
+                                },
+                            ]
                         },
                         include: {
-                            facts: true
-                        }
-                    });
-                    if (prismaResult) {
-                        res.status(200).json({ statusCode: 200, data: prismaResult });
-                    } else {
-                        res.status(422).json({ message: `Le lieu de nom ${locationName} n\'existe pas.` });
-                    }
-                } else {
+                            facts: {
+                                include: {
+                                    personsInvolved: {
+                                        select: {
+                                            historicalPerson: true,
+                                        },
+                                    },
+                                    location: true,
+                                },
+                            },
+                        },
+                    });  
+                              
+                }  else {
                     prismaResult = await client.fact.findMany();
                     res.status(200).json({ statusCode: 200, data: prismaResult });
                 }
