@@ -18,5 +18,8 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    domains: ["migrationphoto.files.wordpress.com", "upload.wikimedia.org","tse3.mm.bing.net"],
+  },
 };
 export default config;
