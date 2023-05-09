@@ -4,6 +4,8 @@ import Tab from "./Tab";
 
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
+import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
+import { bool } from "aws-sdk/clients/signer";
 
 interface BaftTabContainerProps{
     onMinimizeClick?: () => void;
@@ -11,20 +13,47 @@ interface BaftTabContainerProps{
     selectedTab?: number;
 }
 
-export default class TabContainer extends React.Component<BaftTabContainerProps> {
+interface BatfTabContainerState{
+    selectedTab: number;
+    markerSelected: bool;
+}
+
+export default class TabContainer extends React.Component<BaftTabContainerProps, BatfTabContainerState> {
     markerSelected: boolean;
 
     constructor(props: BaftTabContainerProps) {
         super(props);
-        this.markerSelected = false;
+        
+        this.state = {
+            selectedTab: 0,
+            markerSelected: false
+        }
 
         bus.subscribe(selectMapEvent, event => {
-            const { lat, lng } = event.payload; // Event is typed
+            const { lat, lng } = event.payload;
             
-            this.markerSelected = true;
-
-            console.log("ici : " + event.toString());
+            this.setState({
+                markerSelected: true
+            });
         });
+    }
+
+    selectedComponent(component: string){
+        if(!this.state.markerSelected){
+            return <BatfNoMarkerSelected/>
+        }
+        else{
+            switch (component) {
+                case "Évenements":
+                    return <></>;
+                
+                case "Anecdotes":
+                    return <></>;
+                
+                case "Chaines":
+                    return <></>;
+            }
+        }
     }
 
     render() {
@@ -40,13 +69,13 @@ export default class TabContainer extends React.Component<BaftTabContainerProps>
                 </div>
                 <Tabs>
                     <Tab title="Événements">
-                        test
+                        {this.selectedComponent("Évenements")}
                     </Tab>
                     <Tab title="Anecdotes">
-                        {/* TODO INSERT ANECDOTES LIST HERE*/}
+                        {this.selectedComponent("Anecdotes")}
                     </Tab>
                     <Tab title="Chaines">
-                        {/* TODO INSERT CHAINS LIST HERE*/}
+                        {this.selectedComponent("Chaines")}
                     </Tab>
                 </Tabs>
             </>
