@@ -1,3 +1,5 @@
+import { Fact, FactChain, User, Location, HistoricalPerson } from "@prisma/client"
+
 export type ExtendedSession = {
     user: {
         id: string
@@ -8,4 +10,20 @@ export type ExtendedSession = {
         role: string
     }
     expires: string
+}
+export type SearchFilters = {
+    event: boolean,
+    anecdote: boolean,
+    chain: boolean,
+    historicalFigure: boolean,
+    location: boolean,
+    user: boolean
+}
+export type SearchResult = {
+    events: Fact[],
+    anecdotes: Fact[],
+    chains: FactChain[],
+    users: User[],
+    locations: Location[],
+    historicalPersons: HistoricalPerson[]
 }
