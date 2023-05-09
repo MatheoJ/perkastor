@@ -16,6 +16,7 @@ import "~/styles/fact.css";
 import "~/styles/historicalFigure.css";
 import "~/components/batf/Batf.scss";
 import "~/styles/mapStyle.scss";
+import "~/components/searchbar/searchbar.css"; 
 
 import Layout from "../components/layout/layout";
 
