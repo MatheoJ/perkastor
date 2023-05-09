@@ -3,8 +3,10 @@ import { useState } from 'react';
 import Map from "../components/Map";
 import SideBar from "../components/SideBar";
 import Batf from "../components/batf/Batf";
+import SearchBar from "../components/searchbar/SearchBar";
 
 import { api } from "~/utils/api";
+import { Search } from "@mui/icons-material";
 
 export default function mapWrapperPage() {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -16,7 +18,7 @@ export default function mapWrapperPage() {
     setSidebarIsOpen(!sidebarIsOpen);
   };
 
-  const handleSidebarItemClick = ({ item }: { item:string }) => { // Change the selected item in the sidebar
+  const handleSidebarItemClick = ({ item }: { item: string }) => { // Change the selected item in the sidebar
     setSelectedItem(item);
   }
 
@@ -27,16 +29,19 @@ export default function mapWrapperPage() {
 
   return (
     <> {/* TODO: Insert a flex parent component that divides the width in half */}
-      <SideBar
-        isOpen={true}
-        toggleSidebar={null}
-        onSidebarItemClick={handleSidebarItemClick}
-        insertMode={insertMode}
-        setInsertMode={setInsertModeHandler}
-      />
-      <Map />
-      {<Batf>
-      </Batf>}
+      <div className="mapWrapper">
+        <SideBar
+          isOpen={true}
+          toggleSidebar={null}
+          onSidebarItemClick={handleSidebarItemClick}
+          insertMode={insertMode}
+          setInsertMode={setInsertModeHandler}
+        />
+        <Map />
+        <SearchBar />
+        {<Batf>
+        </Batf>}
+      </div >
     </>
   )
 }
