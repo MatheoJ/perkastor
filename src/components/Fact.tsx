@@ -21,8 +21,12 @@ interface FactProps extends Fact {
     }[];
 }
 
-const Fact: React.FC<FactProps> = ( fact ) => {
+interface Props {
+    fact: FactProps;
+}
 
+const Fact: React.FC<Props> = ( props ) => {
+    const { fact } = props;
     return (
         <div className="fact">
             <div className="factHead">
