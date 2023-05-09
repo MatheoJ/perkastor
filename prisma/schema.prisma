@@ -103,6 +103,7 @@ model FactTags {
 model Fact {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
 
+    isEvent   Boolean  @default(true) @map("is_event")
     createdAt DateTime @default(now()) @map("created_at") @db.Timestamp
     updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp
 
@@ -173,6 +174,7 @@ model FactChain {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   title      String
   description String?
+  visibility String @default("private") // "public", "private", "unlisted"
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp
 

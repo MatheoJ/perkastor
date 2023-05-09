@@ -11,6 +11,7 @@ import "~/styles/text-styles.scss";
 import "~/components/buttons/Button.scss";
 import "~/styles/sideBar.scss";
 import "~/styles/topbar.scss";
+import "~/styles/styles.scss";
 import "~/styles/fact.css";
 import "~/styles/historicalFigure.css";
 import "~/components/batf/Batf.scss";
