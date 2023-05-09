@@ -14,9 +14,18 @@ import DisplayLocation from './DisplayLocation';
 
 const MapTilerApiKey = process.env.MAPTILER_API_KEY;
 
-export default function MapPage() {
+interface MapPageProps {
+  locationSelected : any;
+  onLocationSelect : (locSelected : any) => void;  
+}
+
+const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
+  const [idSelected, setIdSelected] = useState('');
+
+  const handleSelectLocation = (location : any) => {
+  };
   
 
   useEffect(() => {
@@ -25,8 +34,8 @@ export default function MapPage() {
     const map = new maplibregl.Map({
       container: mapContainer.current,
       style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=KeNNPlHwOHbhaGFsVoos',
-      center: [0, 0],
-      zoom: 2,
+      center: [2.3, 43.5],
+      zoom: 4,
     });
 
     map.on('load', () => {
@@ -60,7 +69,10 @@ export default function MapPage() {
       <div ref={mapContainer} className={'map-container'}>
         {mapInstance && <Marker map={mapInstance} />}
         {mapInstance && <FlyTo map={mapInstance} />}
-        {mapInstance && <DisplayLocation map={mapInstance} />}
+        {mapInstance && <DisplayLocation map={mapInstance} locationSelected={locationSelected} onLocationSelect={handleSelectLocation}  />}
     </div>
   );
 }
+
+export default MapPage;
+

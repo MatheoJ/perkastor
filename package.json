@@ -43,6 +43,7 @@
     "react-dom": "18.2.0",
     "react-easy-crop": "^4.7.4",
     "react-hook-form": "^7.43.9",
+    "react-multi-date-picker": "^4.0.0",
     "sass": "^1.62.1",
     "superjson": "1.12.2",
     "ts-bus": "^2.3.1",
