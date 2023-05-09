@@ -9,8 +9,6 @@ type Props = {
 const Tabs: React.FC<Props> = ({ children }) => {
   const [selectedTab, setSelectedTab] = useState<number>(0)
 
-
-
   function handleTabChange(tab: number){
     setSelectedTab(tab);
   }
