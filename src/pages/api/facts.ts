@@ -241,7 +241,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     res.status(422).json({ message: `Le lieu n\'est pas renseigné.` });
                 }
 
-                console.log("ici !");
 
                 let createLocation: boolean = false;
                 let location;
@@ -260,7 +259,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }                
                 // search location by [coordinates, name] pair
                 else {
-                    console.log("ici !1");
                     if (!req.body.location.latitude || !req.body.location.longitude) {
                         res.status(422).json({ message: `Les coordonnées du lieu ne sont pas renseignées.` });
                         return;
@@ -269,7 +267,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(422).json({ message: `Le nom du lieu n'est pas renseigné.` });
                         return;
                     }
-                    console.log("ici !1");
                     location = await client.location.findFirst({
                         where: {
                             
@@ -281,7 +278,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 }        
                         
                     });
-                    console.log("ici !4");
                     console.log(location);
                     if (!location) {
                         createLocation = true;
@@ -307,11 +303,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         }
                     }
                 }
-                console.log("ici !6");
-
                 // if the user is an admin, he can create a fact for another user
                 if (session.user.role === "admin") {
-                    console.log("ici !");
                     if (!req.body.author) {
                         req.body.author = session.user.id;
                     } else {
@@ -329,7 +322,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 } else {
                     req.body.author = session.user.id;
                 }
-                console.log("ici !2");
                 // Create a new fact
                 prismaResult = await client.fact.create({
                     data: {
