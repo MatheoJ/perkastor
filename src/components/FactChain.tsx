@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Fact from './Fact';
-import { faArrowUp, faArrowDown, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import DeleteIcon from '@material-ui/icons/Delete';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import Add from '@material-ui/icons/Add';
 
 interface FactChainProps {
   facts: {
@@ -78,23 +79,28 @@ const FactChain: React.FC<FactChainProps> = ({ facts }) => {
           onDragOver={(e) => handleDragOver(e, index)}
         >
           <div className="factActions">
-            <button>
-              <FontAwesomeIcon className="factActionBtn" icon={faArrowUp} onClick={() => handleMoveFact(index, index - 1)} />
+            <button className="factActionBtn" onClick={() => handleMoveFact(index, index - 1)}>
+              <ArrowUpwardIcon />
             </button>
             <button className="factActionBtn" onClick={() => handleMoveFact(index, index + 1)}>
-              <FontAwesomeIcon icon={faArrowDown} />
+              <ArrowDownwardIcon />
             </button>
           </div>
           <div className="factTitle">
-            <p>{fact.title}  {fact.from}</p>
+            <p>{fact.title} <br/> {fact.from}</p>
           </div>
           <div className='deleteBtn'>
             <button className="factActionBtn" onClick={() => handleDeleteFact(index)}>
-              <FontAwesomeIcon icon={faTrash} />
+            <DeleteIcon />
             </button>
           </div>
         </div>
       ))}
+      <div className="addFactBtn" onClick={window.location.href="/eventForm"}>
+        <button className="factActionBtn">
+          <Add />
+        </button>
+      </div>
     </div>
   );
 

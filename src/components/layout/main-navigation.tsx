@@ -215,7 +215,7 @@ const MainNavigation: NextPage = () => {
         setInsertMode={setInsertModeHandler}
       />
       <div className="BAFTtest">
-        <FactList facts={facts} />
+        <FactChain facts={facts} />
       </div>
     </header>
   );
