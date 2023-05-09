@@ -5,15 +5,13 @@ import "maplibre-gl/dist/maplibre-gl.css";
 
 interface DisplayLocationProps {
   map: maplibregl.Map;
+  locationSelected : any;
+  onLocationSelect : (locSelected : any) => void;  
 }
 
-
-
-const DisplayLocation: React.FC<DisplayLocationProps> = ({ map }) => {
+const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected, onLocationSelect }) => {
 
   const updateLocation = async () => {
-    console.log("A zoomend event occurred.");
-    console.log(map.getBounds());
 
     const queryParams = new URLSearchParams({
       type: map.getZoom(),
@@ -56,9 +54,6 @@ const DisplayLocation: React.FC<DisplayLocationProps> = ({ map }) => {
     }
   };
 
-
-
-
   useEffect(() => {
     
     map.on("zoomend",updateLocation);
@@ -81,6 +76,9 @@ const DisplayLocation: React.FC<DisplayLocationProps> = ({ map }) => {
       'Nom: ' + name 
       )
       .addTo(map);
+
+      onLocationSelect(e.features[0]);
+
     });
 
     // Cleanup event listener when component is unmounted
