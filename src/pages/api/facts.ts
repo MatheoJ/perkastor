@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import { ExtendedSession } from 'types/types';
 import { connectToDatabase } from '../../lib/db';
 import { authOptions } from './auth/[...nextauth]';
+import ObjectID from 'bson-objectid';
 //const { hasSome } = require('prisma-multi-tenant');
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
@@ -240,6 +241,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     res.status(422).json({ message: `Le lieu n\'est pas renseigné.` });
                 }
 
+                console.log("ici !");
+
                 let createLocation: boolean = false;
                 let location;
                 // search location by id
@@ -254,9 +257,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(422).json({ message: `Le lieu n\'existe pas.` });
                         return;
                     }
-                }
+                }                
                 // search location by [coordinates, name] pair
                 else {
+                    console.log("ici !1");
                     if (!req.body.location.latitude || !req.body.location.longitude) {
                         res.status(422).json({ message: `Les coordonnées du lieu ne sont pas renseignées.` });
                         return;
@@ -265,31 +269,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(422).json({ message: `Le nom du lieu n'est pas renseigné.` });
                         return;
                     }
-
+                    console.log("ici !1");
                     location = await client.location.findFirst({
                         where: {
-                            AND: [
-                                {
-                                    latitude: req.body.location.latitude
-                                },
-                                {
-                                    longitude: req.body.location.longitude
-                                },
-                                {
-                                    name: req.body.location.name
-                                }
-                            ]
-                        },
+                            
+                                    latitude: parseFloat(req.body.location.latitude),
+                               
+                                    longitude: parseFloat(req.body.location.longitude),
+                                
+                                    name: req.body.location.name,
+                                }        
+                        
                     });
+                    console.log("ici !4");
+                    console.log(location);
                     if (!location) {
                         createLocation = true;
                     }
                 }
-
+                
                 let locPayload;
                 if (createLocation) {
                     locPayload = {
-                        create: req.body.location
+                        create: {
+                            latitude: parseFloat(req.body.location.latitude),
+                            longitude: parseFloat(req.body.location.longitude),
+                            name: req.body.location.name,
+                            type: req.body.location.type,
+                            geometry: "Point",
+                            area: req.body.location.area,
+                        }
                     }
                 } else {
                     locPayload = {
@@ -298,9 +307,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         }
                     }
                 }
+                console.log("ici !6");
 
                 // if the user is an admin, he can create a fact for another user
                 if (session.user.role === "admin") {
+                    console.log("ici !");
                     if (!req.body.author) {
                         req.body.author = session.user.id;
                     } else {
@@ -318,19 +329,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 } else {
                     req.body.author = session.user.id;
                 }
-
+                console.log("ici !2");
                 // Create a new fact
                 prismaResult = await client.fact.create({
                     data: {
                         title: req.body.title,
                         shortDesc: req.body.shortDesc,
                         content: req.body.content,
-                        keyDates: req.body.keyDates || [],
+                        keyDates: req.body.keyDates.map((date) => {
+                            return new Date(date);
+                        }),
                         bannerImg: req.body.bannerImg,
                         video: req.body.video || [],
                         audio: req.body.audio || [],
-                        personsInvolved: req.body.personsInvolved || [],
-                        author: req.body.author,
+                        personsInvolved: undefined,
+                        author: {
+                            connect:{
+                                id: session.user.id,
+                            }
+                        },
+
                         location: locPayload,
                         sources: req.body.sources || []
                     },
@@ -521,6 +539,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         res.status(200).json(prismaResult);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ statusCode: 500, message: JSON.stringify(error) });
     }
 }
