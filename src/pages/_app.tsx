@@ -14,6 +14,7 @@ import "~/styles/topbar.scss";
 import "~/styles/fact.css";
 import "~/components/batf/Batf.scss";
 import "~/styles/mapStyle.scss";
+import "~/components/searchbar/searchbar.css"; 
 
 import Layout from "../components/layout/layout";
 
