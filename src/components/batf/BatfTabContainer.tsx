@@ -22,6 +22,8 @@ export default class TabContainer extends React.Component<BaftTabContainerProps>
             const { lat, lng } = event.payload; // Event is typed
             
             this.markerSelected = true;
+
+            console.log("ici : " + event.toString());
         });
     }
 
