@@ -1,40 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { Fact } from '@prisma/client'
 
-interface FactProps {
-    fact: {
+interface FactProps extends Fact {
+    author: {
         id: string;
-        createdAt: string;
-        updatedAt: string;
-        title: string;
-        shortDesc?: string;
-        content: string;
-        from?: string;
-        until?: string;
-        bannerImg?: string;
-        verified: boolean;
-        video: string[];
-        audio: string[];
-        author: {
-            id: string;
-            name: string;
-        };
-        tags: {
-            id: string;
-            name: string;
-        }[];
-        locations: {
-            id: string;
-            name: string;
-        }[];
-        personsInvolved: {
-            id: string;
-            name: string;
-        }[];
+        name: string;
     };
+    tags: {
+        id: string;
+        name: string;
+    }[];
+    locations: {
+        id: string;
+        name: string;
+    }[];
+    personsInvolved: {
+        id: string;
+        name: string;
+    }[];
 }
 
-const Fact: React.FC<FactProps> = ({ fact }) => {
+const Fact: React.FC<FactProps> = ( fact ) => {
 
     return (
         <div className="fact">
