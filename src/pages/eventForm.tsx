@@ -78,7 +78,7 @@ const Event = () => {
         {errors.description && <p className="error-message" >La description est requise.</p>}
 
         <h3>Lieu de l'évènement</h3>
-
+        <MapCoordPicker onMapClick={handleMapClick} locationSelected={locationSelected} onLocationSelect={handlelLocationSelected} />
         <label htmlFor="NomLieux">Nom du lieu*</label>
         <input
           type="text"
@@ -97,8 +97,6 @@ const Event = () => {
           <option value="region">Region</option>
         </select>
         {errors.name && <p className="error-message">Le type est requis.</p>}
-
-       
 
         <label htmlFor="coordinatesLong">Longitude*</label>
         <input
@@ -127,7 +125,7 @@ const Event = () => {
           
         />
 
-        <MapCoordPicker onMapClick={handleMapClick} locationSelected={locationSelected} onLocationSelect={handlelLocationSelected} />
+        
 
         <h3>Dates de l'évènement</h3>
       <Controller
