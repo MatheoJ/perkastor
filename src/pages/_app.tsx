@@ -12,6 +12,7 @@ import "~/components/buttons/Button.scss";
 import "~/styles/sideBar.scss";
 import "~/styles/topbar.scss";
 import "~/styles/fact.css";
+import "~/styles/historicalFigure.css";
 import "~/components/batf/Batf.scss";
 import "~/styles/mapStyle.scss";
 
