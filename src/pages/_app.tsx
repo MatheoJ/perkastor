@@ -14,7 +14,7 @@ import "~/styles/topbar.scss";
 import "~/styles/styles.scss";
 import "~/styles/fact.css";
 import "~/styles/factChain.css";
-import "~/styles/factList.css";
+import "~/styles/factList.scss";
 import "~/styles/fact.css";
 import "~/styles/historicalFigure.css";
 import "~/components/batf/Batf.scss";

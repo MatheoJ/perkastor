@@ -2,3 +2,11 @@
 @import "~/styles/text-styles.scss";
 @import "~/components/buttons/Button.scss";
 @import "~/styles/mapStyle.scss";
+
+$slick-font-path: "~slick-carousel/slick/fonts/" !default;
+$slick-font-family: "slick" !default;
+$slick-loader-path: "~slick-carousel/slick/" !default;
+$slick-arrow-color: black !default; 
+
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
