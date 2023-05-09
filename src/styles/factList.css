@@ -60,3 +60,10 @@
 .sortedFact {
     height: 500px;
 }
+
+#imageFactList {
+    height: 100px;
+    width: 100px;
+    background-size: cover;
+    background-position: center;
+}

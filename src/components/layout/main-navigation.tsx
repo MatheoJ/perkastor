@@ -7,6 +7,7 @@ import Fact from '../Fact';
 import FactList from '../FactList';
 import { useState } from 'react';
 import FactChain from '../FactChain';
+import FactListContributions from '../FactListContributions';
 
 const MainNavigation: NextPage = () => {
   const [selectedItem, setSelectedItem] = useState<String>(""); // Keep track of the selected item in the sidebar
@@ -77,7 +78,7 @@ const MainNavigation: NextPage = () => {
       content: "La Ford T, produite entre 1908 et 1927, est considérée comme la première voiture produite en série. Elle était facile à produire et à réparer, et était disponible à un prix abordable pour les consommateurs moyens. Les ventes de la Ford T ont révolutionné l'industrie automobile et ont contribué à l'essor de l'économie américaine.",    
       from: "1908-01-01",    
       until: "1927-05-26",    
-      bannerImg: "https://example.com/ford-t.jpg",    
+      bannerImg: "https://migrationphoto.files.wordpress.com/2015/10/fallwayland20101.jpg",    
       verified: true,    
       video: ["https://example.com/ford-t.mp4", "https://example.com/ford-t.webm"],
       audio: ["https://example.com/ford-t.mp3"],
@@ -120,6 +121,7 @@ const MainNavigation: NextPage = () => {
       content: "Le Titanic était un navire de croisière de luxe qui a coulé dans l'océan Atlantique en 1912, après avoir heurté un iceberg. Plus de 1500 personnes ont perdu la vie dans l'accident. Le naufrage du Titanic est considéré comme l'un des plus grands désastres maritimes de tous les temps et a conduit à des améliorations dans la sécurité maritime.",
       from : "1912-04-10",
       until: "1912-04-15",
+      bannerImg: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/RMS_Titanic_3.jpg/1200px-RMS_Titanic_3.jpg",
       verified: true,
       video: ["https://example.com/titanic.mp4"],
       author: {
@@ -162,7 +164,7 @@ const MainNavigation: NextPage = () => {
       content: "L'équipe de chercheurs a travaillé pendant plusieurs années pour concevoir une voiture autonome capable de circuler sans l'intervention d'un conducteur humain. Après des tests intensifs sur route fermée, la voiture a réussi à parcourir plusieurs kilomètres sans rencontrer de problèmes majeurs. La technologie utilisée pour rendre la voiture autonome repose sur des capteurs sophistiqués, des caméras et des algorithmes avancés de traitement d'image. Cette prouesse technique ouvre la voie à un avenir où les voitures autonomes pourraient devenir la norme.",
       from : "2023-05-04",
       until: "2023-05-04",
-      bannerImg: "https://example.com/image.jpg",
+      bannerImg: "https://tse3.mm.bing.net/th?id=OIP.p-aZsNRUiC7FilHb3hnEYgHaE8&pid=Api",
       verified: true,
       video: ["https://example.com/video.mp4"],
       audio: ["https://example.com/audio.mp3"],
@@ -215,7 +217,7 @@ const MainNavigation: NextPage = () => {
         setInsertMode={setInsertModeHandler}
       />
       <div className="BAFTtest">
-        <FactChain facts={facts} />
+        <FactList facts={facts} />
       </div>
     </header>
   );
