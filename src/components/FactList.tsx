@@ -36,7 +36,7 @@ interface FactListProps {
 }
 
 const FactList: React.FC<FactListProps> = ({ facts }) => {
-
+  console.log('Facts:', facts);
   const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
   const [items, setItems] = useState(facts.slice(0, 10));
 
@@ -55,23 +55,25 @@ const FactList: React.FC<FactListProps> = ({ facts }) => {
 
   const settings = {
     dots: true,
-    infinite: false,
+    infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
     horizontal: true,
     horizontalSwiping: true,
     swipeToSlide: true,
-    centerMode: true,
-    arrows: true,
+    arrows: false,
+    variableWidth: false,
+    outerWidth:100,
+    autoplay: true,
   };
 
 
   return (
     <div>
-      <Slider className='sliderFactList' {...settings}>
+      <Slider className='sliderFactList' {...settings} style={{width: '300px'}}>
         {sortedFacts.map((fact) => (
-          <div className='sortedFact' key={fact.id}>
+          <div className='sortedFact' key={fact.id} style={{width: '100%'}}>
             <Fact fact={fact} />
           </div>
         ))}
