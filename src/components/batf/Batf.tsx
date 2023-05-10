@@ -9,12 +9,12 @@ interface BatfProps {
 
 const Batf: React.FC<BatfProps> = ({ children }) => {
     const [state, setState] = useState<"normal" | "fullscreen" | "minimized">("minimized");
-    const [selectedTab, setSelectedTab] = useState<"Événements" | "Anecdotes" | "Chaînes">("Événements");
+    //const [selectedTab, setSelectedTab] = useState<"Événements" | "Anecdotes" | "Chaînes">("Événements");
 
     const handleMapChange = bus.subscribe(selectMapEvent, event => {
         if (event.payload != null) {
             setState("normal");
-            setSelectedTab("Événements");
+            //setSelectedTab("Événements");
         }
     });
 
@@ -44,8 +44,9 @@ const Batf: React.FC<BatfProps> = ({ children }) => {
             {
                 (() => {
                     if (state !== "minimized") {
+                        //selectedTab={selectedTab} setSelectedTab={setSelectedTab}
                         return <>
-                            <BatfTabContainer onFullScreenClick={maximize} onMinimizeClick={hide} selectedTab={selectedTab} setSelectedTab={setSelectedTab}></BatfTabContainer>
+                            <BatfTabContainer onFullScreenClick={maximize} onMinimizeClick={hide}></BatfTabContainer>
                         </>;
                     }
                     else {
