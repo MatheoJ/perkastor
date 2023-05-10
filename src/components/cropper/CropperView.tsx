@@ -5,7 +5,7 @@ import { forwardRef, useImperativeHandle, useState, useRef, useCallback, Dispatc
 import Cropper, { Point, Area } from "react-easy-crop";
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import getCroppedImg, { stringAvatar } from './cropImage';
+import getCroppedImg, { convertVhToPx, stringAvatar } from './cropImage';
 import axios from "axios";
 import styles from './CropperView.module.css';
 
@@ -209,22 +209,19 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
                 (visible && imageSrc) ?
                     <>
                         <div className={styles.cropContainer}>
-                            <div className={styles.innerCropContainer}>
-                                <Cropper
-                                    image={imageUrl}
-                                    crop={crop}
-                                    zoom={zoom}
-                                    aspect={1}
-                                    cropShape={cropShape || "round"}
-                                    onCropChange={setCrop}
-                                    onCropComplete={onCropComplete}
-                                    onZoomChange={setZoom}
-                                />
-                            </div>
+                            <Cropper
+                                image={imageUrl}
+                                crop={crop}
+                                zoom={zoom}
+                                aspect={1}
+                                cropShape={cropShape || "round"}
+                                onCropChange={setCrop}
+                                onCropComplete={onCropComplete}
+                                onZoomChange={setZoom} />
                         </div>
                         <div className={styles.controls}>
                             <div className={styles.innerControls}>
-                                <Button className={styles.pictureButton} variant={"contained"} color={"error"} sx={{ width: 250 }}
+                                <Button className={styles.pictureButton} variant={"outlined"} color={"error"} sx={{ width: 250 }}
                                     startIcon={<CancelIcon />} onClick={() => {
                                         setImageSrc(undefined);
                                         setImageUrl("")
@@ -239,7 +236,7 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
                                     onChange={(e, zoom) => setZoom(Number(zoom))}
                                     classes={{ root: "slider" }}
                                 />
-                                <Button className={styles.pictureButton} variant={"contained"} color={"success"} sx={{ width: 250 }}
+                                <Button className={styles.pictureButton} variant={"outlined"} color={"success"} sx={{ width: 250 }}
                                     startIcon={<CheckBoxIcon />} onClick={(e: any) => {
                                         uploadOnSubmit ?
                                             handleUpload(

@@ -25,9 +25,6 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
 
     return (
         <div className={`sidebar ${isOpen ? 'open' : ''}`}>
-            <Head>
-                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-            </Head>
             <div className="content">
                 <div className="top-content">
                     <ul className='topIcons'>
@@ -41,7 +38,7 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                         </li>
                         <li>
                             <div className="icon">
-                                <button onClick={() => handleClick({ item: "addEvent" })}>
+                                <button title='Accéder au formulaire pour ajouter un évènement' onClick={() => handleClick({ item: "addEvent" })}>
                                     <AddCircleIcon style={{ color: '#F1B706' }} />
                                     <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter un évènement</span>
                                 </button>

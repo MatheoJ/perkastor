@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Fact from './Fact';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Add from '@material-ui/icons/Add';
@@ -35,11 +35,10 @@ interface FactChainProps {
       name: string;
     }[];
   }[];
-  onMoveFact: (factIndex: number, direction: 'up' | 'down') => void;
+  setFacts: React.Dispatch<React.SetStateAction<{}[]>>;
 }
 
-const FactChain: React.FC<FactChainProps> = ({ facts }) => {
-  const [factList, setFactList] = useState(facts);
+const FactChain: React.FC<FactChainProps> = ({ facts, setFacts }) => {
 
   const handleDeleteFact = (factIndex: number) => {
     Swal.fire({
@@ -51,17 +50,17 @@ const FactChain: React.FC<FactChainProps> = ({ facts }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         // delete fact with delete request
-        const res = await fetch(`api/facts?fid=${factList[factIndex].id}`, {
+        const res = await fetch(`api/facts?fid=${facts[factIndex].id}`, {
           method: 'DELETE',
         });
-        
+
         if (!res) {
           Swal.fire('Erreur', 'Une erreur est survenue lors de la suppression de l\'évènement', 'error');
           return;
         }
-        const newFactList = [...factList];
+        const newFactList = [...facts];
         newFactList.splice(factIndex, 1);
-        setFactList(newFactList);
+        setFacts(newFactList);
         Swal.fire('Évènement supprimé', '', 'success');
       }
     });
@@ -69,15 +68,15 @@ const FactChain: React.FC<FactChainProps> = ({ facts }) => {
 
   return (
     <div className="factListContributions">
-      {factList.map((fact, index) => (
+      {facts.map((fact, index) => (
         <div
           key={fact.id}
           className="factContainer"
         >
           <div className="factTitle">
-          <img src={fact.bannerImg ? fact.bannerImg : "/images_home/image_default.jpg"} alt="fact image" id='imageFactList' />
-            
-            <div className='factTitleText'> <p>{fact.title} <br/> {fact.from}</p> </div>
+            <img src={fact.bannerImg ? fact.bannerImg : "/images_home/perecastor.png"} alt="fact image" id='imageFactList' className='imageFactList' />
+
+            <div className='factTitleText'> <p>{fact.title} <br /> {fact.from}</p> </div>
           </div>
           <div className='deleteBtn'>
             <button className="factActionBtn" onClick={() => handleDeleteFact(index)}>
@@ -86,7 +85,7 @@ const FactChain: React.FC<FactChainProps> = ({ facts }) => {
           </div>
         </div>
       ))}
-      <div className="addFactBtn" onClick={() => window.location.href="/eventForm"}>
+      <div className="addFactBtn" onClick={() => window.location.href = "/eventForm"}>
         <button className="factActionBtn">
           <Add />
         </button>

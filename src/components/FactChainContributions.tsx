@@ -38,18 +38,18 @@ interface FactChainContributionsProps {
       name: string;
     }[];
   }[];
-  onMoveFact: (factIndex: number, direction: 'up' | 'down') => void;
+  setFacts: React.Dispatch<React.SetStateAction<{}[]>>;
 }
 
-const FactChainContributions: React.FC<FactChainProps> = ({ facts }) => {
-  const [factList, setFactList] = useState(facts);
+const FactChainContributions: React.FC<FactChainContributionsProps> = ({ facts, setFacts }) => {
 
   const handleMoveFact = (currentIndex: number, newIndex: number) => {
-    const newFactList = [...factList];
+    await fetch(`api/chains&
+    const newFactList = [...facts];
     const movedFact = newFactList[currentIndex];
     newFactList.splice(currentIndex, 1);
     newFactList.splice(newIndex, 0, movedFact);
-    setFactList(newFactList);
+    setFacts(newFactList);
   };
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
@@ -73,9 +73,9 @@ const FactChainContributions: React.FC<FactChainProps> = ({ facts }) => {
       cancelButtonText: 'Annuler',
     }).then((result) => {
       if (result.isConfirmed) {
-        const newFactList = [...factList];
+        const newFactList = [...facts];
         newFactList.splice(factIndex, 1);
-        setFactList(newFactList);
+        setFacts(newFactList);
         Swal.fire('Évènement supprimé', '', 'success');
       }
     });
@@ -90,7 +90,7 @@ const FactChainContributions: React.FC<FactChainProps> = ({ facts }) => {
           </button>
           <h3>&thinsp;Chaîne d'évènements</h3>
         </div>
-        {factList.map((fact, index) => (
+        {facts.map((fact, index) => (
           <div
             key={fact.id}
             className="factContainer"
