@@ -1,11 +1,10 @@
-import { Fact, PrismaClient } from '@prisma/client';
+import { Fact } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { ExtendedSession } from 'types/types';
-import { connectToDatabase } from '../../lib/db';
 import { authOptions } from './auth/[...nextauth]';
 import ObjectID from 'bson-objectid';
-import { json } from 'stream/consumers';
+import { prisma } from '../../lib/db'
 //const { hasSome } = require('prisma-multi-tenant');
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
@@ -14,13 +13,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
     try {
-        const client = new PrismaClient();
         switch (method) {
             case 'GET':
                 let prismaResult;
                 // Get data from your database
                 if (chainItemId) {
-                    prismaResult = await client.factChainItem.findUnique({
+                    prismaResult = await prisma.factChainItem.findUnique({
                         where: { id: chainItemId as string },
                     });
                     if (prismaResult) {
@@ -29,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(404).json({ message: "Chaine non trouvée pour l'id " + chainItemId });
                     }
                 } else {
-                    prismaResult = await client.factChain.findMany();
+                    prismaResult = await prisma.factChain.findMany();
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
                     } else {
@@ -40,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             case 'PATCH':
                 {
                     // Update FactChain with provided fields
-                    const updatedFactChainItem = await client.factChainItem.update({
+                    const updatedFactChainItem = await prisma.factChainItem.update({
                         where: { id: chainItemId as string },
                         data: {
                             ...(newTitle && { title: newTitle as string }),
@@ -50,18 +48,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                     // Remove the specified FactChainItem and adjust positions
                     if (chainItemToRevome) {
-                        const removedItem = await client.factChainItem.findUnique({
+                        const removedItem = await prisma.factChainItem.findUnique({
                             where: { id: chainItemToRevome as string },
                         });
 
-                        await client.factChainItem.delete({
+                        await prisma.factChainItem.delete({
                             where: { id: chainItemToRevome as string },
                         });
 
                         if (removedItem) {
                             const positionToRemove = removedItem.position;
                             const factChainId = removedItem.factChainId;
-                            const itemsToUpdate = await client.factChainItem.findMany({
+                            const itemsToUpdate = await prisma.factChainItem.findMany({
                                 where: {
                                     factChainId: factChainId,
                                     position: { gt: positionToRemove },
@@ -69,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             });
 
                             for (const item of itemsToUpdate) {
-                                await client.factChainItem.update({
+                                await prisma.factChainItem.update({
                                     where: { id: item.id },
                                     data: { position: item.position - 1 },
                                 });
@@ -77,20 +75,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         }
                     }else if(chainItemIdsToSwap){
                         const chainItemIdsToSwapArray = chainItemIdsToSwap as string[];
-                        const chainItem1 = await client.factChainItem.findUnique({
+                        const chainItem1 = await prisma.factChainItem.findUnique({
                             where: { id: chainItemIdsToSwapArray[0] },
                         });
-                        const chainItem2 = await client.factChainItem.findUnique({
+                        const chainItem2 = await prisma.factChainItem.findUnique({
                             where: { id: chainItemIdsToSwapArray[1] },
                         });
                         if (chainItem1 && chainItem2){
                             const position1 = chainItem1.position;
                             const position2 = chainItem2.position;
-                            await client.factChainItem.update({
+                            await prisma.factChainItem.update({
                                 where: { id: chainItemIdsToSwapArray[0] },
                                 data: { position: position2 },
                             });
-                            await client.factChainItem.update({
+                            await prisma.factChainItem.update({
                                 where: { id: chainItemIdsToSwapArray[1] },
                                 data: { position: position1 },
                             });
@@ -104,11 +102,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     // Add a new FactChainItem
                     const itemToAdd = JSON.parse(chainItemToAdd as string);
                     if(itemToAdd.factId && itemToAdd.factChainId){
-                        const items = await client.factChainItem.findMany({
+                        const items = await prisma.factChainItem.findMany({
                             where: { factChainId: itemToAdd.factChainId},
                         });
                         const position = items.length;
-                        const newFactChainItem = await client.factChainItem.create({
+                        const newFactChainItem = await prisma.factChainItem.create({
                             data: {
                                 id: ObjectID().toHexString(),
                                 title: itemToAdd.title || "",
@@ -133,7 +131,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             case 'DELETE':
                 if (chainItemId){
                     // Create data in your database
-                    const deletedFactChain = await client.factChainItem.delete({
+                    const deletedFactChain = await prisma.factChainItem.delete({
                         where: { id: chainItemId as string },
                     });
                     if (deletedFactChain) {
@@ -150,7 +148,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 res.status(405).end(`Method ${method} Not Allowed`);
         }
         // close the database connection
-        await client.$disconnect();
+        await prisma.$disconnect();
     }
     catch (error) {
         console.log(error);
