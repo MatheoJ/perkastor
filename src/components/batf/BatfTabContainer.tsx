@@ -28,9 +28,15 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
   const { data: session, status, update } = useSession({ required: false });
 
   const handleMapChange = bus.subscribe(selectMapEvent, event => {
-    const geoInfos = event.payload;
-    setMarkerSelected(true);
-    setLocationId(geoInfos.properties.id);
+    if(event.payload == null){
+      setMarkerSelected(false);
+      setFacts([]);
+      setChains([]);
+    }else{
+      const geoInfos = event.payload;
+      setMarkerSelected(true);
+      setLocationId(geoInfos.properties.id);
+    }
   });
 
   const handleEditModChange = bus.subscribe(contributionClickEvent, event => {
@@ -69,6 +75,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
       setHistoricalFigure(null);
     }
   }, [markerSelected]);
+
   useEffect(() => {
     async function fetchData() {
       if (!editMod) {

@@ -74,7 +74,7 @@ const FactChain: React.FC<FactChainProps> = ({ facts, setFacts }) => {
           className="factContainer"
         >
           <div className="factTitle">
-            <img src={fact.bannerImg ? fact.bannerImg : "/images_home/image_default.jpg"} alt="fact image" id='imageFactList' />
+            <img src={fact.bannerImg ? fact.bannerImg : "/images_home/perecastor.png"} alt="fact image" id='imageFactList' className='imageFactList' />
 
             <div className='factTitleText'> <p>{fact.title} <br /> {fact.from}</p> </div>
           </div>

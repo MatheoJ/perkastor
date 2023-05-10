@@ -38,8 +38,8 @@ const ChainListContributions: React.FC<ChainListContributionsProps> = ({ chains 
           className="chainContainer"
         >
           <div className="chainTitle">
-            <img src={chain.image} alt="chain image" id='imageChainList' />
-            <div className='chainTitleText'> <p>{chain.title} <br/> {chain.createdAt}</p> </div>
+            <img src={chain.image ? chain.image : "images_home/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
+            <div className='chainTitleText'> <p>{chain.title} <br/> {chain.createdAt.split("T")[0]}</p> </div>
           </div>
           <div className='deleteBtn'>
             <button className="chainActionBtn" onClick={() => handleDeleteChain(index)}>
