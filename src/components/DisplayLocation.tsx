@@ -29,13 +29,13 @@ const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected
     if (response.status === 200) {
       // Check if the response status is 200
       const responseData = await response.json();
-      console.log(responseData);
 
       if (map.getLayer("unclustered-point_loc")) {
         map.removeLayer("unclustered-point_loc");
         map.removeSource("dataLoc"); // Remove the associated source as well
       }
 
+      
       map.addSource("dataLoc", {
         type: "geojson",
         data: responseData,
