@@ -8,7 +8,7 @@ import { prisma } from '../../lib/db'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
 
-    const { userId, chainId } = req.query;
+    const { userId, chainId, locationId } = req.query;
     console.log(req.query)
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
     try {
@@ -19,7 +19,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (chainId) {
                     prismaResult = await prisma.factChain.findUnique({
                         where: { id: chainId as string },
-                        include: { items: true },
+                        include: {
+                            items: {
+                                include: {
+                                    fact: {
+                                        include: {
+                                            location: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
@@ -27,16 +37,80 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(404).json({ message: "Chaine non trouvée pour l'id " + chainId });
                     }
                 } else if (userId) {
-                    prismaResult = await prisma.factChain.findMany({
-                        where: { authorId: userId as string },
+                    const prismaResult = await prisma.factChain.findMany({
+                        where: {
+                            authorId: userId as string
+                        },
+                        //include items and facts in items
+                        include: {
+                            items: {
+                                include: {
+                                    fact: {
+                                        include: {
+                                            location: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     });
+                    if (prismaResult) {
+                        res.status(200).json({ data: prismaResult });
+                    }
+                    else {
+                        res.status(404).json({ message: `Chaine non trouvée pour l'utilisateur ${userId}` });
+                    }
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
                     } else {
                         res.status(404).json({ message: `Chaine non trouvée pour l'utilisateur ${userId}` });
                     }
+                } else if (locationId) {
+                    const prismaResult = await prisma.factChain.findMany({
+                        where: {
+                            items: {
+                                some: {
+                                    fact: {
+                                        locationId: locationId as string
+                                    }
+                                }
+                            }
+                        },
+                        //include items and facts in items
+                        include: {
+                            items: {
+                                include: {
+                                    fact: {
+                                        include: {
+                                            location: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    if (prismaResult) {
+                        res.status(200).json({ data: prismaResult });
+                    }
+                    else {
+                        res.status(404).json({ message: `Chaine non trouvée pour la localisation ${locationId}` });
+                    }
+
                 } else {
-                    prismaResult = await prisma.factChain.findMany();
+                    prismaResult = await prisma.factChain.findMany(
+                        {
+                            include: {
+                                items: {
+                                    include: {
+                                        fact: {
+                                            include: {
+                                                location: true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
                     } else {
@@ -139,7 +213,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             case 'PATCH':
                 {
-                    const { title, description, chainId} = req.body;
+                    const { title, description, chainId } = req.body;
 
                     // Update FactChain with provided fields
                     const updatedFactChain = await prisma.factChain.update({
@@ -149,7 +223,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             ...(description && { description: description }),
                         },
                     });
-                    
+
                     // Get the updated FactChain with items
                     const result = await prisma.factChain.findUnique({
                         where: { id: chainId as string },

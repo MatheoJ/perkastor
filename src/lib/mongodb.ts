@@ -2,6 +2,12 @@
 
 import { MongoClient, MongoClientOptions } from 'mongodb'
 
+
+export async function connectToDatabase() {
+	const client = await MongoClient.connect(process.env.DATABASE_URL!);
+	return client;
+}
+
 const uri = process.env.DATABASE_URL
 const options: MongoClientOptions = {
 }
