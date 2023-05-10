@@ -37,7 +37,9 @@ export default function mapWrapperPage() {
           insertMode={insertMode}
           setInsertMode={setInsertModeHandler}
         />
-        <Map />
+        <Map locationSelected={undefined} onLocationSelect={function (locSelected: any): void {
+          throw new Error("Function not implemented.");
+        } } />
         <SearchBar />
         {<Batf>
         </Batf>}

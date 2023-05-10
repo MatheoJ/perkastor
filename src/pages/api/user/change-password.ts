@@ -3,8 +3,8 @@ import { connectToDatabase } from '../../../lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]';
-import { PrismaClient } from '@prisma/client';
 import { ExtendedSession } from 'types/types';
+import { prisma } from '../../../lib/db'
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'PATCH') {
@@ -25,10 +25,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const oldPassword = req.body.oldPassword;
   const newPassword = req.body.newPassword;
 
-  const client = new PrismaClient();
 
   // get the user from its email
-  const user = await client.user.findFirst({
+  const user = await prisma.user.findFirst({
     where: { id: session.user.id },
   });
 
@@ -42,7 +41,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const hashedPassword = await hashPassword(newPassword);
 
   // update the user's password
-  const updatedUser = await client.user.update({
+  const updatedUser = await prisma.user.update({
     where: { id: session.user.id },
     data: { password: hashedPassword },
   });

@@ -1,43 +1,110 @@
 .searchbar {
-    position: absolute;
-    top: 100px;
-    left: 100px;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    background-color: transparent;
-    transition: background-color 0.3s ease;
-    border-radius: 5px;
-    overflow: hidden;
-  }
-  
-  /* .searchbar:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-  } */
-  
-  .searchBar__form {
-    display: none;
-    width: 300px;
-  }
-  
-  .searchBar__input{
-    background-color: transparent;
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  width: 25%;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px;
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.searching-area {
+  display: flex;
+  align-items: center;
+  height: 50px;
+}
+
+.searchBar__form {
+  display: none;
+  width: 300px;
+}
+
+.searchBar__input {
+  background-color: transparent;
+  border-radius: 15px;
+}
+
+.searchbar.active .searchBar__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 5px;
+  animation: fade-in 1s ease;
+}
+
+.searchbar.active .searchResults{
+  position: relative;
+  width: 100%;
+  min-width: 200px;
+  margin-left: 40px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  transition: fade-in 1s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
   }
 
-  .searchbar.active .searchBar__form {
-    display: flex;
-    align-items: center;
-    animation: fade-in 1s ease;
+  to {
+    opacity: 1;
   }
-  
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
+}
+
+.searchResults {
+  display: none;
+}
+
+.loading{
+  margin-top: 2px;
+  margin-left: 5px;
+}
+
+.searchResults-content {
+  width: 90%;
+  max-height: 200px;
+  background-color: transparent;
+  box-shadow: rgba(37, 0, 0, 0.35) 0px 5px 15px;
+  overflow: hidden;
+  overflow-y: auto;
+
+}
+
+.category {
+  margin-left: 10px;
+}
+
+
+.searchResults .dataItem {
+  width: 100%;
+  margin-left: 5px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.dataItem__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.searchResults-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.searchResults-content::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+.searchResults-content::-webkit-scrollbar-thumb:hover {
+  background-color: #aaa;
+}

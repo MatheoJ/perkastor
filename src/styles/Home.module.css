@@ -4,9 +4,66 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   min-height: 100vh;
   width: 100%;
+}
+
+.content {
+  position: relative;
+  padding: 0 20px;
+  text-align: justify;
+  max-width: 500px;
+  margin-bottom: 3rem;
+}
+
+/* https://lagrandehistoiredefrance.fr/ */
+.headline {
+  color: #fff;
+  font-weight: bold;
+  font-size: calc(2.5rem + 3vw);
+  font-family: 'Ibarra Real Nova';
+  text-transform: uppercase;
+}
+
+.subtitle {
+  color: #fff;
+  font-size: 20px !important;
+  line-height: 27px !important;
+  font-family: 'Ibarra Real Nova';
+  margin: 0;
+}
+
+.banner {
+  position: relative;
+  width: 100%;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  margin-bottom: 10px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  text-align: center;
+  background-position: center top;
+}
+
+.imageInfo {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(84, 108, 130, 0.5);
+  color: #fff;
+  font-size: calc(0.3rem + 0.5vw);
+  font-family: 'Ibarra Real Nova';
+  text-align: right;
+  padding-right: 2em;
+}
+
+.imageInfo a {
+  pointer-events: auto;
+  cursor: pointer;
+  color: #F1B706;
+  text-decoration: none;
 }
 
 .bgImage {
@@ -18,7 +75,6 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  z-index: -1;
 }
 
 .bgText {
@@ -28,7 +84,6 @@
   font-weight: bold;
   border: 3px solid #f1f1f1;
   position: relative;
-  z-index: 1;
   width: 80%;
   max-width: 800px;
   padding: 20px;
@@ -54,4 +109,40 @@
 .bgText a {
   font-size: 1.2rem;
   margin-top: 2rem;
+}
+
+.blob1 {
+  position: absolute;
+  width: 206.11px;
+  height: 246.24px;
+
+  background: #C4C4C4;
+  transform: rotate(-29.33deg);
+}
+
+.blob2 {
+  position: absolute;
+  width: 171px;
+  height: 157px;
+
+  background: #C4C4C4;
+}
+
+.blob3 {
+  position: absolute;
+  width: 76px;
+  height: 94px;
+
+  background: #C4C4C4;
+  transform: rotate(45.33deg);
+}
+
+.blobsContainer {
+  position: relative;
+  width: 100%;
+  height: 200px;
+}
+
+.bgImage {
+  background-image: url('/resources/arpit-rastogi-BvRTUMHJAiQ-unsplash.jpg');
 }

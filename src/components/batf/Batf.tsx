@@ -54,7 +54,7 @@ export default class Batf extends React.Component<BatfProps, BatfState> {
             <div className={`batf ${this.classAssigner()}`}>
                 {
                     (() => {
-                        if (state != "minimized"){
+                        if (state !== "minimized"){
                             return <>
                                 <BatfTabContainer onFullScreenClick={this.maximize} onMinimizeClick={this.hide}></BatfTabContainer>
                             </>;

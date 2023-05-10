@@ -1,6 +1,7 @@
 import { Fact, PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
+import { ExtendedSession, SearchFilters } from 'types/types';
 import { ExtendedSession, SearchFilters, SearchResult } from 'types/types';
 import { connectToDatabase } from '../../lib/db';
 import { authOptions } from './auth/[...nextauth]';
@@ -52,6 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (query) {
                     if (filters.event || filters.anecdote){
                         prismaResultFact = await client.fact.findMany({
+                            take: 10,
                             where: {
                                 
                                 OR: [
@@ -65,6 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     if (filters.chain){
                         prismaResultChain = await client.factChain.findMany({
+                            take: 10,
                             where: {
                                 OR: [
                                     { title: { contains: query as string } },
@@ -76,6 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     if (filters.location){
                         prismaResultLocation = await client.location.findMany({
+                            take: 10,
                             where: {
                                 name: { contains: query as string }
                             }
@@ -88,6 +92,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             date = undefined;
                         }
                         prismaResultHistoricalFigure = await client.historicalPerson.findMany({
+                            take: 10,
                             where: {
                                 OR: [
                                     { name: { contains: query as string } },
@@ -100,6 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     if (filters.user){
                         prismaResultUser = await client.user.findMany({
+                            take: 10,
                             where: {
                                 name: { contains: query as string }
                             }
@@ -115,7 +121,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         chains: prismaResultChain,
                         locations: prismaResultLocation,
                         historicalPersons: prismaResultHistoricalFigure,
-                        users: prismaResultUser
+                        users: prismaResultUser,
+                        // TODO: modify this to return the number of results for each type
+                        slice: function (arg0: number, arg1: number): unknown {
+                            throw new Error('Function not implemented.');
+                        },
+                        length: 0
                     }
 
                     res.status(200).json({ data: resultat });

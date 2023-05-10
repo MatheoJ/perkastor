@@ -2,3 +2,8 @@
     background-size: cover;
     background-position: center;
 }
+
+.factListContributions {
+    width: 93%;
+    margin-top: 10%;
+}

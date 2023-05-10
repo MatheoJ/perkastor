@@ -1,7 +1,5 @@
-import { connectToDatabase } from '../../../lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getServerSession } from 'next-auth';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../../lib/db'
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method != "GET"){
@@ -12,8 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     console.log(id);
 
     try{
-        const client: PrismaClient = new PrismaClient();
-        const prismaResult = await client.user.findUnique({
+        const prismaResult = await prisma.user.findUnique({
             where: {
                 id: Array.isArray(id) ? id[0] : id
             }
