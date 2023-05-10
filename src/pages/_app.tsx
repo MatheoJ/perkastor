@@ -21,6 +21,7 @@ import "~/components/batf/Batf.scss";
 import "~/styles/mapStyle.scss";
 import "~/components/searchbar/searchbar.scss"; 
 import "~/styles/factListContributions.css";
+import "~/components/searchbar/filterschecklist.css";
 
 import Layout from "../components/layout/layout";
 import 'slick-carousel/slick/slick.css';

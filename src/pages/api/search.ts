@@ -57,9 +57,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             where: {
                                 
                                 OR: [
-                                    { title: { contains: query as string } },
-                                    { content: { contains: query as string } },
-                                    { author: { name: { contains: query as string } } },
+                                    { title: { contains: query as string, mode: "insensitive" } },
+                                    { content: { contains: query as string, mode: "insensitive"} },
+                                    { author: { name: { contains: query as string, mode: "insensitive" } } },
                                 ],
                                 isEvent: isEventValue
                             },
@@ -75,9 +75,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             take: 10,
                             where: {
                                 OR: [
-                                    { title: { contains: query as string } },
-                                    { description: { contains: query as string } },
-                                    { author: { name: { contains: query as string } } },
+                                    { title: { contains: query as string, mode: "insensitive" } },
+                                    { description: { contains: query as string, mode: "insensitive" } },
+                                    { author: { name: { contains: query as string, mode: "insensitive" } } },
                                 ]
                             }
                         });
@@ -86,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         prismaResultLocation = await client.location.findMany({
                             take: 10,
                             where: {
-                                name: { contains: query as string }
+                                name: { contains: query as string, mode: "insensitive" }
                             }
                         });
                     }
@@ -100,10 +100,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             take: 10,
                             where: {
                                 OR: [
-                                    { name: { contains: query as string } },
+                                    { name: { contains: query as string, mode: "insensitive" } },
                                     { birthDate: date },
                                     { deathDate: date },
-                                    {shortDesc: {contains: query as string}}
+                                    {shortDesc: {contains: query as string, mode: "insensitive"}}
                                 ]
                             }
                         });

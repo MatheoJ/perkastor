@@ -1,95 +1,119 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import Tabs from "./Tabs";
 import Tab from "./Tab";
+import FactChainContributions from "../FactChainContributions";
+import FactListContributions from "../FactListContributions";
+import ChainListContributions from "../ChainListContributions";
+import FactChainItem from "../FactChainItem";
+import ChainList from "../ChainList";
 
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
 import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
-import { bool } from "aws-sdk/clients/signer";
 import FactList from "../FactList";
-import { Fact } from "@prisma/client";
-import { selectSearchBarResultEvent } from "~/events/SelectSearchBarResultEvent";
-import { selectHistoricalFigure } from "~/events/SelectSearchBarResultEvent";
-import { selectEventFromSearchBar } from "~/events/SelectSearchBarResultEvent";
+import { Fact, Chain, HistoricalPerson } from "@prisma/client";
+import { useSession } from 'next-auth/react';
+import HistoricalFigureView from "./HistoricalFiguresView";
+import { contributionClickEvent } from "~/events/ContributionClickEvent";
+import { set } from "react-hook-form";
 
-interface BaftTabContainerProps{
-    onMinimizeClick?: () => void;
-    onFullScreenClick?: () => void;
-    selectedTab?: number;
-}
+const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) => {
+    const [markerSelected, setMarkerSelected] = useState(false);
+    const [facts, setFacts] = useState([]);
+    const [editMod, setEditMod] = useState(false);
+    const [chains, setChains] = useState([]);
+    const [historicalFigure, setHistoricalFigure] = useState(null);
+    const [historicalFigureId, setHistoricalFigureId] = useState(null);
+    const [locationId, setLocationId] = useState(null);
+    const {data : session, status, update} = useSession({required: false});
+    const handleMapChange = bus.subscribe(selectMapEvent, event => {
+        const geoInfos = event.payload;
+        setMarkerSelected(true);
+        setLocationId(geoInfos.properties.id);
+    });
+    const handleEditModChange = bus.subscribe(contributionClickEvent, event => {
+        const newEditMod = !editMod;
+        setEditMod(newEditMod)
+    });
+    const handleHistoricalFigureChange = bus.subscribe("historicalFigure", async event => {
+      const historicalFigureId = event.payload;
+      setHistoricalFigure(historicalFigureId);
+    });
 
-interface BatfTabContainerState{
-    selectedTab: number;
-    markerSelected: bool;
-    facts: Fact[];
-    editMod: bool;
-    chains: Chain[];
-}
+    useEffect(() => {
+      if(!markerSelected){
+        setFacts([]);
+        setChains([]);
+        setHistoricalFigure(null);
+      }
+    }, [markerSelected]);
+    useEffect(() => {
+      async function fetchData() {
+        if(!editMod){
+          let response = await fetch(`/api/facts?locationId=${locationId}`);
+          response = await response.json();
+          console.log("response facts", response)
+          let response2 = await fetch(`/api/chains?locationId=${locationId}`);
+          response2 = await response2.json();
+          console.log("response chains", response2)
+          response.data ? setFacts(response.data) : setFacts([]);
+          response2.data ? setChains(response2.data) : setChains([]);
+        }
+      }
+      fetchData();
+    }, [locationId]);
 
-export default class TabContainer extends React.Component<BaftTabContainerProps, BatfTabContainerState> {
-    markerSelected: boolean;
-
-    constructor(props: BaftTabContainerProps) {
-        super(props);
-        this.state = {
-            selectedTab: 0,
-            markerSelected: false,
-            facts : [],
-            editMod : true,
-        };
-
-        this.onMapChange();
-    }
-
-    onMapChange = () => {
-        bus.subscribe(selectMapEvent, async event => {
-            const geoInfos = event.payload;
-
-            this.setState({
-                markerSelected: true
-            });
-
-            console.log(this.state.markerSelected);
-            //console.log(geoInfos);
-            let response = await fetch(`/api/facts?locationId=${geoInfos.properties.id}`)
+    useEffect(() => {
+      async function fetchData() {
+        if(!editMod){
+            setFacts([]);
+            setChains([]);
+            setHistoricalFigure(null);
+        }
+        else{
+          console.log("session", session)
+          let userId = session?.user?.id;
+          if(userId != null){
+            let response = await fetch(`/api/facts?userId=${userId}`);
             response = await response.json();
-            console.log(response);
-            this.setState({
-                facts: response[0].facts});
-            /*if (response != undefined){
-                console.log("ici");
-                console.log(response);
+            console.log("response facts2", response)
+            let response2 = await fetch(`/api/chains?userId=${userId}`);
+            response2 = await response2.json();
+            console.log("response chains2", response2)
+            response.data ? setFacts(response.data) : setFacts([]);
+            response2.data ? setChains(response2.data) : setChains([]);
+          }
+        }
+      }
+      fetchData();
+    }, [editMod]);
 
-                console.log()
-                this.setState({
-                    facts: response[0].facts,
-                    markerSelected: true
-                });
-            }*/
-        });
-    }
-
-    setFacts = (facts: Fact[]) => {
-        this.setState({
-            facts: facts,
-            markerSelected: true
-        });
-    }
+    useEffect(() => {
+        async function fetchData() {
+            if (historicalFigureId != null) {
+                let response = await fetch(`/api/historical-figures?id=${historicalFigureId}`);
+                response = await response.json();
+                setHistoricalFigure(response[0]);
+            }
+        }
+        fetchData();
+    }, [historicalFigureId]);
 
     onSearchResultReceived = () => {
         bus.subscribe(selectHistoricalFigure, event => {
-          const handlePayload = async () => {
             const payload = await Promise.resolve(event.payload);
-          };
+          const handlePayload = async () => {
           handlePayload().catch(error => {
-            console.error("Error handling payload:", error);
+          };
           });
+            console.error("Error handling payload:", error);
         });
-
         bus.subscribe(selectEventFromSearchBar, event => {
+
             const handlePayload = async () => {
               const payload = await Promise.resolve(event.payload);
-              this.setFacts([payload]);
+              setFacts(payload);
+              setMarkerSelected(true);
             };
             handlePayload().catch(error => {
               console.error("Error handling payload:", error);
@@ -97,47 +121,4 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
           });
       };
 
-    selectedComponent(component: string){
-        if(!this.state.markerSelected){
-            return <BatfNoMarkerSelected/>
-        }
-        else{
-            switch (component) {
-                case "Évenements":
-                    return <FactList facts={this.state.facts}/>;
-                
-                case "Anecdotes":
-                    return <></>;
-                
-                case "Chaines":
-                    return <></>;
-            }
-        }
-    }
-
-    render() {
-        return (
-            <>
-                <div className={`batf-toolbar`}>
-                    <button className="toggle" onClick={this.props.onFullScreenClick}>
-                        <i className="fa fa-expand" style={{color:'#F1B706'}}></i>
-                    </button>
-                    <button className="toggle" onClick={this.props.onMinimizeClick}>
-                        <i className="fa fa-minus" style={{color:'#F1B706'}}></i>
-                    </button>
-                </div>
-                <Tabs>
-                    <Tab title="Événements">
-                        {this.selectedComponent("Évenements")}
-                    </Tab>
-                    <Tab title="Anecdotes">
-                        {this.selectedComponent("Anecdotes")}
-                    </Tab>
-                    <Tab title="Chaines">
-                        {this.selectedComponent("Chaines")}
-                    </Tab>
-                </Tabs>
-            </>
-        );
-    }
-}
+    

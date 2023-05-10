@@ -21,7 +21,22 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         return;
     }
 
-    const { toUpdate, toUpdateId, fileNameForm, fileType} = req.body;
+    const { toUpdate, toUpdateId, fileName, fileType} = req.body;
+    if (!fileName) {
+        res.status(401).json({ message: 'Nom de fichier manquant' });
+        return;
+    }
+
+    if (!fileType) {
+        res.status(401).json({ message: 'Type de fichier manquant' });
+        return;
+    }
+
+    if (fileType !== "image/jpeg" && fileType !== "image/png") {
+        res.status(401).json({ message: 'Type de fichier non supporté' });
+        return;
+    }
+
     if (toUpdate !== "user" && toUpdate !== "fact" && toUpdate !== "chain" && toUpdate !== "historicalPerson") {
         res.status(401).json({ message: 'Mauvais type de donnée à mettre à jour !' });
         return;
@@ -31,8 +46,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         return;
     }
 
+    // remove extension from fileName
+    const fileNameWithoutExtension = fileName.split('.')[0];
+
     // create a new image name
-    const fileName = `${toUpdate}-${toUpdateId}-${fileNameForm.replace('-', '')}`;
+    const fileNameDB = `${toUpdate}-${toUpdateId}-${fileNameWithoutExtension.replace('-', '_').replace(' ', '_')}`;
 
     // upload the image to the cloud storage (AWS)
 
@@ -43,8 +61,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     });
     const s3Params = {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: fileName,
-        ContentType: `image/${fileType}`,
+        Key: fileNameDB,
+        ContentType: fileType,
         ACL: 'public-read'
     };
 
@@ -56,7 +74,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             }
             const returnData = {
                 signedRequest: data,
-                url: `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileName}`,
+                url: `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileNameDB}`,
             };
             switch (toUpdate) {
                 case "user":

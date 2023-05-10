@@ -1,4 +1,4 @@
-import { Fact, FactChain, User, Location, HistoricalPerson } from "@prisma/client"
+import { Fact, FactChain, User, Location, HistoricalPerson, FactChainItem } from "@prisma/client"
 
 export type ExtendedSession = {
     user: {
@@ -28,4 +28,32 @@ export type SearchResult = {
     users: User[],
     locations: Location[],
     historicalPersons: HistoricalPerson[]
+}
+
+export interface FactProps extends Fact {
+    author: {
+        id: string;
+        name: string;
+    };
+    tags: {
+        id: string;
+        name: string;
+    }[];
+    location: {
+        id: string;
+        name: string;
+    };
+    personsInvolved: {
+        id: string;
+        name: string;
+    }[];
+    keyDates : Date[];
+}
+
+export interface FactChainItemProps extends FactChainItem {
+    factChain: {
+        id: string;
+        name: string;
+    };
+    fact: FactProps;
 }

@@ -49,6 +49,21 @@
   transition: fade-in 1s ease;
 }
 
+.checklist-area {
+  display: none;
+}
+
+.searchbar.active .checklist-area{
+  position: relative;
+  width: 100%;
+  min-width: 200px;
+  margin-left: 40px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  transition: fade-in 1s ease;
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;

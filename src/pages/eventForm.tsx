@@ -1,13 +1,20 @@
 // pages/event.tsx
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, set, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import MapCoordPicker from '~/components/MapCoordPicker';
+import { list } from 'postcss';
+import DatePicker from "react-multi-date-picker"
+import { Calendar } from "react-multi-date-picker";
+import DatePanel from "react-multi-date-picker/plugins/date_panel"
+import HistoricalFigure from "../components/batf/HistoricalFiguresView";
+import HistoricalFigureList from '~/components/batf/HistoricalFiguresList';
 import { useRef, useState } from "react";
-import MapCoordPicker from "~/components/MapCoordPicker";
-import DatePicker from "react-multi-date-picker";
-import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import CropperView from "~/components/cropper/CropperView";
-import swal from '@sweetalert/with-react';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 import { useRouter } from "next/router";
-
+import { useSession } from "next-auth/react";
+import { Button } from '@mui/material';
 interface EventData {
   name: string;
   typeLieux: string;
@@ -17,9 +24,73 @@ interface EventData {
   coordinatesLong: number;
   description: string;
   listOfDates: string;
+  idHistoricalFigure: string[];
 }
 
+const fact = {
+  id: "1",
+  isEvent: true,
+  createdAt: new Date(1990, 4, 7),
+  updatedAt: new Date(1990, 4, 7),
+  title: "Sample Fact Title",
+  shortDesc: "This is a short description of the fact.",
+  content: "This is the full content of the fact.",
+  keyDates: [new Date(1990, 4, 7)],
+  bannerImg: "",
+  verified: true,
+  video: [],
+  audio: [],
+  authorId: "oui",
+  locationsId: "",
+  sources: []
+}
+
+
+const histFig1 = {
+  id: "1",
+  name: "Pierre Paul Jacques",
+  birthDate: new Date(1990, 4, 7),
+  deathDate: new Date(1985, 4, 7),
+  image: "",
+  shortDesc: "C'est moi !",
+  content: "coucou",
+  facts: [fact]
+};
+
+const histFig2 = {
+  id: "2",
+  name: "Pierpoljak",
+  birthDate: new Date(1990, 4, 7),
+  deathDate: new Date(1985, 4, 7),
+  image: "",
+  shortDesc: "C'est moi !",
+  content: "coucou",
+  facts: [fact]
+};
+
+const histFig3 = {
+  id: "3",
+  name: "Test",
+  birthDate: new Date(1990, 4, 7),
+  deathDate: new Date(1985, 4, 7),
+  image: "",
+  shortDesc: "C'est moi !",
+  content: "coucou",
+  facts: [fact]
+};
+
+const histFigList = [histFig1, histFig2, histFig3]
+
+
 const Event = () => {
+  const [uploading, setUploading] = useState(false);
+  const router = useRouter();
+  const MySwal = withReactContent(Swal)
+  // need to be authorized to access this page
+  const { data: session, status, update } = useSession({
+    required: true
+  })
+
   const {
     register,
     handleSubmit,
@@ -44,6 +115,7 @@ const Event = () => {
   };
 
   const onSubmit = async (data: EventData) => {
+
     var dataEvent;
     var location = {
       id: data.idLieux,
@@ -55,12 +127,13 @@ const Event = () => {
     };
     dataEvent = {
       title: data.name,
-      shortDesc: data.description,
+      shortDesc: "",
       content: data.description,
       location: location,
       keyDates: data.listOfDates
     };
 
+    setUploading(true);
     const response = await fetch('/api/facts', {
       method: 'POST',
       body: JSON.stringify(dataEvent),
@@ -72,35 +145,65 @@ const Event = () => {
     // if response is ok, update the fact's image
     if (response.ok) {
       const responseData = await response.json();
-      console.log(responseData);
       // change image related to the fact whose id is responseData.id
-      const image = await ref.current?.triggerUpload(responseData.id);
-      if (!image) {
+
+      const image = await ref.current?.triggerUpload(responseData.data.id);
+
+      if (image) {
+        setUploading(false);
+        // display a sweet alert popup to inform the user of the success
+        MySwal.fire({
+          title: "Evènement ajouté avec succès",
+          icon: "success",
+          showCancelButton: false,
+          confirmButtonText: "Ok",
+        }).then(async () => {
+          router.push("/mapWrapper");
+        })
+
+      } else {
         // display a sweet alert popup to inform the user of the error
         // and ask him if he wants to retry to update the fact's image
         // if he does, call the updateFactImage function again
         // if he doesn't, redirect to his profile page
 
-        swal.fire({
+        MySwal.fire({
           title: "Erreur lors de l'ajout de l'image de l'évènement",
           text: "Voulez-vous réessayer ?",
           icon: "error",
           showCancelButton: true,
           confirmButtonText: "Réessayer",
           cancelButtonText: "Annuler",
-        }).then((value) => {
-          switch (value) {
-            case "retry":
-              ref.current?.triggerUpload();
-              break;
-            case "cancel":
-              // use router to redirect to the profile page
-              useRouter().push("/profile");
-              break;
-            default:
-              useRouter().push("/profile");
-              break;
+        }).then(async () => {
+          const value = await MySwal.fire();
+          if (value) {
+            setUploading(true);
+            const retryUploadImage = await ref.current?.triggerUpload();
+            setUploading(false);
+            if (retryUploadImage) {
+              // display a sweet alert popup to inform the user of the success
+              MySwal.fire({
+                title: "Evènement ajouté avec succès",
+                icon: "success",
+                showCancelButton: false,
+                confirmButtonText: "Ok",
+              }).then(async () => {
+                router.push("/mapWrapper");
+              })
+            } else {
+              MySwal.fire({
+                title: "L'image n'a pas pu être ajoutée à l'évènement",
+                icon: "error",
+                showCancelButton: false,
+                confirmButtonText: "Ok",
+              }).then(async () => {
+                router.push("/mapWrapper");
+              })
+            }
+            setUploading(false);
+            return;
           }
+          router.push("/mapWrapper");
         })
       };
     }
@@ -197,11 +300,6 @@ const Event = () => {
         <label htmlFor="idLieux">Id du Lieu</label>
         <input type="text" id="idLieux" {...register("idLieux")} readOnly />
 
-        <MapCoordPicker
-          onMapClick={handleMapClick}
-          locSelected={locationSelected}
-          onLocationSelect={handlelLocationSelected}
-        />
 
         <h3>Dates de l'évènement</h3>
         <Controller
@@ -220,7 +318,11 @@ const Event = () => {
           )}
         />
 
-        <button type="submit">Submit</button>
+        <h3>Résultats de la recherche des Personnages Historiques associés</h3>
+        <div title="Historical_People" className="idiv">
+          <HistoricalFigureList historicalPersonList={histFigList} />
+        </div>
+        <Button className='button_submit' id='q1.button' type="submit" disabled={uploading}>Enregistrer</Button>
       </form>
     </div>
   );

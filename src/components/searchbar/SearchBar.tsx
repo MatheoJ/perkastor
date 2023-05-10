@@ -14,6 +14,14 @@ function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [filters, setFilters] = useState<SearchFilters>({
+    event: true,
+    anecdote: false,
+    historicalFigure: true,
+    location: true,
+    chain: true,
+    user: true,
+  });
 
   const toggleSearchBar = () => {
     setShowSearchBar(!showSearchBar);
@@ -24,7 +32,7 @@ function SearchBar() {
     setIsLoading(true);
 
     // passer les parametres sélectionnés comme filtre puis ajouter &filtersParam=${JSON.stringify({})} a la fin de l'url
-    const results = await fetch(`/api/search?query=${searchTerm}`);
+    const results = await fetch(`/api/search?query=${searchTerm}&filtersParam=${JSON.stringify(filters)}`);
     const resultat = await results.json();
 
     setSearchResults(resultat.data);
@@ -142,9 +150,9 @@ function SearchBar() {
               setSearchResults([]);
             }}
           />
-          
+
         </form>
-        {isLoading && <div className="loading" ><CircularProgress size={24} color="inherit"/></div>}
+        {isLoading && <div className="loading" ><CircularProgress size={24} color="inherit" /></div>}
       </div>
       {searchResults && Object.values(searchResults).some(cat => cat.length > 0) && (
         <div className="searchResults">
@@ -162,6 +170,18 @@ function SearchBar() {
           </div>
         </div>
       )}
+      {showChecklist &&
+        <div className="checklist-area">
+          <FiltersChecklist filters={{
+            event: true,
+            anecdote: false,
+            chain: true,
+            historicalFigure: true,
+            location: true,
+            user: true
+          }} setFilters={setFilters} />
+        </div>
+      }
     </div >
   );
 }
