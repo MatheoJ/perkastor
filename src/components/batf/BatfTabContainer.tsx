@@ -1,10 +1,6 @@
 import React, {useState} from "react";
 import Tabs from "./Tabs";
 import Tab from "./Tab";
-import FactChainContributions from "../FactChainContributions";
-import FactListContributions from "../FactListContributions";
-import ChainListContributions from "../ChainListContributions";
-import {Chain} from "../../types/Chain";
 
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
@@ -12,7 +8,9 @@ import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
 import { bool } from "aws-sdk/clients/signer";
 import FactList from "../FactList";
 import { Fact } from "@prisma/client";
-import HistoricalFigure from "./HistoricalFigures";
+import { selectSearchBarResultEvent } from "~/events/SelectSearchBarResultEvent";
+import { selectHistoricalFigure } from "~/events/SelectSearchBarResultEvent";
+import { selectEventFromSearchBar } from "~/events/SelectSearchBarResultEvent";
 
 interface BaftTabContainerProps{
     onMinimizeClick?: () => void;
@@ -24,8 +22,6 @@ interface BatfTabContainerState{
     selectedTab: number;
     markerSelected: bool;
     facts: Fact[];
-    editMod: bool;
-    chains: Chain[];
 }
 
 export default class TabContainer extends React.Component<BaftTabContainerProps, BatfTabContainerState> {
@@ -36,26 +32,17 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
         this.state = {
             selectedTab: 0,
             markerSelected: false,
-            facts : [],
-            editMod : true,
+            facts : []
         };
+
         this.onMapChange();
-        this.onChangeEditMod();
-    }
-    onChangeEditMod = () => {
-        bus.subscribe("editMod", async event => {
-            const editMod = event.payload;
-            this.setState({
-                editMod: editMod
-            });
-        });
+        this.onSearchResultReceived();
     }
 
     onMapChange = () => {
         bus.subscribe(selectMapEvent, async event => {
             const geoInfos = event.payload;
 
-           // console.log(event.payload.toString());
             this.setState({
                 markerSelected: true
             });
@@ -79,33 +66,51 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
             }*/
         });
     }
-    selectedComponent(component: string){
 
-        /*if(!this.state.markerSelected){
+    setFacts = (facts: Fact[]) => {
+        this.setState({
+            facts: facts,
+            markerSelected: true
+        });
+    }
+
+    onSearchResultReceived = () => {
+        bus.subscribe(selectHistoricalFigure, event => {
+          const handlePayload = async () => {
+            const payload = await Promise.resolve(event.payload);
+          };
+          handlePayload().catch(error => {
+            console.error("Error handling payload:", error);
+          });
+        });
+
+        bus.subscribe(selectEventFromSearchBar, event => {
+            const handlePayload = async () => {
+              const payload = await Promise.resolve(event.payload);
+              this.setFacts([payload]);
+            };
+            handlePayload().catch(error => {
+              console.error("Error handling payload:", error);
+            });
+          });
+      };
+
+    selectedComponent(component: string){
+        if(!this.state.markerSelected){
             return <BatfNoMarkerSelected/>
         }
-        else{*/
+        else{
             switch (component) {
                 case "Évenements":
-                  if (this.state.editMod){
-                    return <FactListContributions facts={this.state.facts}/>;
-                  }
-                  else{
                     return <FactList facts={this.state.facts}/>;
-                  }
                 
-                case "Personnage Historique":                    
-                    return <HistoricalFigure/>;
+                case "Anecdotes":
+                    return <></>;
                 
                 case "Chaines":
-                  if(this.state.editMod){
-                    return <ChainListContributions chains={this.state.chains}/>;
-                  }
-                  else{
-                    return <ChainList chains={this.state.chains}/>;
-                  }
+                    return <></>;
             }
-       // }
+        }
     }
 
     render() {
@@ -123,8 +128,8 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
                     <Tab title="Événements">
                         {this.selectedComponent("Évenements")}
                     </Tab>
-                    <Tab title="P">
-                        {this.selectedComponent("Personnage Historique")}
+                    <Tab title="Anecdotes">
+                        {this.selectedComponent("Anecdotes")}
                     </Tab>
                     <Tab title="Chaines">
                         {this.selectedComponent("Chaines")}
