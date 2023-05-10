@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Fact } from '@prisma/client'
+import { Fact as FactType } from '@prisma/client'
 
-interface FactProps extends Fact {
+interface FactProps extends FactType {
     author: {
         id: string;
         name: string;
@@ -11,18 +11,22 @@ interface FactProps extends Fact {
         id: string;
         name: string;
     }[];
-    locations: {
+    location: {
         id: string;
         name: string;
-    }[];
+    };
     personsInvolved: {
         id: string;
         name: string;
     }[];
 }
 
-const Fact: React.FC<FactProps> = ( fact ) => {
+interface Props {
+    fact: FactProps;
+}
 
+const Fact: React.FC<Props> = ( props ) => {
+    const { fact } = props;
     return (
         <div className="fact">
             <div className="factHead">
@@ -32,11 +36,7 @@ const Fact: React.FC<FactProps> = ( fact ) => {
                 <div className="factHeadBottom">
                     <div className="factHeadBottomLeft">
                         <ul>
-                            {fact.locations.map((location) => (
-                                <li key={location.id}>{location.name}</li>
-                            ))
-                            }
-
+                            <li key={fact.location.id}>{fact.location.name}</li>
                         </ul>
                     </div>
                     <div className="factHeadBottomRight">
@@ -52,18 +52,14 @@ const Fact: React.FC<FactProps> = ( fact ) => {
                 </div>
                 <div className='content-right'>
                     <div className="factImage">
-                        <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                        {/*<Image src={fact.bannerImg} alt="" width={300} height={200} />*/}
                     </div>
                     <ul>
                         {fact.personsInvolved.map((person) => (
                             <li key={person.id}>{person.name}</li>
                         ))}
                     </ul>
-                    <ul>
-                        {fact.tags.map((tag) => (
-                            <li key={tag.id}>{tag.name}</li>
-                        ))}
-                    </ul>
+                    
                 </div>
             </div>
         </div>

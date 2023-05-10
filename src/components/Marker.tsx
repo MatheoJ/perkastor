@@ -110,8 +110,6 @@ const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
             }
           });
         }
-
-        bus.publish(selectMapEvent({ lat: lngLat.lat, lng: lngLat.lng}));
       });
     }
 

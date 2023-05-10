@@ -6,6 +6,8 @@ import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
 import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
 import { bool } from "aws-sdk/clients/signer";
+import FactList from "../FactList";
+import { Fact } from "@prisma/client";
 
 interface BaftTabContainerProps{
     onMinimizeClick?: () => void;
@@ -16,6 +18,7 @@ interface BaftTabContainerProps{
 interface BatfTabContainerState{
     selectedTab: number;
     markerSelected: bool;
+    facts: Fact[];
 }
 
 export default class TabContainer extends React.Component<BaftTabContainerProps, BatfTabContainerState> {
@@ -23,21 +26,40 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
 
     constructor(props: BaftTabContainerProps) {
         super(props);
-        
         this.state = {
             selectedTab: 0,
-            markerSelected: false
-        }
+            markerSelected: false,
+            facts : []
+        };
+        this.onMapChange();
+    }
+    onMapChange = () => {
+        bus.subscribe(selectMapEvent, async event => {
+            const geoInfos = event.payload;
 
-        bus.subscribe(selectMapEvent, event => {
-            const { lat, lng } = event.payload;
-            
             this.setState({
                 markerSelected: true
             });
+
+            console.log(this.state.markerSelected);
+            //console.log(geoInfos);
+            let response = await fetch(`/api/facts?locationId=${geoInfos.properties.id}`)
+            response = await response.json();
+            console.log(response);
+            this.setState({
+                facts: response[0].facts});
+            /*if (response != undefined){
+                console.log("ici");
+                console.log(response);
+
+                console.log()
+                this.setState({
+                    facts: response[0].facts,
+                    markerSelected: true
+                });
+            }*/
         });
     }
-
     selectedComponent(component: string){
         if(!this.state.markerSelected){
             return <BatfNoMarkerSelected/>
@@ -45,7 +67,7 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
         else{
             switch (component) {
                 case "Évenements":
-                    return <></>;
+                    return <FactList facts={this.state.facts}/>;
                 
                 case "Anecdotes":
                     return <></>;

@@ -2,7 +2,7 @@
 import { useForm } from 'react-hook-form';
 import MapCoordPicker from '~/components/MapCoordPicker';
 
-interface EventData {
+interface ChainDto {
   name: string;
   coordinatesLat: number;
   coordinatesLong: number;
@@ -10,8 +10,6 @@ interface EventData {
   dateStart: Date;
   dateEnd: Date;
 }
-
-
 
 const ChainForm = () => {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<EventData>();

@@ -138,7 +138,7 @@ model Location {
     geometry        String // "Point"
     latitude        Float
     longitude       Float
-    area            Float // in square kilometers
+    area            Float? // in square kilometers
     type            String // "ville", "pays", "region", "departement", "commune", "lieu-dit", "autre
     name            String // "Paris", "France", "Ile-de-France", "Seine"
     facts           Fact[] @relation("FactLocation")

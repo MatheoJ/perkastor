@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import maplibregl from "maplibre-gl";
 import { MongoClient } from "mongodb";
 import "maplibre-gl/dist/maplibre-gl.css";
-
+import { selectMapEvent } from "../events/map/SelectMapEvent";
+import { bus } from "../utils/bus";
 interface DisplayLocationProps {
   map: maplibregl.Map;
   locationSelected : any;
@@ -76,7 +77,8 @@ const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected
       'Nom: ' + name 
       )
       .addTo(map);
-
+      
+      bus.publish(selectMapEvent(e.features[0]));
       onLocationSelect(e.features[0]);
 
     });
