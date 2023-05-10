@@ -4,7 +4,7 @@ import SideBar from '../SideBar';
 import Fact from '../Fact';
 import FactList from '../FactList';
 import { useState } from 'react';
-import FactChain from '../FactChain';
+import FactChain from '../FactChainContributions';
 import FactListContributions from '../FactListContributions';
 
 const MainNavigation: NextPage = () => {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Fact from './Fact';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Add from '@material-ui/icons/Add';
+import Swal from 'sweetalert2';
 
 interface FactChainProps {
   facts: {
@@ -41,13 +42,24 @@ const FactChain: React.FC<FactChainProps> = ({ facts }) => {
   const [factList, setFactList] = useState(facts);
 
   const handleDeleteFact = (factIndex: number) => {
-    const newFactList = [...factList];
-    newFactList.splice(factIndex, 1);
-    setFactList(newFactList);
+    Swal.fire({
+      title: 'Êtes-vous sûr de vouloir supprimer cet évènement ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Supprimer',
+      cancelButtonText: 'Annuler',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const newFactList = [...factList];
+        newFactList.splice(factIndex, 1);
+        setFactList(newFactList);
+        Swal.fire('Évènement supprimé', '', 'success');
+      }
+    });
   };
 
   return (
-    <div className="factChain">
+    <div className="factListContributions">
       {factList.map((fact, index) => (
         <div
           key={fact.id}
@@ -55,11 +67,11 @@ const FactChain: React.FC<FactChainProps> = ({ facts }) => {
         >
           <div className="factTitle">
             <img src={fact.bannerImg} alt="fact image" id='imageFactList' />
-            <p>&thinsp;&thinsp;{fact.title} <br/> &thinsp;&thinsp;{fact.from}</p>
+            <div className='factTitleText'> <p>{fact.title} <br/> {fact.from}</p> </div>
           </div>
           <div className='deleteBtn'>
             <button className="factActionBtn" onClick={() => handleDeleteFact(index)}>
-            <DeleteIcon />
+              <DeleteIcon />
             </button>
           </div>
         </div>
@@ -71,7 +83,6 @@ const FactChain: React.FC<FactChainProps> = ({ facts }) => {
       </div>
     </div>
   );
-
 };
 
 export default FactChain;
