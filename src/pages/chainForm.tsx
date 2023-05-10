@@ -1,5 +1,6 @@
 // pages/event.tsx
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 import MapCoordPicker from '~/components/MapCoordPicker';
 
 interface ChainDto {
@@ -9,21 +10,28 @@ interface ChainDto {
   description: string;
   dateStart: Date;
   dateEnd: Date;
+  access: boolean;
+  tags: string[];
+  historicalFigures: string[];
+  facts: string[];
+  contributions: string[];
+  searchEvent: string;
 }
 
 const ChainForm = () => {
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<EventData>();
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<ChainDto>();
 
-  const onSubmit = (data: EventData) => {
+  const router = useRouter();
+
+  const onSubmit = (data: ChainDto) => {
     console.log(data);
-
-    window.location.href = "/mapWrapper";
+    router.push('/mapWrapper');
   };
 
   return (
     <div className="container" >
       <h1>Constitution d&apo;sune chaîne</h1>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="name">Nom de la chaîne</label>
         <input
           type="text"
@@ -58,7 +66,7 @@ const ChainForm = () => {
           type="text"
           id="search-event"
           placeholder="Prise de la Bastille"
-          {...register('search-event', { required: false })}
+          {...register('searchEvent', { required: false })}
         />
         {/*<FactList filter="search-event"></FactList>*/}
 
