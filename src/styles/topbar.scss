@@ -27,15 +27,16 @@
   align-items: center;
   text-align: center;
   height: 100%;
+  margin-right: calc(1em + 2vw);
+  margin-left: calc(1em + 2vw);
 }
 
 .topbar .title h1 {
   font-size: 20px;
   font-weight: bold;
   margin: 0;
-  padding-left: calc(1em + 2vw);
   letter-spacing: 5px;
-
+  line-height: normal;
 }
 
 .topbar .logo {
@@ -70,12 +71,34 @@
   font-size: 20px;
   color: rgb(101, 255, 124);
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
+.topbar a {
+  display: flex;
+  align-items: center;
+}
 .topbar .connection:hover {
   color: #666;
 }
 
 .map {
   margin-left: 10px;
+}
+
+.topbar a:link {
+  text-decoration: none;
+}
+
+.topbar a:visited {
+  text-decoration: none;
+}
+
+.topbar a:hover {
+  text-decoration: none;
+}
+
+.topbar a:active {
+  text-decoration: none;
 }

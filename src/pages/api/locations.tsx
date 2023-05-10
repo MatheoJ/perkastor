@@ -40,7 +40,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   console.log(req.query.minLatitude)
 
   if (req.method !== 'GET') {
-    res.status(500).json({ message: 'Requettes Get autorisées uniquement' });
+    res.status(500).json({ message: 'Seules les requêtes GET sont autorisées' });
     return;
   }
 
@@ -89,10 +89,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         ],
       },
     });
-
-
-
-
+    
     var geojson = {
       type: "FeatureCollection",
       features: [],

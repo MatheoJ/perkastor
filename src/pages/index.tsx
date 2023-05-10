@@ -17,37 +17,48 @@ type ImageInfo = {
   author: string,
   url: string,
   filename: string
-  src: string | null
+  src?: string
 }
 
 const Home: NextPage<{}> = () => {
-
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [backgroundImage, setBackgroundImage] = useState(`/images_home/${images[0].filename}`);
   const [imageUrl, setImageUrl] = useState(images[0].url);
   const [imageAuthor, setImageAuthor] = useState(images[0].author);
   const [imageName, setImageName] = useState(images[0].name);
 
-  useEffect(() => {
+  // Change of banner image every 5 seconds
+  // useEffect(() => {
+  //   let index = 0;
+  //   const intervalId = setInterval(() => {
+  //     index = (index + 1) % images.length; // Loop over images
+  //     setCurrentImageIndex(index);
+  //     setImageAuthor(images[index].author);
+  //     setImageUrl(images[index].url);
+  //     setImageName(images[index].name);
+  //   }, 5000); // Change image every 5 seconds
 
-    let index = 0;
-    const intervalId = setInterval(() => {
-      index = (index + 1) % images.length; // Loop over images
-      setBackgroundImage(`/images_home/${images[index].filename}`);
-      setImageAuthor(images[index].author);
-      setImageUrl(images[index].url);
-      setImageName(images[index].name);
-    }, 5000); // Change image every 5 seconds
-
-    return () => {
-      clearInterval(intervalId); // Clean up on unmount
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(intervalId); // Clean up on unmount
+  //   };
+  // }, []);
 
 
   return (
     <>
       <main className={styles.main}>
-        <div className={styles.banner} style={backgroundImage ? { backgroundImage: `linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url(${backgroundImage})` } : {}}>
+        <div className={styles.banner}>
+          <div className={styles.imageContainer}>
+            {
+              images.map((imageInfo: ImageInfo, index: number) => {
+                return (
+                  <div key={index}
+                    className={`${styles.image} ${(index === currentImageIndex) ? styles.active : ''}`}
+                    style={{ background: `linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url(/images_home/${imageInfo.filename})` }} />
+                )
+              })
+            }
+          </div>
           <h1 className={styles.headline}>Perkastor</h1>
           <h2 className={styles.subtitle}>Découvrez la petite histoire dans la grande</h2>
           <div className={styles.imageInfo}>
@@ -66,14 +77,6 @@ const Home: NextPage<{}> = () => {
           <h4>Comment contribuer ?</h4>
           <p>Ce site est collaboratif, n’hésitez pas à rajouter vos propres anecdotes historiques.</p>
           <p>Le projet Perkastor étant open source, on vous invite à participer activement à son développement en vous rendant sur notre <a href='https://github.com/MatheoJ/perkastor' target='_blank'>Github</a>.</p>
-
-          {/* <div className={styles.blobsContainer}>
-            <div className={styles.blob1} />
-            <div className={styles.bgImage} />
-            <Link legacyBehavior href="/mapWrapper">
-              <h3>Explorer la carte</h3>
-            </Link>
-          </div> */}
         </div>
 
       </main>
