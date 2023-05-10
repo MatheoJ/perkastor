@@ -5,6 +5,8 @@ import FactChainContributions from "../FactChainContributions";
 import FactListContributions from "../FactListContributions";
 import ChainListContributions from "../ChainListContributions";
 import FactChainItem from "../FactChainItem";
+import FactList from "../FactList";
+import HistoricalFiguresView from "./HistoricalFiguresView";
 import ChainList from "../ChainList";
 
 import { bus } from "../../utils/bus";
@@ -13,7 +15,7 @@ import { selectMapEvent } from "~/events/map/SelectMapEvent";
 import { useSession } from 'next-auth/react';
 import { contributionClickEvent } from "~/events/ContributionClickEvent";
 import { set } from "react-hook-form";
-import { selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar } from '../../events/SelectSearchBarResultEvent';
+import { selectHistoricalFigureFromSearchBar, selectEventFromSearchBar } from '../../events/SelectSearchBarResultEvent';
 
 const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) => {
   const [markerSelected, setMarkerSelected] = useState(false);
@@ -39,6 +41,25 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
   const handleHistoricalFigureChange = bus.subscribe("historicalFigure", async event => {
     const historicalFigureId = event.payload;
     setHistoricalFigure(historicalFigureId);
+  });
+
+  const handleSelectHistoricalFigures = bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
+    const handlePayload = async () => {
+      const payload = await Promise.resolve(event.payload);
+    };
+    handlePayload().catch(error => {
+      console.error("Error handling payload:", error);
+    });
+  });
+
+  const handleSelectEvent = bus.subscribe(selectEventFromSearchBar, event => {
+    const handlePayload = async () => {
+      const payload = await Promise.resolve(event.payload);
+      setFacts([payload]);
+    };
+    handlePayload().catch(error => {
+      console.error("Error handling payload:", error);
+    });
   });
 
   useEffect(() => {
@@ -98,28 +119,6 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
     fetchData();
   }, [historicalFigureId]);
 
-  onSearchResultReceived = () => {
-    bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
-      const handlePayload = async () => {
-        const payload = await Promise.resolve(event.payload);
-      };
-      handlePayload().catch(error => {
-        console.error("Error handling payload:", error);
-      });
-    });
-
-    bus.subscribe(selectEventFromSearchBar, event => {
-      const handlePayload = async () => {
-        const payload = await Promise.resolve(event.payload);
-        this.setFacts([payload]);
-      };
-      handlePayload().catch(error => {
-        console.error("Error handling payload:", error);
-      });
-    });
-  };
-
-
   const selectedComponent = (component) => {
     switch (component) {
       case "Évenements":
@@ -130,7 +129,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
           return <FactList facts={facts} />;
         }
       case "Personnage Historique":
-        return <HistoricalFigureView historicalPerson={historicalFigure} />;
+        return <HistoricalFiguresView historicalPerson={historicalFigure} />;
 
       case "Chaines":
         if (editMod) {
