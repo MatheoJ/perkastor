@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1;
+    z-index: 9998;
 }
 
 .innerControls {
@@ -14,21 +14,23 @@
     align-items: center;
     height: 100%;
     gap: 2em;
-    padding-bottom: 10vh;
+    z-index: 9999;
 }
 
 .controls {
     position: fixed;
     bottom: 0;
-    left: 50%;
+    left: 0;
     width: 100%;
-    transform: translateX(-50%);
-    height: 150px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+
     background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 9999;
 }
 
 .picture-button {
