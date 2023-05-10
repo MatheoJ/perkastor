@@ -4,7 +4,7 @@ import SideBar from '../SideBar';
 import Fact from '../Fact';
 import FactList from '../FactList';
 import { useState } from 'react';
-import FactChain from '../FactChain';
+import FactChain from '../FactChainContributions';
 import FactListContributions from '../FactListContributions';
 
 const MainNavigation: NextPage = () => {
@@ -214,9 +214,9 @@ const MainNavigation: NextPage = () => {
         insertMode={insertMode}
         setInsertMode={setInsertModeHandler}
       />
-      <div className="BAFTtest">
-        <FactList facts={facts} />
-      </div>
+      {/* <div>
+      <FactChain facts={facts} />
+    </div> */}
     </header>
   );
 }
