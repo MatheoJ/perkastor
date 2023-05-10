@@ -42,22 +42,24 @@ const Batf: NextPage<BatfProps> = ({ children }) => {
 
     return (
         <div className={`batf ${classAssigner()}`}>
-            {
-                (() => {
-                    if (state !== "minimized") {
-                        //selectedTab={selectedTab} setSelectedTab={setSelectedTab}
-                        return <>
-                            <BatfTabContainer onFullScreenClick={maximize} onMinimizeClick={hide}></BatfTabContainer>
-                        </>;
-                    }
-                    else {
-                        return <button className="toggle batf-minimized-btn" onClick={show}>
-                            <i className="fa fa-bars"></i>
-                        </button>;
-                    }
-                })()
-            }
-            {children}
+            <div className={'inner-barf'}>
+                {
+                    (() => {
+                        if (state !== "minimized") {
+                            //selectedTab={selectedTab} setSelectedTab={setSelectedTab}
+                            return <>
+                                <BatfTabContainer onFullScreenClick={maximize} onMinimizeClick={hide}></BatfTabContainer>
+                            </>;
+                        }
+                        else {
+                            return <button className="toggle batf-minimized-btn" onClick={show}>
+                                <i className="fa fa-bars"></i>
+                            </button>;
+                        }
+                    })()
+                }
+                {children}
+            </div>
         </div>
     );
 }
