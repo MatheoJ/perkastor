@@ -20,6 +20,13 @@
         if (!historicalPerson) {
             return null; 
         }
+        if(!((historicalPerson.birthDate) instanceof Date)){
+            historicalPerson.birthDate = new Date(historicalPerson.birthDate)
+        }
+        if(!((historicalPerson.deathDate) instanceof Date)){
+            historicalPerson.deathDate = new Date(historicalPerson.deathDate)
+        }
+
         return (
             <div className="historicalFigure">
                 <div className="historicalFigureHead">
@@ -39,15 +46,18 @@
                         <p>{historicalPerson.content}</p>
                     </div>
                     <div className='content-right'>
+                        {historicalPerson.image ? (
                         <div className="historicalFigureImage">
                             <Image src={historicalPerson.image} alt="" width={300} height={200} />
                         </div>
+                        ) : null}
                         <div>
                             <p>Né.e le : {historicalPerson.birthDate.getDay()} - {historicalPerson.birthDate.getMonth()} - {historicalPerson.birthDate.getFullYear()}</p>
                             <p>Décédé.e le : {historicalPerson.deathDate.getDay()} - {historicalPerson.deathDate.getMonth()} - {historicalPerson.deathDate.getFullYear()}</p>
                         </div>
                     </div>
                 </div>
+                {historicalPerson.facts ? (
                 <div className='historicalFigureBody'>
                     <div>
                         Anecdotes et Événements associés : 
@@ -59,9 +69,10 @@
                                 </li>)
                             })} 
                             </ul>
-                            </div>
                         </div>
                     </div>
+                </div>
+                ) : null}
             </div>
             
         );

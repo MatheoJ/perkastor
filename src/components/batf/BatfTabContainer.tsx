@@ -4,15 +4,16 @@ import Tab from "./Tab";
 import FactChainContributions from "../FactChainContributions";
 import FactListContributions from "../FactListContributions";
 import ChainListContributions from "../ChainListContributions";
+import FactChainItem from "../FactChainItem";
+import ChainList from "../ChainList";
+
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
-import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
-import FactList from "../FactList";
-import { Fact, HistoricalPerson } from "@prisma/client";
+
 import { useSession } from 'next-auth/react';
-import HistoricalFigureView from "./HistoricalFiguresView";
 import { contributionClickEvent } from "~/events/ContributionClickEvent";
 import { set } from "react-hook-form";
+import {selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar} from '../../events/SelectSearchBarResultEvent';
 
 const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) => {
     
@@ -24,6 +25,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
     const [historicalFigureId, setHistoricalFigureId] = useState(null);
     const [locationId, setLocationId] = useState(null);
     const {data : session, status, update} = useSession({required: false});
+
     const handleMapChange = bus.subscribe(selectMapEvent, event => {
         const geoInfos = event.payload;
         if(geoInfos == null){
@@ -33,10 +35,12 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
           setLocationId(geoInfos.properties.id);
         }
     });
+
     const handleEditModChange = bus.subscribe(contributionClickEvent, event => {
         const newEditMod = !editMod;
         setEditMod(newEditMod)
     });
+
     const handleHistoricalFigureChange = bus.subscribe("historicalFigure", async event => {
       const historicalFigureId = event.payload;
       setHistoricalFigure(historicalFigureId);
@@ -99,6 +103,29 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
         fetchData();
     }, [historicalFigureId]);
 
+    onSearchResultReceived = () => {
+        bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
+          const handlePayload = async () => {
+            const payload = await Promise.resolve(event.payload);
+          };
+          handlePayload().catch(error => {
+            console.error("Error handling payload:", error);
+          });
+        });
+
+        bus.subscribe(selectEventFromSearchBar, event => {
+            const handlePayload = async () => {
+              const payload = await Promise.resolve(event.payload);
+              this.setFacts([payload]);
+            };
+            handlePayload().catch(error => {
+              console.error("Error handling payload:", error);
+            });
+          });
+    };
+};
+
+    
 
   
       const selectedComponent = (component) => {
