@@ -62,6 +62,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                     { author: { name: { contains: query as string } } },
                                 ],
                                 isEvent: isEventValue
+                            },
+                            include: {
+                                location: true,
+                                author: true,
+                                personsInvolved: true
                             }
                         });
                     }
