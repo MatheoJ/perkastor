@@ -1,0 +1,85 @@
+  .factContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #344453;
+    border-radius: 4px;
+    background-color: #ccc;
+  }
+  
+  .factTitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .factActions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    color: #344453;
+  }
+
+  .factActionBtn:hover {
+    color: #fff;
+  }
+  
+  .arrow {
+    margin-right: 10px;
+  }
+  
+  .deleteBtn {
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    color: #344453;
+  }
+
+  .deleteBtn:hover {
+    color: #fff;
+  }
+
+  .addFactBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background-color: #ccc;
+    color: #344453;
+    border: none;
+    cursor: pointer;
+    margin-left: 45%;
+  }
+  
+  .addFactBtn:hover {
+    background-color: #344453;
+    color: #ccc;
+    border: solid 1px #ccc;
+  }
+  
+
+  .factChainContributions {
+    width: 93%;
+    margin-top: 5%;
+
+  }
+
+  .factTitleText {
+    margin-left: 10px;
+    color: #344453;
+  }
+
+  .factChainHeader {
+    display: flex;
+    align-items: center;
+  }
+
+  
+  
