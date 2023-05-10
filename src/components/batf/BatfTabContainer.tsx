@@ -22,6 +22,8 @@ interface BatfTabContainerState{
     selectedTab: number;
     markerSelected: bool;
     facts: Fact[];
+    editMod: bool;
+    chains: Chain[];
 }
 
 export default class TabContainer extends React.Component<BaftTabContainerProps, BatfTabContainerState> {
@@ -32,11 +34,11 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
         this.state = {
             selectedTab: 0,
             markerSelected: false,
-            facts : []
+            facts : [],
+            editMod : true,
         };
 
         this.onMapChange();
-        this.onSearchResultReceived();
     }
 
     onMapChange = () => {
