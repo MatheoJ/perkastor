@@ -7,6 +7,7 @@ import { selectMapEvent } from "../events/map/SelectMapEvent";
 import { bus } from "../utils/bus";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import { NextPage } from "next";
 
 interface MarkerProps {
   map: maplibregl.Map;

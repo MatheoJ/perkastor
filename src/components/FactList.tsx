@@ -16,14 +16,15 @@ const FactList: NextPage<FactListProps> = ({ facts }) => {
       setItems(items.concat(facts.slice(items.length, items.length + 10)));
     }, 1500);
   };
+  console.log(facts[0])
+  const sortedFacts = facts;
+  // const sortedFacts = facts.sort((a, b) => getEearliestDate(a.keyDates).getTime() - getEearliestDate(b.keyDates).getTime());
 
-  const sortedFacts = facts.sort((a, b) => getEearliestDate(a.keyDates).getTime() - getEearliestDate(b.keyDates).getTime());
-
-/*
-  useEffect(() => {
-    console.log('Visible facts:', visibleFacts);
-  }, [visibleFacts]);
-*/
+  /*
+    useEffect(() => {
+      console.log('Visible facts:', visibleFacts);
+    }, [visibleFacts]);
+  */
   const settings = {
     dots: true,
     infinite: true,
@@ -35,16 +36,16 @@ const FactList: NextPage<FactListProps> = ({ facts }) => {
     swipeToSlide: true,
     arrows: false,
     variableWidth: false,
-    outerWidth:100
+    outerWidth: 100
     // autoplay: true,
   };
 
 
   return (
     <div>
-      <Slider className='sliderFactList' {...settings} style={{width: '300px'}}>
+      <Slider className='sliderFactList' {...settings} style={{ width: '300px' }}>
         {sortedFacts.map((fact) => (
-          <div className='sortedFact' key={fact.id} style={{width: '100%'}}>
+          <div className='sortedFact' key={fact.id} style={{ width: '100%' }}>
             <Fact fact={fact} />
           </div>
         ))}
