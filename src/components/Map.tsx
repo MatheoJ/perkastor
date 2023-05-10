@@ -11,7 +11,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import Batf from './batf/Batf';
 import Button from './buttons/Button';
 import DisplayLocation from './DisplayLocation';
-
+import { bus } from '../utils/bus';
+import { selectMapEvent } from '../events/map/SelectMapEvent';
 const MapTilerApiKey = process.env.MAPTILER_API_KEY;
 
 interface MapPageProps {
@@ -27,6 +28,7 @@ const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect })
   const handleSelectLocation = (location : any) => {
   };
   
+  
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -36,6 +38,13 @@ const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect })
       style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=KeNNPlHwOHbhaGFsVoos',
       center: [2.3, 43.5],
       zoom: 4,
+    });
+
+    map.on('click', function(e) {
+      var features = map.queryRenderedFeatures(e.point, { layers: ['unclustered-point_loc'] });
+      if (!features.length) {
+        bus.publish(selectMapEvent(null));
+      }
     });
 
     map.on('load', () => {

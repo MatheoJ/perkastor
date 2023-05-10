@@ -15,6 +15,7 @@ import { contributionClickEvent } from "~/events/ContributionClickEvent";
 import { set } from "react-hook-form";
 
 const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) => {
+    
     const [markerSelected, setMarkerSelected] = useState(false);
     const [facts, setFacts] = useState([]);
     const [editMod, setEditMod] = useState(false);
@@ -25,8 +26,12 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
     const {data : session, status, update} = useSession({required: false});
     const handleMapChange = bus.subscribe(selectMapEvent, event => {
         const geoInfos = event.payload;
-        setMarkerSelected(true);
-        setLocationId(geoInfos.properties.id);
+        if(geoInfos == null){
+          setMarkerSelected(false);
+        }else{
+          setMarkerSelected(true);
+          setLocationId(geoInfos.properties.id);
+        }
     });
     const handleEditModChange = bus.subscribe(contributionClickEvent, event => {
         const newEditMod = !editMod;
@@ -71,12 +76,10 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
           console.log("session", session)
           let userId = session?.user?.id;
           if(userId != null){
-            let response = await fetch(`/api/facts?userId=${userId}`);
+            const promises = [fetch(`/api/facts?userId=${userId}`), fetch(`/api/chains?userId=${userId}`)];
+            let [response, response2] = await Promise.all(promises);
             response = await response.json();
-            console.log("response facts2", response)
-            let response2 = await fetch(`/api/chains?userId=${userId}`);
             response2 = await response2.json();
-            console.log("response chains2", response2)
             response.data ? setFacts(response.data) : setFacts([]);
             response2.data ? setChains(response2.data) : setChains([]);
           }
@@ -102,7 +105,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
           switch (component) {
               case "Évenements":
                 if (editMod){
-                  return <FactListContributions facts={facts}/>;
+                  return <FactListContributions facts={facts} setFacts={setFacts}/>;
                 }
                 else{
                   return <FactList facts={facts}/>;
@@ -122,31 +125,31 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
       }
   
       return (
-          <>
-              <div className={`batf-toolbar`}>
-              {editMod? <div style={{textAlign:"center"}}>Edition</div> : <div>Consultation</div>}
-                  <button className="toggle" onClick={onFullScreenClick}>
-                      <i className="fa fa-expand" style={{color:'#F1B706'}}></i>
-                  </button>
-                  <button className="toggle" onClick={onMinimizeClick}>
-                      <i className="fa fa-minus" style={{color:'#F1B706'}}></i>
-                  </button>
-              </div>
-              
-              <Tabs>
-              
-                  <Tab title="Événements">
-                      {selectedComponent("Évenements")}
-                  </Tab>
-                  <Tab title="Personnage Historique">
-                      {selectedComponent("Personnage Historique")}
-                  </Tab>
-                  <Tab title="Chaines">
-                      {selectedComponent("Chaines")}
-                  </Tab>
-              </Tabs>
-          </>
-      );
+        <>
+            <div className={`batf-toolbar`}>
+            {editMod? <div style={{textAlign:"center"}}>Edition</div> : <div>Consultation</div>}
+                <button className="toggle" onClick={onFullScreenClick}>
+                    <i className="fa fa-expand" style={{color:'#F1B706'}}></i>
+                </button>
+                <button className="toggle" onClick={onMinimizeClick}>
+                    <i className="fa fa-minus" style={{color:'#F1B706'}}></i>
+                </button>
+            </div>
+            
+            <Tabs key={editMod ? 'edit' : 'view'}>
+            
+                <Tab title="Événements">
+                    {selectedComponent("Évenements")}
+                </Tab>
+                <Tab title="Personnage Historique">
+                    {selectedComponent("Personnage Historique")}
+                </Tab>
+                <Tab title="Chaines">
+                    {selectedComponent("Chaines")}
+                </Tab>
+            </Tabs>
+        </>
+    );
   }
   
   export default TabContainer;

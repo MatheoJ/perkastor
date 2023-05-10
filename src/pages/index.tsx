@@ -66,7 +66,7 @@ const Home: NextPage<{}> = () => {
           <br />
           <h4>Comment contribuer ?</h4>
           <p>Ce site est collaboratif, n’hésitez pas à rajouter vos propres anecdotes historiques.</p>
-          <p>Le projet Perkastor étant open source, on vous invite à participer activement à son développement en vous rendant sur notre Github.</p>
+          <p>Le projet Perkastor étant open source, on vous invite à participer activement à son développement en vous rendant sur notre <a href='https://github.com/MatheoJ/perkastor' target='_blank'>Github</a>.</p>
 
           {/* <div className={styles.blobsContainer}>
             <div className={styles.blob1} />
