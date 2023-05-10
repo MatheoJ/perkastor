@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 } else if (userId) {
                     prismaResult = await client.factChain.findMany({
-                        where: { userId: userId as string },
+                        where: { authorId: userId as string },
                     });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
@@ -54,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     data: {
                         id: factChainId,
                         title: title,
-                        userId: session.user.id || authorId,
+                        authorId: session.user.id || authorId,
                         description: description,
                     },
                 });
@@ -141,7 +141,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             case 'PATCH':
                 {
-                    const { title, description, chainId, factItemIdToRemove} = req.body;
+                    const { title, description, chainId} = req.body;
 
                     // Update FactChain with provided fields
                     const updatedFactChain = await client.factChain.update({
@@ -151,35 +151,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             ...(description && { description: description }),
                         },
                     });
-
-                    // Remove the specified FactChainItem and adjust positions
-                    if (factItemIdToRemove) {
-                        const removedItem = await client.factChainItem.findUnique({
-                            where: { id: factItemIdToRemove },
-                        });
-
-                        await client.factChainItem.delete({
-                            where: { id: factItemIdToRemove },
-                        });
-
-                        if (removedItem) {
-                            const positionToRemove = removedItem.position;
-                            const itemsToUpdate = await client.factChainItem.findMany({
-                                where: {
-                                    factChainId: chainId,
-                                    position: { gt: positionToRemove },
-                                },
-                            });
-
-                            for (const item of itemsToUpdate) {
-                                await client.factChainItem.update({
-                                    where: { id: item.id },
-                                    data: { position: item.position - 1 },
-                                });
-                            }
-                        }
-                    }
-
+                    
                     // Get the updated FactChain with items
                     const result = await client.factChain.findUnique({
                         where: { id: chainId as string },
@@ -207,7 +179,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
                 break;
             default:
-                res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
+                res.setHeader('Allow', ['GET', 'POST', 'PATCH', 'DELETE']);
                 res.status(405).end(`Method ${method} Not Allowed`);
         }
     }
