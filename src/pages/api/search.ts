@@ -1,12 +1,8 @@
-import { Fact, PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { ExtendedSession, SearchFilters, SearchResult } from 'types/types';
-import { connectToDatabase } from '../../lib/db';
 import { authOptions } from './auth/[...nextauth]';
-import ObjectID from 'bson-objectid';
-import { prisma } from '~/server/db';
-import { bool } from 'aws-sdk/clients/signer';
+import { prisma } from '../../lib/db'
 //const { hasSome } = require('prisma-multi-tenant');
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -40,7 +36,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         isEventValue = false;
     }
     try {
-        const client = new PrismaClient();
         switch (method) {
             case 'GET':
                 let prismaResultFact;
@@ -51,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // Get data from your database
                 if (query) {
                     if (filters.event || filters.anecdote){
-                        prismaResultFact = await client.fact.findMany({
+                        prismaResultFact = await prisma.fact.findMany({
                             where: {
                                 
                                 OR: [
@@ -64,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                     }
                     if (filters.chain){
-                        prismaResultChain = await client.factChain.findMany({
+                        prismaResultChain = await prisma.factChain.findMany({
                             where: {
                                 OR: [
                                     { title: { contains: query as string } },
@@ -75,7 +70,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                     }
                     if (filters.location){
-                        prismaResultLocation = await client.location.findMany({
+                        prismaResultLocation = await prisma.location.findMany({
                             where: {
                                 name: { contains: query as string }
                             }
@@ -87,7 +82,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         if(isNaN(date.getTime())){
                             date = undefined;
                         }
-                        prismaResultHistoricalFigure = await client.historicalPerson.findMany({
+                        prismaResultHistoricalFigure = await prisma.historicalPerson.findMany({
                             where: {
                                 OR: [
                                     { name: { contains: query as string } },
@@ -99,7 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                     }
                     if (filters.user){
-                        prismaResultUser = await client.user.findMany({
+                        prismaResultUser = await prisma.user.findMany({
                             where: {
                                 name: { contains: query as string }
                             }
@@ -115,7 +110,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         chains: prismaResultChain,
                         locations: prismaResultLocation,
                         historicalPersons: prismaResultHistoricalFigure,
-                        users: prismaResultUser
+                        users: prismaResultUser,
+                        // TODO: modify this to return the number of results for each type
+                        slice: function (arg0: number, arg1: number): unknown {
+                            throw new Error('Function not implemented.');
+                        },
+                        length: 0
                     }
 
                     res.status(200).json({ data: resultat });
