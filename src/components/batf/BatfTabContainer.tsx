@@ -16,7 +16,6 @@ import { set } from "react-hook-form";
 import { selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar } from '../../events/SelectSearchBarResultEvent';
 
 const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) => {
-
   const [markerSelected, setMarkerSelected] = useState(false);
   const [facts, setFacts] = useState([]);
   const [editMod, setEditMod] = useState(false);
@@ -28,12 +27,8 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
 
   const handleMapChange = bus.subscribe(selectMapEvent, event => {
     const geoInfos = event.payload;
-    if (geoInfos == null) {
-      setMarkerSelected(false);
-    } else {
-      setMarkerSelected(true);
-      setLocationId(geoInfos.properties.id);
-    }
+    setMarkerSelected(true);
+    setLocationId(geoInfos.properties.id);
   });
 
   const handleEditModChange = bus.subscribe(contributionClickEvent, event => {
