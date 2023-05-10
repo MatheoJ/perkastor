@@ -1,7 +1,8 @@
 import Head from 'next/head';
 import FolderSharedIcon from '@mui/icons-material/FolderShared';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-
+import { bus } from '../utils/bus';
+import { contributionClickEvent } from '../events/ContributionClickEvent';
 function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setInsertMode }:
     { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({ item }: { item: String }) => void, insertMode: boolean, setInsertMode: ({ insertMode }: { insertMode: boolean }) => void }) {
 
@@ -13,7 +14,9 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
         } else {
             setInsertMode({ insertMode: false });
         }
-
+        if(item == "contributions"){
+            bus.publish(contributionClickEvent(true));
+        }
         if (item == "addEvent") {
 
             window.location.href = "/eventForm";

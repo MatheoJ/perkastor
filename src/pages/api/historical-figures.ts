@@ -26,6 +26,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         where: {
                             id: Array.isArray(id) ? id[0] : id
                         },
+                        include : {
+                            FactHistoricalPerson: true,
+                        }
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
