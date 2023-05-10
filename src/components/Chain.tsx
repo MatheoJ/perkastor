@@ -17,9 +17,10 @@ interface ChainListProps {
             name: string,
           }
         }
+  setItemSelected: React.Dispatch<React.SetStateAction<{}>>;
 }
 
-const ChainList: React.FC<ChainListProps> = ({ chain }) => {
+const ChainList: React.FC<ChainListProps> = ({ chain, setItemSelected }) => {
   console.log('chain', chain)
   //const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
   //const [items, setItems] = useState(facts.slice(0, 10));
@@ -47,6 +48,10 @@ const ChainList: React.FC<ChainListProps> = ({ chain }) => {
 
   return (
     <div>
+      <div onClick={() => setItemSelected(null)} style={{cursor: "pointer"}} >
+        <i className="fa fa-arrow-left" aria-hidden="true"></i>
+      </div>
+      
       <Slider className='sliderFactList' {...settings} style={{width: '300px'}}>
         {chain.items.map((item) => (
           <div className='sortedFact' key={item.id} style={{width: '100%'}}>

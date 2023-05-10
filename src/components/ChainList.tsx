@@ -18,10 +18,10 @@ const ChainListContributions: React.FC<ChainListContributionsProps> = ({ chains,
         <div
           key={chain.id}
           className="chainContainer"
-          onClick={setItemSelected(chain)}
+          onClick={() => setItemSelected(chain)}
         >
           <div className="chainTitle">
-            <img src={chain.image ? chain.image : "images_home/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
+            <img src={chain.image ? chain.image : "images_default/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
             <div className='chainTitleText'> <p>{chain.title} <br /> {chain.createdAt.split("T")[0]}</p> </div>
           </div>
         </div>

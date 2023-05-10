@@ -27,6 +27,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
   const [locationId, setLocationId] = useState(null);
   const { data: session, status, update } = useSession({ required: false });
   const [itemSelected, setItemSelected] = useState(null);
+  
   const handleMapChange = bus.subscribe(selectMapEvent, event => {
     if (event.payload == null) {
       setMarkerSelected(false);
@@ -74,6 +75,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
     if (!markerSelected) {
       setFacts([]);
       setChains([]);
+      setItemSelected(null);
       setHistoricalFigure(null);
     }
   }, [markerSelected]);
@@ -99,6 +101,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
       if (!editMod) {
         setFacts([]);
         setChains([]);
+        setItemSelected(null);
         setHistoricalFigure(null);
       }
       else {
@@ -142,6 +145,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
 
       case "Chaines":
         if (editMod) {
+          
           if(itemSelected == null){
             return <ChainListContributions chains={chains} />;
           }else{
@@ -149,10 +153,11 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
           }
         }
         else {
+          console.log("itemSelected", itemSelected)
           if(itemSelected == null){
             return <ChainList chains={chains} setItemSelected={setItemSelected} />;
           }else{
-            return <Chain chain={itemSelected} />;
+            return <Chain chain={itemSelected} setItemSelected={setItemSelected} />;
           }
         }
     }
@@ -171,7 +176,6 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
       </div>
 
       <Tabs key={editMod ? 'edit' : 'view'}>
-
         <Tab className={"tab-content"} title="Événements">
           {selectedComponent("Évenements")}
         </Tab>
