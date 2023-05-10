@@ -77,8 +77,11 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
   
         case 'historicalPersons':
           var birthYear = result.birthDate.slice(0,4);
-          var deathYear = result.deathDate.slice(0,4);
-  
+          if(!result.deathDate){
+            result.deathDate = "aujourd'hui"
+          }else{
+            var deathYear = result.deathDate.slice(0,4);
+          }
           resultTitle = `(${birthYear}-${deathYear}) - ${result.name}`
           break;
   

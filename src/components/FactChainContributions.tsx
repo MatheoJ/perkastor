@@ -15,8 +15,7 @@ interface FactChainContributionsProps {
     title: string;
     shortDesc?: string;
     content: string;
-    from?: string;
-    until?: string;
+    keyDates: string[];
     bannerImg?: string;
     verified: boolean;
     video: string[];
@@ -41,10 +40,10 @@ interface FactChainContributionsProps {
   setFacts: React.Dispatch<React.SetStateAction<{}[]>>;
 }
 
-const FactChainContributions: React.FC<FactChainContributionsProps> = ({ facts, setFacts }) => {
+const FactChainContributions: React.FC<FactChainContributionsProps> = ({ chain, setChain }) => {
 
-  const handleMoveFact = (currentIndex: number, newIndex: number) => {
-    await fetch(`api/chains&
+  const handleMoveFact = async (currentIndex: number, newIndex: number) => {
+    await fetch(`api/chains&`)
     const newFactList = [...facts];
     const movedFact = newFactList[currentIndex];
     newFactList.splice(currentIndex, 1);

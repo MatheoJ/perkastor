@@ -24,7 +24,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 include: {
                                     fact: {
                                         include: {
-                                            location: true
+                                            location: true,
+                                            personsInvolved: true,
                                         }
                                     }
                                 }
@@ -47,7 +48,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 include: {
                                     fact: {
                                         include: {
-                                            location: true
+                                            location: true,
+                                            personsInvolved: true,
                                         }
                                     }
                                 }
@@ -82,7 +84,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 include: {
                                     fact: {
                                         include: {
-                                            location: true
+                                            location: true,
+                                            personsInvolved: true,
                                         }
                                     }
                                 }
@@ -104,7 +107,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                     include: {
                                         fact: {
                                             include: {
-                                                location: true
+                                                location: true,
+                                                personsInvolved: true,
                                             }
                                         }
                                     }

@@ -22,7 +22,9 @@ const Fact: React.FC<Props> = (props) => {
                     </div>
                     <div className="factHeadBottomRight">
                         <h2>
-                            {item.fact.from}
+                            {item.fact.keyDates.map((keyDate) => (
+                                <li >{keyDate.split("T")[0]}</li>
+                            ))}
                         </h2>
                     </div>
                 </div>

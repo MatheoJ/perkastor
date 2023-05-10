@@ -36,8 +36,7 @@ interface FactListProps {
 }
 
 const FactList: React.FC<FactListProps> = ({ facts }) => {
-  console.log('Facts:', facts);
-  const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
+  //const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
   const [items, setItems] = useState(facts.slice(0, 10));
 
   const fetchMoreData = () => {
@@ -48,11 +47,11 @@ const FactList: React.FC<FactListProps> = ({ facts }) => {
 
   const sortedFacts = facts.sort((a, b) => new Date(a.from).getTime() - new Date(b.from).getTime());
 
-
+/*
   useEffect(() => {
     console.log('Visible facts:', visibleFacts);
   }, [visibleFacts]);
-
+*/
   const settings = {
     dots: true,
     infinite: true,

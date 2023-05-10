@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import Tabs from "./Tabs";
 import Tab from "./Tab";
-import FactChainContributions from "../FactChainContributions";
 import FactListContributions from "../FactListContributions";
 import ChainListContributions from "../ChainListContributions";
 import FactChainItem from "../FactChainItem";
 import FactList from "../FactList";
 import HistoricalFiguresView from "./HistoricalFiguresView";
 import ChainList from "../ChainList";
-
+import Chain from "../Chain";
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
 
 import { useSession } from 'next-auth/react';
 import { contributionClickEvent } from "~/events/ContributionClickEvent";
-import { set } from "react-hook-form";
 import { selectHistoricalFigureFromSearchBar, selectEventFromSearchBar } from '../../events/SelectSearchBarResultEvent';
-
+import { HistoricalPerson } from "@prisma/client";
+import Fact from "../Fact";
+import FactChainContributions from "../FactChainContributions";
 const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) => {
   const [markerSelected, setMarkerSelected] = useState(false);
   const [facts, setFacts] = useState([]);
@@ -26,13 +26,13 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
   const [historicalFigureId, setHistoricalFigureId] = useState(null);
   const [locationId, setLocationId] = useState(null);
   const { data: session, status, update } = useSession({ required: false });
-
+  const [itemSelected, setItemSelected] = useState(null);
   const handleMapChange = bus.subscribe(selectMapEvent, event => {
-    if(event.payload == null){
+    if (event.payload == null) {
       setMarkerSelected(false);
       setFacts([]);
       setChains([]);
-    }else{
+    } else {
       const geoInfos = event.payload;
       setMarkerSelected(true);
       setLocationId(geoInfos.properties.id);
@@ -52,6 +52,8 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
   const handleSelectHistoricalFigures = bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
     const handlePayload = async () => {
       const payload = await Promise.resolve(event.payload);
+      setHistoricalFigure(payload);
+
     };
     handlePayload().catch(error => {
       console.error("Error handling payload:", error);
@@ -140,11 +142,18 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
 
       case "Chaines":
         if (editMod) {
-          return <ChainListContributions chains={chains} />;
+          if(itemSelected == null){
+            return <ChainListContributions chains={chains} />;
+          }else{
+            return <FactChainContributions chain={itemSelected} />;
+          }
         }
         else {
-          return <ChainListContributions chains={chains} />;
-          // return <ChainList chains={chains}/>;
+          if(itemSelected == null){
+            return <ChainList chains={chains} setItemSelected={setItemSelected} />;
+          }else{
+            return <Chain chain={itemSelected} />;
+          }
         }
     }
   }
@@ -163,15 +172,16 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
 
       <Tabs key={editMod ? 'edit' : 'view'}>
 
-        <Tab title="Événements">
+        <Tab className={"tab-content"} title="Événements">
           {selectedComponent("Évenements")}
         </Tab>
-        <Tab title="Personnage Historique">
+        <Tab className={"tab-content"} title="Personnage Historique">
           {selectedComponent("Personnage Historique")}
         </Tab>
-        <Tab title="Chaines">
+        <Tab className={"tab-content"} title="Chaines">
           {selectedComponent("Chaines")}
         </Tab>
+
       </Tabs>
     </>
   );

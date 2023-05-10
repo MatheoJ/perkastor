@@ -7,6 +7,8 @@
     border: 1px solid #344453;
     border-radius: 4px;
     background-color: #ccc;
+    /* make it a button */
+    cursor: pointer;
   }
   
   .chainTitle {
