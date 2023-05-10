@@ -1,8 +1,13 @@
+import { Fact, PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
+import { ExtendedSession, SearchFilters } from 'types/types';
 import { ExtendedSession, SearchFilters, SearchResult } from 'types/types';
+import { connectToDatabase } from '../../lib/db';
 import { authOptions } from './auth/[...nextauth]';
-import { prisma } from '../../lib/db'
+import ObjectID from 'bson-objectid';
+import { prisma } from '~/server/db';
+import { bool } from 'aws-sdk/clients/signer';
 //const { hasSome } = require('prisma-multi-tenant');
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -36,6 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         isEventValue = false;
     }
     try {
+        const client = new PrismaClient();
         switch (method) {
             case 'GET':
                 let prismaResultFact;
