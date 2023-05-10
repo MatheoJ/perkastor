@@ -27,7 +27,6 @@ const Home: NextPage<{}> = () => {
   const [imageAuthor, setImageAuthor] = useState(images[0].author);
   const [imageName, setImageName] = useState(images[0].name);
 
-  console.log(images)
   useEffect(() => {
 
     let index = 0;

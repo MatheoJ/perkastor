@@ -19,7 +19,7 @@ import "~/styles/fact.css";
 import "~/styles/historicalFigure.css";
 import "~/components/batf/Batf.scss";
 import "~/styles/mapStyle.scss";
-import "~/components/searchbar/searchbar.css"; 
+import "~/components/searchbar/searchbar.scss"; 
 import "~/styles/factListContributions.css";
 import "~/components/searchbar/filterschecklist.css";
 import "~/styles/chainListContributions.css";

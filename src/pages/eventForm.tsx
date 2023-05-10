@@ -13,7 +13,12 @@ import CropperView from "~/components/cropper/CropperView";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { useRouter } from "next/router";
+
+import SearchFilters from "../types/types"
+
 import { useSession } from "next-auth/react";
+import { Button } from '@mui/material';
+
 interface EventData {
   name: string;
   typeLieux: string;
@@ -28,7 +33,7 @@ interface EventData {
 
 const fact = {
   id: "1",
-  isEvent:true,
+  isEvent: true,
   createdAt: new Date(1990, 4, 7),
   updatedAt: new Date(1990, 4, 7),
   title: "Sample Fact Title",
@@ -40,8 +45,8 @@ const fact = {
   video: [],
   audio: [],
   authorId: "oui",
-  locationsId:"",
-  sources:[]
+  locationsId: "",
+  sources: []
 }
 
 
@@ -53,7 +58,7 @@ const histFig1 = {
   image: "",
   shortDesc: "C'est moi !",
   content: "coucou",
-  facts:[fact]
+  facts: [fact]
 };
 
 const histFig2 = {
@@ -64,7 +69,7 @@ const histFig2 = {
   image: "",
   shortDesc: "C'est moi !",
   content: "coucou",
-  facts:[fact]
+  facts: [fact]
 };
 
 const histFig3 = {
@@ -75,13 +80,14 @@ const histFig3 = {
   image: "",
   shortDesc: "C'est moi !",
   content: "coucou",
-  facts:[fact]
+  facts: [fact]
 };
 
-const histFigList = [histFig1, histFig2, histFig3]
+var histFigList = [histFig1, histFig2, histFig3]
 
 
 const Event = () => {
+  const [uploading, setUploading] = useState(false);
   const router = useRouter();
   const MySwal = withReactContent(Swal)
   // need to be authorized to access this page
@@ -99,6 +105,7 @@ const Event = () => {
   } = useForm<EventData>();
   const [locationSelected, setLocationSelected] = useState("");
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [histFigToDisplay, setHistFigToDisplay] = useState<any[]>([]);
   const ref = useRef<any>();
 
   const handlelLocationSelected = (locSelected: any) => {
@@ -113,6 +120,7 @@ const Event = () => {
   };
 
   const onSubmit = async (data: EventData) => {
+
     var dataEvent;
     var location = {
       id: data.idLieux,
@@ -127,9 +135,11 @@ const Event = () => {
       shortDesc: "",
       content: data.description,
       location: location,
-      keyDates: data.listOfDates
+      keyDates: data.listOfDates,
+      idHistoricalFigure: data.idHistoricalFigure
     };
 
+    setUploading(true);
     const response = await fetch('/api/facts', {
       method: 'POST',
       body: JSON.stringify(dataEvent),
@@ -142,10 +152,11 @@ const Event = () => {
     if (response.ok) {
       const responseData = await response.json();
       // change image related to the fact whose id is responseData.id
-      const image = await ref.current?.triggerUpload(responseData.data.id);
-      if (image) {
-        
 
+      const image = await ref.current?.triggerUpload(responseData.data.id);
+
+      if (image) {
+        setUploading(false);
         // display a sweet alert popup to inform the user of the success
         MySwal.fire({
           title: "Evènement ajouté avec succès",
@@ -153,7 +164,7 @@ const Event = () => {
           showCancelButton: false,
           confirmButtonText: "Ok",
         }).then(async () => {
-          router.push("/profile");
+          router.push("/mapWrapper");
         })
 
       } else {
@@ -172,10 +183,33 @@ const Event = () => {
         }).then(async () => {
           const value = await MySwal.fire();
           if (value) {
-            ref.current?.triggerUpload();
+            setUploading(true);
+            const retryUploadImage = await ref.current?.triggerUpload();
+            setUploading(false);
+            if (retryUploadImage) {
+              // display a sweet alert popup to inform the user of the success
+              MySwal.fire({
+                title: "Evènement ajouté avec succès",
+                icon: "success",
+                showCancelButton: false,
+                confirmButtonText: "Ok",
+              }).then(async () => {
+                router.push("/mapWrapper");
+              })
+            } else {
+              MySwal.fire({
+                title: "L'image n'a pas pu être ajoutée à l'évènement",
+                icon: "error",
+                showCancelButton: false,
+                confirmButtonText: "Ok",
+              }).then(async () => {
+                router.push("/mapWrapper");
+              })
+            }
+            setUploading(false);
             return;
           }
-          router.push("/profile");
+          router.push("/mapWrapper");
         })
       };
     }
@@ -188,6 +222,39 @@ const Event = () => {
     setValue("typeLieux", "");
     setValue("idLieux", "");
   };
+
+  const [query, setQuery] = useState('');
+
+  async function handleSearch(e) {
+    var filter : SearchFilters = {
+      event: false,
+      anecdote: false,
+      chain: false,
+      historicalFigure: true,
+      location: false,
+      user: false
+    };
+    // handle the search query
+    e.preventDefault();
+    var queryParams2 = new URLSearchParams({
+      query: query,
+      filtersParam: JSON.stringify(filter)
+    });
+
+    const response2 = await fetch(`/api/search?${queryParams2}`, {
+      method: "GET",
+    });
+/* 
+    histFigList = await response2.json.data.historicalPersons
+    console.log(histFigList) */
+    var histfig = await response2.json();
+    setHistFigToDisplay(histfig.data.historicalPersons); 
+    console.log(histFigToDisplay);
+  }
+
+  function handleChange(event) {
+    setQuery(event.target.value);
+  }
 
   return (
     <div className="container">
@@ -272,7 +339,7 @@ const Event = () => {
         <label htmlFor="idLieux">Id du Lieu</label>
         <input type="text" id="idLieux" {...register("idLieux")} readOnly />
 
-        
+
         <h3>Dates de l'évènement</h3>
         <Controller
           name="listOfDates"
@@ -290,12 +357,18 @@ const Event = () => {
           )}
         />
 
+      <div>
+        <input type="text" value={query} onChange={handleChange} />
+        <button onClick={handleSearch}>Search</button>
+      </div>
+
       <h3>Résultats de la recherche des Personnages Historiques associés</h3>
       <div title="Historical_People" className="idiv">
-        <HistoricalFigureList historicalPersonList={histFigList}/>
+        <HistoricalFigureList historicalPersonList={histFigToDisplay}/>
       </div>
-        <button className='button_submit' id='q1.button' type="submit">Submit</button>
+        <Button className='button_submit' id='q1.button' type="submit" disabled={uploading}>Enregistrer</Button>
       </form>
+
     </div>
   );
 };

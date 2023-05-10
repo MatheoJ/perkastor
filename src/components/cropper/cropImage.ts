@@ -92,9 +92,10 @@ export default async function getCroppedImg(
     })
 }
 
-import axios from "axios";
-import { Dispatch, SetStateAction } from "react"
-import { Area } from "react-easy-crop";
+export function convertVhToPx (vh=50) {
+    const oneVhInPx = window.innerHeight / 100;
+    return oneVhInPx * vh;
+};
 
 export function stringToColor(string: string) {
     let hash = 0;
