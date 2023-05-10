@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SearchIcon from '@mui/icons-material/Search';
-import { IconButton } from "@mui/material";
+import { CircularProgress, IconButton } from "@mui/material";
 import { set } from "zod";
 import { ExtendedSession, SearchFilters, SearchResult } from 'types/types';
 
@@ -9,6 +9,7 @@ function SearchBar() {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const toggleSearchBar = () => {
     setShowSearchBar(!showSearchBar);
@@ -17,10 +18,12 @@ function SearchBar() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("sending request");
+    setIsLoading(true);
     // passer les parametres sélectionnés comme filtre puis ajouter &filtersParam=${JSON.stringify({})} a la fin de l'url
     const results = await fetch(`/api/search?query=${searchTerm}`);
     const resultat = await results.json();
     setSearchResults(resultat.data);
+    setIsLoading(false);
     console.log('response arrived');
     console.log(resultat);
   };
@@ -37,9 +40,14 @@ function SearchBar() {
             className="searchBar__input"
             placeholder="Chercher un évènement, un lieu..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setSearchResults([]);
+            }}
           />
+          
         </form>
+        {isLoading && <div className="loading" ><CircularProgress size={24} color="inherit"/></div>}
       </div>
       {searchResults && Object.values(searchResults).some(cat => cat.length > 0) && (
         <div className="searchResults">
@@ -48,7 +56,7 @@ function SearchBar() {
               <React.Fragment key={category}>
                 {results.length > 0 && (
                   <React.Fragment>
-                    <span className="category">{category}</span>
+                    <span className="category" ><strong>{category}</strong></span>
                     {results.slice(0, 10).map(result => {
                       if (result.title == '') {
                         return (
