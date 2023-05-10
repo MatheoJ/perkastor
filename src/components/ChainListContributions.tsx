@@ -3,10 +3,10 @@ import Fact from './Fact';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Add from '@material-ui/icons/Add';
 import Swal from 'sweetalert2';
-import {Chain} from '../types/Chain';
+import {ChainListProps} from '../../types/types';
 
 interface ChainListContributionsProps {
-  chains: Chain[];
+  chains: ChainListProps[];
 }
 
 const ChainListContributions: React.FC<ChainListContributionsProps> = ({ chains }) => {
@@ -37,8 +37,8 @@ const ChainListContributions: React.FC<ChainListContributionsProps> = ({ chains 
           className="chainContainer"
         >
           <div className="chainTitle">
-            <img src={chain.bannerImg} alt="chain image" id='imageChainList' />
-            <div className='chainTitleText'> <p>{chain.title} <br/> {chain.from}</p> </div>
+            <img src={chain.image} alt="chain image" id='imageChainList' />
+            <div className='chainTitleText'> <p>{chain.title} <br/> {chain.createdAt.getDay()}-{chain.createdAt.getMonth()+1}-{chain.createdAt.getFullYear()}</p> </div>
           </div>
           <div className='deleteBtn'>
             <button className="chainActionBtn" onClick={() => handleDeleteChain(index)}>
@@ -47,7 +47,7 @@ const ChainListContributions: React.FC<ChainListContributionsProps> = ({ chains 
           </div>
         </div>
       ))}
-      <div className="addChainBtn" onClick={() => window.location.href="/eventForm"}>
+      <div className="addChainBtn" onClick={() => window.location.href="/chainForm"}>
         <button className="chainActionBtn">
           <Add />
         </button>

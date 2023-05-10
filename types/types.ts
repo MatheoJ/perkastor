@@ -57,3 +57,11 @@ export interface FactChainItemProps extends FactChainItem {
     };
     fact: FactProps;
 }
+
+export interface ChainListProps extends FactChain {
+    author: {
+      id: string;
+      name: string;
+  };
+  items: FactChainItemProps[];
+}
