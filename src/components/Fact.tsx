@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Fact as FactType } from '@prisma/client'
+import { Fact as FactType, HistoricalPerson } from '@prisma/client'
+import logo from "src/images/perecastor.png";
 
 interface FactProps extends FactType {
     author: {
@@ -11,18 +12,26 @@ interface FactProps extends FactType {
         id: string;
         name: string;
     };
-    personsInvolved: {
-        id: string;
-        name: string;
-    }[];
-    keyDates : Date[];
+    personsInvolved: [
+        {
+            historicalPerson: HistoricalPerson;
+        }
+    ];
+    keyDates: Date[];
 }
 interface Props {
     fact: FactProps;
 }
 
-const Fact: React.FC<Props> = ( props ) => {
+const Fact: React.FC<Props> = (props) => {
     const { fact } = props;
+
+    // Tri des keyDates dans l'ordre chronologique
+    const sortedDates = fact.keyDates
+        .map(dateStr => new Date(Date.parse(dateStr.toString())))
+        .filter(date => !isNaN(date.getTime()))
+        .sort((a, b) => a.getTime() - b.getTime());
+
     return (
         <div className="fact">
             <div className="factHead">
@@ -37,27 +46,31 @@ const Fact: React.FC<Props> = ( props ) => {
                     </div>
                     <div className="factHeadBottomRight">
                         <h2>
-                            {fact.keyDates.map((date) => {
-                                var dateObj = new Date(date);
-                                return <li key={dateObj.getTime()}>{dateObj.getDate()} - {dateObj.getMonth()+1} - {dateObj.getFullYear()}</li>
-                            })}
+                            <ul>
+                                {sortedDates.map((date) => {
+                                    return <li key={date.getTime()}>{date.getDate()} - {date.getMonth() + 1} - {date.getFullYear()}</li>
+                                })}
+                            </ul>
                         </h2>
                     </div>
                 </div>
             </div>
             <div className="factBody">
-                {fact.bannerImg ? (
+                {true ? (
                     <>
                         <div className="content-left">
+                            <strong>Description</strong>
                             <p>{fact.content}</p>
                         </div>
                         <div className='content-right'>
                             <div className="factImage">
-                                <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                                <Image src={logo} alt="" width={300} height={200} />
                             </div>
                             <ul>
                                 {fact.personsInvolved.map((person) => (
-                                    <li key={person.id}>{person.name}</li>
+                                    <li key={person.historicalPerson.id}>
+                                        {person.historicalPerson.name}    
+                                    </li>
                                 ))}
                             </ul>
                         </div>
@@ -67,7 +80,7 @@ const Fact: React.FC<Props> = ( props ) => {
                         <p>{fact.content}</p>
                         <ul>
                             {fact.personsInvolved.map((person) => (
-                                <li key={person.id}>{person.name}</li>
+                                <li key={person.historicalPerson.id}>{person.historicalPerson.name}</li>
                             ))}
                         </ul>
                     </div>

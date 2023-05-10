@@ -9,6 +9,7 @@
     overflow-y: scroll;
     overflow-x: hidden;
     background-color: #EADFC3;
+    color: black;
 }
 
 .factHead {
@@ -17,7 +18,6 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 5px;
-    border-bottom: 1px solid black;
 }
 
 .factHead h1 {
@@ -37,10 +37,14 @@
     display: flex;
     justify-content: space-between;
     margin: 5px;
+    flex: 1;
 }
 
+
 .factBody {
+    border-top: 1px solid black;
     position: relative;
+    text-align: justify;
     width: 100%;
     height: 80%;
     display: flex;
