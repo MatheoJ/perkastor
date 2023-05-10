@@ -161,12 +161,7 @@ const Event = () => {
         <label htmlFor="idLieux">Id du Lieu</label>
         <input type="text" id="idLieux" {...register("idLieux")} readOnly />
 
-        <MapCoordPicker
-          onMapClick={handleMapClick}
-          locationSelected={locationSelected}
-          onLocationSelect={handlelLocationSelected}
-        />
-
+        
         <h3>Dates de l'évènement</h3>
         <Controller
           name="listOfDates"
