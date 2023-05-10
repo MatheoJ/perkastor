@@ -124,13 +124,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 break;
             case 'POST':
                 // Create data in your database
-                const { title, description, factItems, authorId } = req.body;
+                console.log(req.body);
+                const { title, description, factItems, authorId } =req.body;
+                console.log(req.body);
                 var factChainId = ObjectID().toHexString();
+                
                 const newFactChain = await prisma.factChain.create({
                     data: {
                         id: factChainId,
                         title: title,
-                        authorId: session.user.id || authorId,
+                        author : {
+                            connect : {
+                                id : authorId || session.user.id
+                            }
+                        },
                         description: description,
                     },
                 });
