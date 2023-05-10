@@ -15,11 +15,11 @@ const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected
   const updateLocation = async () => {
 
     const queryParams = new URLSearchParams({
-      type: map.getZoom(),
-      maxLongitude: map.getBounds()._ne.lng,
-      maxLatitude: map.getBounds()._ne.lat,
-      minLongitude: map.getBounds()._sw.lng,
-      minLatitude: map.getBounds()._sw.lat,
+      type: map.getZoom().toString(),
+      maxLongitude: map.getBounds()._ne.lng.toString(),
+      maxLatitude: map.getBounds()._ne.lat.toString(),
+      minLongitude: map.getBounds()._sw.lng.toString(),
+      minLatitude: map.getBounds()._sw.lat.toString(),
     });
 
     const response = await fetch(`/api/locationFact?${queryParams}`, {
@@ -61,7 +61,7 @@ const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected
     map.on("moveend",updateLocation);
 
     map.on('click', 'unclustered-point_loc', function (e) {
-      var coordinates = e.features[0].geometry.coordinates.slice();
+      var coordinates = e.features[0].geometry.coordinates.slice(); // DO NOT MODIFY THIS LINE
       var name = e.features[0].properties.name;
       
       // Ensure that if the map is zoomed out such that

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
 import { AccountCircle, VerifiedUserOutlined } from '@mui/icons-material';
+import MenuIcon from '@mui/icons-material/Menu';
 
 function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
     const { data: session, status, update } = useSession({
@@ -32,11 +33,7 @@ function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
         <div className="topbar">
             <div className="topbar-container">
                 <div className="leftrow">
-                    <div className="icon">
-                        <button className="toggle" onClick={toggleSidebar}>
-                            <i className="fa fa-bars" style={{ color: "#F1B706", }}></i>
-                        </button>
-                    </div>
+                    <MenuIcon className="menu" onClick={toggleSidebar} style={{ color: "#F1B706", }}/>
                     <Link href='/'>
                         <div className="title">
                             <h1>PERKASTOR</h1>
