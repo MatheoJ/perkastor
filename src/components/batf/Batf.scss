@@ -1,22 +1,29 @@
 @import '../../styles/colors.scss';
 @import '../../styles/sideBar.scss';
 
-.batf{
+.batf {
     position: fixed;
     width: 30em;
     right: 0;
     top: 50px;
     bottom: 0;
-    z-index: 1000;
     height: 100%;
-
-    display: flex;
 
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 
     background-color: $primary-color;
     transition: 0.5s;
     color: white;
+
+    z-index: 9999;
+}
+
+.inner-batf {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
 }
 
 .batf-fullscreen{
