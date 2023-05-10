@@ -9,10 +9,8 @@ import { json } from 'stream/consumers';
 //const { hasSome } = require('prisma-multi-tenant');
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
-
     const {chainItemId, newTitle, newComment, chainItemToAdd, chainItemToRevome, chainItemIdsToSwap} = req.query;
-
-    const session: ExtendedSession = await getServerSession(req, res, authOptions)
+    const session: ExtendedSession = await getServerSession(req, res, authOptions);
     try {
         const client = new PrismaClient();
         switch (method) {

@@ -38,24 +38,6 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                         </li>
                         <li>
                             <div className="icon">
-                                <button title='Accéder à mes favoris' onClick={() => handleClick({ item: "favoris" })}>
-                                    <i className="far fa-bookmark" style={{ color: "#F1B706", }}></i>
-                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Favoris</span>
-                                </button>
-                            </div>
-                        </li>
-                        <li>
-                            <div className="icon">
-                                <button title='Accéder à mes recherches récentes' onClick={() => handleClick({ item: "recherches" })}>
-                                    <i className="far fa-clock" style={{ color: "#F1B706", }}></i>
-                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Recherches récentes</span>
-                                </button>
-                            </div>
-
-                        </li>
-
-                        <li>
-                            <div className="icon">
                                 <button onClick={() => handleClick({ item: "addEvent" })}>
                                     <i className="far fa-google-plus" style={{ color: "#F1B706", }}></i>
                                     <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter un évènement</span>
