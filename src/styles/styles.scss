@@ -2,6 +2,10 @@ nav {
   display: flex;
   flex-direction: row;
   gap: 50px;
+
+  svg {
+    display: block;
+  }
 }
 
 .row {

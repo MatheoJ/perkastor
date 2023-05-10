@@ -178,44 +178,6 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
-        /*
-        
-        async signIn({ user, account, profile, email, credentials }) {
-            console.log("Check if the user already exists in the database");
-            userData = await prisma.user.findUnique({
-                where: {
-                    email: profile.email,
-                },
-            })
-            if (userData) {
-                console.log("User already exists in the database")
-                return true;
-            }
-            console.log("User doesn't exist in the database");
-            // register the user
-            try {
-                userData = await prisma.user.create({
-                    data: {
-                        id: ObjectID().toHexString(),
-                        fullName: profile.name,
-                        email: profile.email,
-                        active: true,
-                        image: profile.image,
-                        provider: account.provider,
-                        role: userT,
-                    }
-                })
-                console.log("user created successfully: " + userData)
-                return true;
-            } catch (error) {
-                console.log(
-                    "ERROR While adding new User from Google SignIn callback: " + error
-                );
-                return false;
-            }
-        },
-        */
-
         async jwt({ token, user, account, profile }) {
             // Persist the OAuth access_token to the token right after signin
             // if (user) {
@@ -240,9 +202,6 @@ export const authOptions: NextAuthOptions = {
             return refreshAccessToken(token)
         },
         async session({ session, token, user }) {
-            console.log("user: ")
-            console.log(user)
-            console.log(session)
             if (session?.user) {
                 session.user.id = user.id;
                 session.user['role'] = user['role'] as string;
@@ -274,8 +233,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
                     }
                 })
 
-                console.log('next-auth.session-token:')
-                console.log(session);
 
                 const cookies = new Cookies(req, res)
 

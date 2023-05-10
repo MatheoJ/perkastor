@@ -5,9 +5,10 @@ import MapCoordPicker from "~/components/MapCoordPicker";
 import DatePicker from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import CropperView from "~/components/cropper/CropperView";
-import swal from '@sweetalert/with-react';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 import { useRouter } from "next/router";
-
+import { useSession } from "next-auth/react";
 interface EventData {
   name: string;
   typeLieux: string;
@@ -20,6 +21,13 @@ interface EventData {
 }
 
 const Event = () => {
+  const router = useRouter();
+  const MySwal = withReactContent(Swal)
+  // need to be authorized to access this page
+  const { data: session, status, update } = useSession({
+    required: true
+  })
+
   const {
     register,
     handleSubmit,
@@ -55,7 +63,7 @@ const Event = () => {
     };
     dataEvent = {
       title: data.name,
-      shortDesc: data.description,
+      shortDesc: "",
       content: data.description,
       location: location,
       keyDates: data.listOfDates
@@ -72,35 +80,41 @@ const Event = () => {
     // if response is ok, update the fact's image
     if (response.ok) {
       const responseData = await response.json();
-      console.log(responseData);
       // change image related to the fact whose id is responseData.id
-      const image = await ref.current?.triggerUpload(responseData.id);
-      if (!image) {
+      const image = await ref.current?.triggerUpload(responseData.data.id);
+      if (image) {
+        
+
+        // display a sweet alert popup to inform the user of the success
+        MySwal.fire({
+          title: "Evènement ajouté avec succès",
+          icon: "success",
+          showCancelButton: false,
+          confirmButtonText: "Ok",
+        }).then(async () => {
+          router.push("/profile");
+        })
+
+      } else {
         // display a sweet alert popup to inform the user of the error
         // and ask him if he wants to retry to update the fact's image
         // if he does, call the updateFactImage function again
         // if he doesn't, redirect to his profile page
 
-        swal.fire({
+        MySwal.fire({
           title: "Erreur lors de l'ajout de l'image de l'évènement",
           text: "Voulez-vous réessayer ?",
           icon: "error",
           showCancelButton: true,
           confirmButtonText: "Réessayer",
           cancelButtonText: "Annuler",
-        }).then((value) => {
-          switch (value) {
-            case "retry":
-              ref.current?.triggerUpload();
-              break;
-            case "cancel":
-              // use router to redirect to the profile page
-              useRouter().push("/profile");
-              break;
-            default:
-              useRouter().push("/profile");
-              break;
+        }).then(async () => {
+          const value = await MySwal.fire();
+          if (value) {
+            ref.current?.triggerUpload();
+            return;
           }
+          router.push("/profile");
         })
       };
     }
