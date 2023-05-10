@@ -1,10 +1,10 @@
 .cropContainer {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 80px;
-    z-index: 1;
+    bottom: 0;
+    z-index: 9998;
 }
 
 .innerControls {
@@ -14,20 +14,23 @@
     align-items: center;
     height: 100%;
     gap: 2em;
+    z-index: 9999;
 }
 
 .controls {
-    position: absolute;
+    position: fixed;
     bottom: 0;
-    left: 50%;
+    left: 0;
     width: 100%;
-    transform: translateX(-50%);
-    height: 80px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+
     background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 9999;
 }
 
 .picture-button {

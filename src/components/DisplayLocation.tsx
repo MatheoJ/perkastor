@@ -6,8 +6,8 @@ import { selectMapEvent } from "../events/map/SelectMapEvent";
 import { bus } from "../utils/bus";
 interface DisplayLocationProps {
   map: maplibregl.Map;
-  locationSelected : any;
-  onLocationSelect : (locSelected : any) => void;  
+  locationSelected: any;
+  onLocationSelect: (locSelected: any) => void;
 }
 
 const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected, onLocationSelect }) => {
@@ -56,28 +56,28 @@ const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected
   };
 
   useEffect(() => {
-    
-    map.on("zoomend",updateLocation);
-    map.on("moveend",updateLocation);
+
+    map.on("zoomend", updateLocation);
+    map.on("moveend", updateLocation);
 
     map.on('click', 'unclustered-point_loc', function (e) {
       var coordinates = e.features[0].geometry.coordinates.slice(); // DO NOT MODIFY THIS LINE
       var name = e.features[0].properties.name;
-      
+
       // Ensure that if the map is zoomed out such that
       // multiple copies of the feature are visible, the
       // popup appears over the copy being pointed to.
       while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
       }
-        
+
       new maplibregl.Popup()
-      .setLngLat(coordinates)
-      .setHTML(
-      'Nom: ' + name 
-      )
-      .addTo(map);
-      
+        .setLngLat(coordinates)
+        .setHTML(
+          'Nom: ' + name
+        )
+        .addTo(map);
+
       bus.publish(selectMapEvent(e.features[0]));
       onLocationSelect(e.features[0]);
 

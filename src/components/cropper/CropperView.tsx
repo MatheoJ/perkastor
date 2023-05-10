@@ -5,7 +5,7 @@ import { forwardRef, useImperativeHandle, useState, useRef, useCallback, Dispatc
 import Cropper, { Point, Area } from "react-easy-crop";
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import getCroppedImg, { stringAvatar } from './cropImage';
+import getCroppedImg, { convertVhToPx, stringAvatar } from './cropImage';
 import axios from "axios";
 import styles from './CropperView.module.css';
 
@@ -27,8 +27,8 @@ interface Props {
 
 const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, defaultFileType, alt, width, height, cropShape, variant, uploadOnSubmit, toUpdate, toUpdateId, image }, ref) => {
     useImperativeHandle(ref, () => ({
-        triggerUpload(toUpdateIdOverride: string) {
-            return handleUpload(
+        async triggerUpload(toUpdateIdOverride: string) {
+            return await handleUpload(
                 uploadState,
                 setUploadState,
                 imageSrc,
@@ -47,9 +47,10 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
     const [error, setError] = useState("")
     const [uploadState, setUploadState] = useState({});
     const profileImageRef = useRef<HTMLInputElement>(null)
+    const [visible, setVisible] = useState<boolean>(true)
     const [avatarUrl, setAvatarUrl] = useState<string | null>(image)
     const [imageSrc, setImageSrc] = useState<File | null>(null)
-    const [imageUrl, setImageUrl] = useState(image)
+    const [imageUrl, setImageUrl] = useState<string | null>(image)
     const [crop, setCrop] = useState<Point>({ x: 0, y: 0 })
     const [cropAreaPixels, setCropAreaPixels] = useState({ width: 0, height: 0, x: 0, y: 0 })
     const [zoom, setZoom] = useState(1)
@@ -79,14 +80,11 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
             vertical: false
         }) as Blob
 
-        const fileName = imageUrl.split('/').pop() || defaultFilename
-        const fileType = fileName.split('.').pop() || defaultFileType
-
         // generate url from blob
         const previewImageUrl = URL.createObjectURL(fileToUpload)
+        setVisible(false)
 
         setAvatarUrl(previewImageUrl)
-        setImageSrc(undefined)
         setError("")
     }
 
@@ -98,6 +96,7 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
     // default filename: string
     // default filetype: string
     async function handleUpload(
+
         uploadState: {},
         setUploadState: Dispatch<SetStateAction<{}>>,
         imageSrc: File | null,
@@ -111,59 +110,64 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
         toUpdate: string,
         toUpdateId: string,
         e?: MouseEvent) {
-        e?.preventDefault()
 
-        // async magic goes here...
-        if (imageSrc === undefined) {
-            handleError("Veuillez sélectionner une image.")
-            return false
-        }
+        return new Promise(async (resolve, reject) => {
 
-        let fileToUpload = await getCroppedImg(imageUrl, cropAreaPixels, 0, {
-            horizontal: false,
-            vertical: false
-        }) as Blob
+            e?.preventDefault()
 
-        const fileName = imageUrl.split('/').pop() || defaultFilename
-        const fileType = fileName.split('.').pop() || defaultFileType
+            // async magic goes here...
+            if (imageSrc === undefined) {
+                handleError("Veuillez sélectionner une image.")
+                reject("Veuillez sélectionner une image.")
+            }
 
-        // Patch the file information to the server to obtain a signed URL
-        axios
-            .patch(apiRoute, {
-                fileName: fileName,
-                fileType: fileType,
-                toUpdate: toUpdate,
-                toUpdateId: toUpdateId,
-            })
-            .then((res) => {
-                const signedRequest = res.data.signedRequest;
-                const url = res.data.url;
-                setUploadState({
-                    ...uploadState,
-                    url,
-                });
+            let fileToUpload = await getCroppedImg(imageUrl, cropAreaPixels, 0, {
+                horizontal: false,
+                vertical: false
+            }) as Blob
 
-                // Perform the actual upload using the signed URL
-                const options = {
-                    headers: {
-                        "Content-Type": fileType,
-                    },
-                };
-                axios
-                    .put(signedRequest, fileToUpload, options)
-                    .then((_) => {
-                        handleSuccess(url)
-                        return true;
-                    })
-                    .catch((_) => {
-                        handleError("Nous n'avons pas pu téléverser votre image.")
-                        return false;
+            const fileName = imageSrc.name || defaultFilename // "Photo de profil.png"
+            const fileType = imageSrc.type || defaultFileType // "image/jpeg"
+
+            // Patch the file information to the server to obtain a signed URL
+            axios
+                .patch(apiRoute, {
+                    fileName: fileName,
+                    fileType: fileType,
+                    toUpdate: toUpdate,
+                    toUpdateId: toUpdateId,
+                })
+                .then((res) => {
+                    const signedRequest = res.data.signedRequest;
+                    const url = res.data.url;
+                    setUploadState({
+                        ...uploadState,
+                        url,
                     });
-            })
-            .catch((error) => {
-                handleError("Nous n'avons pas pu téléverser votre image: " + (error?.message || error?.response?.data?.message || error))
-                return false;
-            });
+
+                    // Perform the actual upload using the signed URL
+                    const options = {
+                        headers: {
+                            "Content-Type": fileType,
+                        },
+                    };
+                    axios
+                        .put(signedRequest, fileToUpload, options)
+                        .then((_) => {
+                            handleSuccess(url)
+                            resolve(url)
+                        })
+                        .catch((_) => {
+                            handleError("Nous n'avons pas pu téléverser votre image.")
+                            reject("Nous n'avons pas pu téléverser votre image.")
+                        });
+                })
+                .catch((error) => {
+                    handleError("Nous n'avons pas pu téléverser votre image: " + (error?.message || error?.response?.data?.message || error))
+                    reject("Nous n'avons pas pu téléverser votre image: " + (error?.message || error?.response?.data?.message || error))
+                });
+        }
+        )
     }
 
     return (
@@ -172,6 +176,7 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
                 <input ref={profileImageRef} hidden accept="image/*" type="file" onChange={(event) => {
                     if (event.target.files) {
                         console.log(event.target.files[0])
+                        setVisible(true)
                         setImageSrc(event.target.files[0])
                         setImageUrl(URL.createObjectURL(event.target.files[0]))
                     }
@@ -201,7 +206,7 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
             </div>
 
             {
-                imageSrc ?
+                (visible && imageSrc) ?
                     <>
                         <div className={styles.cropContainer}>
                             <Cropper
@@ -212,12 +217,11 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
                                 cropShape={cropShape || "round"}
                                 onCropChange={setCrop}
                                 onCropComplete={onCropComplete}
-                                onZoomChange={setZoom}
-                            />
+                                onZoomChange={setZoom} />
                         </div>
                         <div className={styles.controls}>
                             <div className={styles.innerControls}>
-                                <Button className={styles.pictureButton} variant={"contained"} color={"error"} sx={{ width: 250 }}
+                                <Button className={styles.pictureButton} variant={"outlined"} color={"error"} sx={{ width: 250 }}
                                     startIcon={<CancelIcon />} onClick={() => {
                                         setImageSrc(undefined);
                                         setImageUrl("")
@@ -232,7 +236,7 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
                                     onChange={(e, zoom) => setZoom(Number(zoom))}
                                     classes={{ root: "slider" }}
                                 />
-                                <Button className={styles.pictureButton} variant={"contained"} color={"success"} sx={{ width: 250 }}
+                                <Button className={styles.pictureButton} variant={"outlined"} color={"success"} sx={{ width: 250 }}
                                     startIcon={<CheckBoxIcon />} onClick={(e: any) => {
                                         uploadOnSubmit ?
                                             handleUpload(
