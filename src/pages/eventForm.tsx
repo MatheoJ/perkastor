@@ -7,6 +7,8 @@ import { list } from 'postcss';
 import DatePicker from "react-multi-date-picker"
 import { Calendar } from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel"
+import HistoricalFigure from "../components/batf/HistoricalFiguresView";
+import HistoricalFigureList from '~/components/batf/HistoricalFiguresList';
 
 interface EventData {
   name: string;
@@ -17,8 +19,62 @@ interface EventData {
   coordinatesLong: number;  
   description: string;
   listOfDates: string;
+  idHistoricalFigure: string[];
 }
 
+const fact = {
+  id: "1",
+  isEvent:true,
+  createdAt: new Date(1990, 4, 7),
+  updatedAt: new Date(1990, 4, 7),
+  title: "Sample Fact Title",
+  shortDesc: "This is a short description of the fact.",
+  content: "This is the full content of the fact.",
+  keyDates: [new Date(1990, 4, 7)],
+  bannerImg: "",
+  verified: true,
+  video: [],
+  audio: [],
+  authorId: "oui",
+  locationsId:"",
+  sources:[]
+}
+
+
+const histFig1 = {
+  id: "1",
+  name: "Pierre Paul Jacques",
+  birthDate: new Date(1990, 4, 7),
+  deathDate: new Date(1985, 4, 7),
+  image: "",
+  shortDesc: "C'est moi !",
+  content: "coucou",
+  facts:[fact]
+};
+
+const histFig2 = {
+  id: "2",
+  name: "Pierpoljak",
+  birthDate: new Date(1990, 4, 7),
+  deathDate: new Date(1985, 4, 7),
+  image: "",
+  shortDesc: "C'est moi !",
+  content: "coucou",
+  facts:[fact]
+};
+
+const histFig3 = {
+  id: "3",
+  name: "Test",
+  birthDate: new Date(1990, 4, 7),
+  deathDate: new Date(1985, 4, 7),
+  image: "",
+  shortDesc: "C'est moi !",
+  content: "coucou",
+  facts:[fact]
+};
+
+const histFigList = [histFig1, histFig2, histFig3]
 
 
 const Event = () => {
@@ -146,7 +202,11 @@ const Event = () => {
         )}
       />
 
-        <button type="submit">Submit</button>
+      <h3>Résultats de la recherche des Personnages Historiques associés</h3>
+      <div title="Historical_People" className="idiv">
+        <HistoricalFigureList historicalPersonList={histFigList}/>
+      </div>
+        <button className='button_submit' id='q1.button' type="submit">Submit</button>
       </form>
     </div>
   );

@@ -33,7 +33,7 @@
   font-size: 0.9rem;
 }
 
-.container button {
+.container #q1\.button {
   background-color: #4a90e2;
   border: none;
   border-radius: 4px;
@@ -48,8 +48,21 @@
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.container button:hover {
+.container #q1\.button:hover {
   background-color: #3b7ac9;
   color: rgb(255, 255, 255);
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.idiv {
+  text-align: center;
+  margin: auto;
+  max-width: 500px;
+  max-height: 400px;
+  color: rgb(255, 255, 255);
+}
+
+.selected {
+  background-color: #3b7ac9;
+  border-radius: 20px;
 }
