@@ -48,8 +48,17 @@ const FactChain: React.FC<FactChainProps> = ({ facts }) => {
       showCancelButton: true,
       confirmButtonText: 'Supprimer',
       cancelButtonText: 'Annuler',
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
+        // delete fact with delete request
+        const res = await fetch(`api/facts?fid=${factList[factIndex].id}`, {
+          method: 'DELETE',
+        });
+        
+        if (!res) {
+          Swal.fire('Erreur', 'Une erreur est survenue lors de la suppression de l\'évènement', 'error');
+          return;
+        }
         const newFactList = [...factList];
         newFactList.splice(factIndex, 1);
         setFactList(newFactList);
@@ -66,7 +75,8 @@ const FactChain: React.FC<FactChainProps> = ({ facts }) => {
           className="factContainer"
         >
           <div className="factTitle">
-            <img src={fact.bannerImg} alt="fact image" id='imageFactList' />
+          <img src={fact.bannerImg ? fact.bannerImg : "/images_home/image_default.jpg"} alt="fact image" id='imageFactList' />
+            
             <div className='factTitleText'> <p>{fact.title} <br/> {fact.from}</p> </div>
           </div>
           <div className='deleteBtn'>

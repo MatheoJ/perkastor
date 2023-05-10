@@ -1,9 +1,9 @@
 .cropContainer {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 80px;
+    bottom: 0;
     z-index: 1;
 }
 
@@ -14,15 +14,16 @@
     align-items: center;
     height: 100%;
     gap: 2em;
+    padding-bottom: 10vh;
 }
 
 .controls {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 50%;
     width: 100%;
     transform: translateX(-50%);
-    height: 80px;
+    height: 150px;
     background-color: white;
     display: flex;
     align-items: center;

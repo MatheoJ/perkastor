@@ -40,7 +40,7 @@ export default function mapWrapperPage() {
         <Map locationSelected={undefined} onLocationSelect={function (locSelected: any): void {
           throw new Error("Function not implemented.");
         } } />
-        <SearchBar />
+        <SearchBar showChecklist={true} />
         {<Batf>
         </Batf>}
       </div >

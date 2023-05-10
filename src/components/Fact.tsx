@@ -22,26 +22,41 @@ const Fact: React.FC<Props> = ( props ) => {
                     </div>
                     <div className="factHeadBottomRight">
                         <h2>
-                            19 mai 1952
+                            {fact.keyDates.map((date) => {
+                                var dateObj = new Date(date);
+                                return <li key={dateObj.getTime()}>{dateObj.getDate()} - {dateObj.getMonth()+1} - {dateObj.getFullYear()}</li>
+                            })}
                         </h2>
                     </div>
                 </div>
             </div>
             <div className="factBody">
-                <div className='content-left'>
-                    <p>{fact.content}</p>
-                </div>
-                <div className='content-right'>
-                    <div className="factImage">
-                        {/*<Image src={fact.bannerImg} alt="" width={300} height={200} />*/}
+                {fact.bannerImg ? (
+                    <>
+                        <div className="content-left">
+                            <p>{fact.content}</p>
+                        </div>
+                        <div className='content-right'>
+                            <div className="factImage">
+                                <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                            </div>
+                            <ul>
+                                {fact.personsInvolved.map((person) => (
+                                    <li key={person.id}>{person.name}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    </>
+                ) : (
+                    <div className="content">
+                        <p>{fact.content}</p>
+                        <ul>
+                            {fact.personsInvolved.map((person) => (
+                                <li key={person.id}>{person.name}</li>
+                            ))}
+                        </ul>
                     </div>
-                    <ul>
-                        {fact.personsInvolved.map((person) => (
-                            <li key={person.id}>{person.name}</li>
-                        ))}
-                    </ul>
-                    
-                </div>
+                )}
             </div>
         </div>
     );

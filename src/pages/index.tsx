@@ -62,7 +62,7 @@ const Home: NextPage<{}> = () => {
             </Box>
           </Link>
           <h4>À qui s’adresse-t-on ?</h4>
-          <p>Aux fans de l’histoire et à ceux qui souhaitent la découvrir ! Tout le monde a déjà entendu une anecdote historique folle sur sa ville, difficile à trouver dans les sources officielles souvent très exhaustives. À Perkastor, on regroupe ces anecdotes rien que pour vous 😊</p>
+          <p>Aux fans de l’histoire et à ceux qui souhaitent la découvrir ! Tout le monde a déjà entendu une anecdote historique folle sur sa ville, difficile à trouver dans les sources officielles souvent très exhaustives. Chez Perkastor, on regroupe ces anecdotes avec vous et pour vous 😊</p>
           <br />
           <h4>Comment contribuer ?</h4>
           <p>Ce site est collaboratif, n’hésitez pas à rajouter vos propres anecdotes historiques.</p>
