@@ -1,0 +1,42 @@
+.cropContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 80px;
+    z-index: 1;
+}
+
+.innerControls {
+    justify-content: space-between;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: 2em;
+}
+
+.controls {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 100%;
+    transform: translateX(-50%);
+    height: 80px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.picture-button {
+    max-width: calc(30% - 2em);
+    width: calc(30% - 2em);
+    margin: 1em;
+}
+.zoom-slider {
+    max-width: calc(40% - 2em);
+    width: calc(40% - 2em);
+    margin: 1em;
+}

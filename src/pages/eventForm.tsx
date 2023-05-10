@@ -1,13 +1,12 @@
 // pages/event.tsx
 import { Controller, set, useForm } from "react-hook-form";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useRef, useState } from "react";
 import MapCoordPicker from "~/components/MapCoordPicker";
-import { list } from "postcss";
 import DatePicker from "react-multi-date-picker";
-import { Calendar } from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
-import { Fact, Location } from "@prisma/client";
+import CropperView from "~/components/cropper/CropperView";
+import swal from '@sweetalert/with-react';
+import { useRouter } from "next/router";
 
 interface EventData {
   name: string;
@@ -31,6 +30,7 @@ const Event = () => {
   } = useForm<EventData>();
   const [locationSelected, setLocationSelected] = useState("");
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const ref = useRef<any>();
 
   const handlelLocationSelected = (locSelected: any) => {
     setLocationSelected(locSelected);
@@ -43,7 +43,7 @@ const Event = () => {
     console.log(watch("listOfDates"));
   };
 
-  const  onSubmit = async(data: EventData) => {
+  const onSubmit = async (data: EventData) => {
     var dataEvent;
     var location = {
       id: data.idLieux,
@@ -60,7 +60,7 @@ const Event = () => {
       location: location,
       keyDates: data.listOfDates
     };
-    
+
     const response = await fetch('/api/facts', {
       method: 'POST',
       body: JSON.stringify(dataEvent),
@@ -69,13 +69,46 @@ const Event = () => {
       }
     });
 
-    console.log(response);
+    // if response is ok, update the fact's image
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log(responseData);
+      // change image related to the fact whose id is responseData.id
+      const image = await ref.current?.triggerUpload(responseData.id);
+      if (!image) {
+        // display a sweet alert popup to inform the user of the error
+        // and ask him if he wants to retry to update the fact's image
+        // if he does, call the updateFactImage function again
+        // if he doesn't, redirect to his profile page
 
-  };
+        swal.fire({
+          title: "Erreur lors de l'ajout de l'image de l'évènement",
+          text: "Voulez-vous réessayer ?",
+          icon: "error",
+          showCancelButton: true,
+          confirmButtonText: "Réessayer",
+          cancelButtonText: "Annuler",
+        }).then((value) => {
+          switch (value) {
+            case "retry":
+              ref.current?.triggerUpload();
+              break;
+            case "cancel":
+              // use router to redirect to the profile page
+              useRouter().push("/profile");
+              break;
+            default:
+              useRouter().push("/profile");
+              break;
+          }
+        })
+      };
+    }
+  }
 
   const handleMapClick = (longitude: number, latitude: number) => {
-    setValue("coordinatesLong", longitude.toString());
-    setValue("coordinatesLat", latitude.toString());
+    setValue("coordinatesLong", longitude);
+    setValue("coordinatesLat", latitude);
     setValue("NomLieux", "");
     setValue("typeLieux", "");
     setValue("idLieux", "");
@@ -103,8 +136,11 @@ const Event = () => {
           <p className="error-message">La description est requise.</p>
         )}
 
+        <h3>Image de l'évènement</h3>
+        <CropperView toUpdate='fact' width={150} height={150} defaultFilename='fact.png' defaultFileType='png' alt={'Fait historique'} cropShape='rect' variant='square' uploadOnSubmit={false} ref={ref} />
+
         <h3>Lieu de l'évènement</h3>
-        <MapCoordPicker onMapClick={handleMapClick} locationSelected={locationSelected} onLocationSelect={handlelLocationSelected} />
+        <MapCoordPicker onMapClick={handleMapClick} locSelected={locationSelected} onLocationSelect={handlelLocationSelected} />
         <label htmlFor="NomLieux">Nom du lieu*</label>
         <input
           type="text"
@@ -163,7 +199,7 @@ const Event = () => {
 
         <MapCoordPicker
           onMapClick={handleMapClick}
-          locationSelected={locationSelected}
+          locSelected={locationSelected}
           onLocationSelect={handlelLocationSelected}
         />
 

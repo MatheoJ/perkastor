@@ -1,12 +1,6 @@
-import { Fact, PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth/next';
-import { ExtendedSession, SearchFilters, SearchResult } from 'types/types';
-import { connectToDatabase } from '../../lib/db';
-import { authOptions } from './auth/[...nextauth]';
-import ObjectID from 'bson-objectid';
-import { prisma } from '~/server/db';
-import { bool } from 'aws-sdk/clients/signer';
+import { prisma } from '../../lib/db'
+
 //const { hasSome } = require('prisma-multi-tenant');
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -15,12 +9,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { id } = req.query;
    
     try {
-        const client = new PrismaClient();
         switch (method) {
             case 'GET':
-                const clientPrismaResult = await client.user.findUnique({
+                const prismaPrismaResult = await prisma.user.findUnique({
                     where: {
-                        id: id
+                        id: Array.isArray(id) ? id[0] : id,
                     },
                     include: {
                         facts: true,
@@ -28,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 });
 
-                return res.status(200).json(clientPrismaResult);
+                return res.status(200).json(prismaPrismaResult);
 
             case 'POST':
                 break;

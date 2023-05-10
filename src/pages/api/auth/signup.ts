@@ -1,7 +1,6 @@
 import { hashPassword } from '../../../lib/auth';
-import { connectToDatabase } from '../../../lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../../lib/db'
 
 type ResponseData = {
     message: string
@@ -53,10 +52,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) 
     }
 
     try {
-        // initialize prisma client
-        const client = new PrismaClient();
-
-        const existingUser = await client.user.findFirst({
+        const existingUser = await prisma.user.findFirst({
             where: {OR: [{email: email},{name: name}]}
            });
 
@@ -67,7 +63,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) 
 
         const hashedPassword = await hashPassword(password);
 
-        const result = await client.user.create({
+        const result = await prisma.user.create({
             data: {
                 email: email,
                 name: name,
