@@ -47,6 +47,7 @@ export interface FactProps extends Fact {
         id: string;
         name: string;
     }[];
+    keyDates : Date[];
 }
 
 export interface FactChainItemProps extends FactChainItem {
