@@ -7,7 +7,7 @@ interface DataPointsProps {
   map: maplibregl.Map;
 }
 
-const DataPoints: React.FC<DataPointsProps> = ({ map }) => {
+const DataPoints: NextPage<DataPointsProps> = ({ map }) => {
 
   const highMagnitudeThreshold = 5.0;
   const zoomThreshold = 5;

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import maplibregl from 'maplibre-gl';
+import { LngLatLike } from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -10,9 +10,8 @@ interface FlyToProps {
 }
 
 const FlyTo: React.FC<FlyToProps> = ({ map, lngLat = [0, 0] }) => {
-    const mapContainer = useRef<HTMLDivElement>(null);
-    
-    var end = [2.3160431, 48.7791939 ];    
+
+    var end: LngLatLike = [2.3160431, 48.7791939 ];    
 
     const handleButtonClick = () => {
         if (!map) return;

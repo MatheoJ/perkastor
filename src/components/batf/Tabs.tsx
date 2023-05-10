@@ -6,7 +6,7 @@ type Props = {
   children: ReactElement[]
 }
 
-const Tabs: React.FC<Props> = ({ children }) => {
+const Tabs: NextPage<Props> = ({ children }) => {
   const [selectedTab, setSelectedTab] = useState<number>(0)
 
   function handleTabChange(tab: number){

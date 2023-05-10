@@ -13,7 +13,7 @@ interface MarkerProps {
   lngLat?: [number, number];
 }
 
-const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
+const Marker: NextPage<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
   const coordinates = React.useRef<HTMLPreElement | null>(null);
 
   const getPlaceInfo = async (latitude, longitude, zoom) => {

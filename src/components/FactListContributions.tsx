@@ -3,6 +3,7 @@ import Fact from './Fact';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Add from '@material-ui/icons/Add';
 import Swal from 'sweetalert2';
+import { NextPage } from 'next';
 
 interface FactChainProps {
   facts: {
@@ -38,7 +39,7 @@ interface FactChainProps {
   setFacts: React.Dispatch<React.SetStateAction<{}[]>>;
 }
 
-const FactChain: React.FC<FactChainProps> = ({ facts, setFacts }) => {
+const FactChain: NextPage<FactChainProps> = ({ facts, setFacts }) => {
 
   const handleDeleteFact = (factIndex: number) => {
     Swal.fire({

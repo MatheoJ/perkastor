@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import FactChainItem from './FactChainItem';
 import Slider from 'react-slick';
 import { FactChainItem as FactChainItemType } from '@prisma/client';
 import { FactChain } from '@prisma/client';
 import { FactChainItemProps } from '../../types/types';
+import { NextPage } from 'next';
+import FactChainItem from './FactChainITem';
 
 interface ChainListProps {
   chain: {title :string,
@@ -20,7 +21,7 @@ interface ChainListProps {
   setItemSelected: React.Dispatch<React.SetStateAction<{}>>;
 }
 
-const ChainList: React.FC<ChainListProps> = ({ chain, setItemSelected }) => {
+const ChainList: NextPage<ChainListProps> = ({ chain }) => {
   console.log('chain', chain)
   //const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
   //const [items, setItems] = useState(facts.slice(0, 10));

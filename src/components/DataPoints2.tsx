@@ -7,18 +7,18 @@ interface DataPointsProps {
   map: maplibregl.Map;
 }
 
-const DataPoints: React.FC<DataPointsProps> = ({ map }) => {
+const DataPoints: NextPage<DataPointsProps> = ({ map }) => {
   useEffect(() => {
     map.on("zoomend", async function () {
       console.log("A zoomend event occurred.");
       console.log(map.getBounds());
 
       const queryParams = new URLSearchParams({
-        type: map.getZoom(),
-        maxLongitude: map.getBounds()._ne.lng,
-        maxLatitude: map.getBounds()._ne.lat,
-        minLongitude: map.getBounds()._sw.lng,
-        minLatitude: map.getBounds()._sw.lat,
+        type: map.getZoom().toString(),
+        maxLongitude: map.getBounds()._ne.lng.toString(),
+        maxLatitude: map.getBounds()._ne.lat.toString(),
+        minLongitude: map.getBounds()._sw.lng.toString(),
+        minLatitude: map.getBounds()._sw.lat.toString(),
       });
 
       const response = await fetch(`/api/map/get_points?${queryParams}`, {
@@ -29,27 +29,28 @@ const DataPoints: React.FC<DataPointsProps> = ({ map }) => {
         const responseData = await response.json();
         console.log(responseData);
     
-        if (map.getLayer("unclustered-point_loc")) {
-          map.removeLayer("unclustered-point_loc");
-          map.removeSource("dataLoc"); // Remove the associated source as well
+        if (!map.getSource("dataLoc")) {
+          map.addSource("dataLoc", {
+            type: "geojson",
+            data: responseData,
+            cluster: false,
+          });
+        } else {
+          // @ts-ignore
+          map.getSource("dataLoc").setData(responseData); // DO NOT MODIFY THIS LINE
         }
-    
-        map.addSource("dataLoc", {
-          type: "geojson",
-          data: responseData,
-          cluster: false,
-        });
-    
-        map.addLayer({
-          id: "unclustered-point_loc",
-          type: "symbol",
-          source: "dataLoc",
-          layout: {
-            "icon-image": "pin_event",
-            "icon-size": 0.5,
-            "icon-allow-overlap": true,
-          },
-        });
+        if (!map.getLayer("unclustered-point_loc")) {
+          map.addLayer({
+            id: "unclustered-point_loc",
+            type: "symbol",
+            source: "dataLoc",
+            layout: {
+              "icon-image": "pin_event",
+              "icon-size": 0.5,
+              "icon-allow-overlap": true,
+            },
+          });
+        }
       }
 
     });

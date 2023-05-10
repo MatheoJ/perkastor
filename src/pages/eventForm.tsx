@@ -1,23 +1,17 @@
 // pages/event.tsx
-import { Controller, set, useForm } from 'react-hook-form';
-import { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import MapCoordPicker from '~/components/MapCoordPicker';
-import { list } from 'postcss';
 import DatePicker from "react-multi-date-picker"
-import { Calendar } from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel"
-import HistoricalFigure from "../components/batf/HistoricalFiguresView";
 import HistoricalFigureList from '~/components/batf/HistoricalFiguresList';
 import { useRef, useState } from "react";
 import CropperView from "~/components/cropper/CropperView";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { useRouter } from "next/router";
-
-import SearchFilters from "../types/types"
-
 import { useSession } from "next-auth/react";
 import { Button } from '@mui/material';
+import { SearchFilters } from 'types/types';
 
 interface EventData {
   name: string;

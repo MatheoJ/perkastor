@@ -50,6 +50,10 @@ export interface FactProps extends Fact {
     keyDates : Date[];
 }
 
+export interface FactListProps {
+    facts: FactProps[];
+  }
+
 export interface FactChainItemProps extends FactChainItem {
     factChain: {
         id: string;

@@ -1,43 +1,9 @@
 // pages/api/locations.js
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getServerSession } from 'next-auth';
-import { authOptions } from './auth/[...nextauth]';
-import { ExtendedSession } from 'types/types';
+import { convertToGeoJSON } from '~/lib/map-utils';
 import { prisma } from '../../lib/db'
 
-async function convertToGeoJSON(location, geoJSON) {
-  const { id, geometry, latitude, longitude, area, type, name } = location;
-  const coordinates = [longitude, latitude];
-
-
-
-  geoJSON.features.push({
-    type: "Feature",
-    geometry: {
-      type: geometry,
-      coordinates: coordinates
-    },
-    properties: {
-      id: id,
-      area: area,
-      type: type,
-      name: name
-      // include any additional properties here
-    }
-  });
-
-}
-
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-
-  const session: ExtendedSession = await getServerSession(req, res, authOptions);
-
-  console.log("laa2 : ");
-  console.log(req.query.type);
-  console.log(req.query.maxLongitude)
-  console.log(req.query.minLongitude)
-  console.log(req.query.maxLatitude)
-  console.log(req.query.minLatitude)
 
   if (req.method !== 'GET') {
     res.status(500).json({ message: 'Seules les requêtes GET sont autorisées' });
@@ -59,10 +25,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     typeOfLocation = "region";
   }
 
-  const minLatitude = req.query.minLatitude;
-  const maxLatitude = req.query.maxLatitude;
-  const minLongitude = req.query.minLongitude;
-  const maxLongitude = req.query.maxLongitude;
+  // search for locations in database a little more than the current view
+  // to avoid having to reload the map when the user moves too often
+  const scale = 1.1;
+
+  const minLatitude = parseFloat(Array.isArray(req.query.minLatitude) ? req.query.minLatitude[0] : req.query.minLatitude) / scale;
+  const maxLatitude = parseFloat(Array.isArray(req.query.maxLatitude) ? req.query.maxLatitude[0] : req.query.maxLatitude) * scale;
+  const minLongitude = parseFloat(Array.isArray(req.query.minLongitude) ? req.query.minLongitude[0] : req.query.minLongitude) / scale;
+  const maxLongitude = parseFloat(Array.isArray(req.query.maxLongitude) ? req.query.maxLongitude[0] : req.query.maxLongitude) * scale;
 
 
 
@@ -73,14 +43,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         AND: [
           {
             latitude: {
-              lte: parseFloat(Array.isArray(maxLatitude) ? maxLatitude[0] : maxLatitude),
-              gte: parseFloat(Array.isArray(minLatitude) ? minLatitude[0] : minLatitude),
+              lte: maxLatitude,
+              gte: minLatitude,
             },
           },
           {
             longitude: {
-              gte: parseFloat(Array.isArray(minLongitude) ? minLongitude[0] : minLongitude),
-              lte: parseFloat(Array.isArray(maxLongitude) ? maxLongitude[0] : maxLongitude),
+              gte: minLongitude,
+              lte: maxLongitude,
             },
           },
           {
@@ -95,8 +65,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       features: [],
     };
 
-    await prismaResult.forEach(async (location) => {
-      const feature = await convertToGeoJSON(location, geojson);
+    prismaResult.map((location) => {
+      convertToGeoJSON(location, geojson);
     });
 
 

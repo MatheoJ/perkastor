@@ -3,12 +3,13 @@ import Image from 'next/image';
 import { FactChainItem as FactChainItemType } from '@prisma/client'
 import { Fact as FactType } from '@prisma/client'
 import { FactChainItemProps } from '../../types/types'
+import { NextPage } from 'next';
 
 interface Props {
     item: FactChainItemProps;
 }
 
-const Fact: React.FC<Props> = (props) => {
+const Fact: NextPage<Props> = (props) => {
     const { item } = props;
     return (
         <div className="fact">

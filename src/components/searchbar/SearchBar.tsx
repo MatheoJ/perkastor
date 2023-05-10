@@ -48,7 +48,7 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
     console.log(searchResults);
   };
 
-  function renderResults(results: any[], category: string) {
+  function renderResults(results: any, category: string) {
 
     return results.map((result, index) => {
       let resultTitle = '';

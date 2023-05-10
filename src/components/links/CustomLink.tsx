@@ -6,7 +6,7 @@ interface Props {
   href: string;
 }
 
-const CustomLink: React.FC<Props> = ({
+const CustomLink: NextPage<Props> = ({
     children,
     href,
   }) => {
