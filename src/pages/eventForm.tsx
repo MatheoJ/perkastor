@@ -13,8 +13,12 @@ import CropperView from "~/components/cropper/CropperView";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { useRouter } from "next/router";
+
+import SearchFilters from "../types/types"
+
 import { useSession } from "next-auth/react";
 import { Button } from '@mui/material';
+
 interface EventData {
   name: string;
   typeLieux: string;
@@ -79,7 +83,7 @@ const histFig3 = {
   facts: [fact]
 };
 
-const histFigList = [histFig1, histFig2, histFig3]
+var histFigList = [histFig1, histFig2, histFig3]
 
 
 const Event = () => {
@@ -101,6 +105,7 @@ const Event = () => {
   } = useForm<EventData>();
   const [locationSelected, setLocationSelected] = useState("");
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [histFigToDisplay, setHistFigToDisplay] = useState<any[]>([]);
   const ref = useRef<any>();
 
   const handlelLocationSelected = (locSelected: any) => {
@@ -130,7 +135,8 @@ const Event = () => {
       shortDesc: "",
       content: data.description,
       location: location,
-      keyDates: data.listOfDates
+      keyDates: data.listOfDates,
+      idHistoricalFigure: data.idHistoricalFigure
     };
 
     setUploading(true);
@@ -216,6 +222,39 @@ const Event = () => {
     setValue("typeLieux", "");
     setValue("idLieux", "");
   };
+
+  const [query, setQuery] = useState('');
+
+  async function handleSearch(e) {
+    var filter : SearchFilters = {
+      event: false,
+      anecdote: false,
+      chain: false,
+      historicalFigure: true,
+      location: false,
+      user: false
+    };
+    // handle the search query
+    e.preventDefault();
+    var queryParams2 = new URLSearchParams({
+      query: query,
+      filtersParam: JSON.stringify(filter)
+    });
+
+    const response2 = await fetch(`/api/search?${queryParams2}`, {
+      method: "GET",
+    });
+/* 
+    histFigList = await response2.json.data.historicalPersons
+    console.log(histFigList) */
+    var histfig = await response2.json();
+    setHistFigToDisplay(histfig.data.historicalPersons); 
+    console.log(histFigToDisplay);
+  }
+
+  function handleChange(event) {
+    setQuery(event.target.value);
+  }
 
   return (
     <div className="container">
@@ -318,12 +357,18 @@ const Event = () => {
           )}
         />
 
-        <h3>Résultats de la recherche des Personnages Historiques associés</h3>
-        <div title="Historical_People" className="idiv">
-          <HistoricalFigureList historicalPersonList={histFigList} />
-        </div>
+      <div>
+        <input type="text" value={query} onChange={handleChange} />
+        <button onClick={handleSearch}>Search</button>
+      </div>
+
+      <h3>Résultats de la recherche des Personnages Historiques associés</h3>
+      <div title="Historical_People" className="idiv">
+        <HistoricalFigureList historicalPersonList={histFigToDisplay}/>
+      </div>
         <Button className='button_submit' id='q1.button' type="submit" disabled={uploading}>Enregistrer</Button>
       </form>
+
     </div>
   );
 };
