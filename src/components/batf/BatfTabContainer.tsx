@@ -15,6 +15,7 @@ import { Fact, HistoricalPerson } from "@prisma/client";
 import HistoricalFigure from "./HistoricalFigures";
 //import ChainList from "../ChainList";
 import { useSession } from 'next-auth/react';
+import HistoricalFigureView from "./HistoricalFiguresView";
 interface BaftTabContainerProps{
     onMinimizeClick?: () => void;
     onFullScreenClick?: () => void;
@@ -141,7 +142,7 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
                   }
                 
                 case "Personnage Historique":                    
-                    return <HistoricalFigure historicalPerson={this.state.historicalFigure}/>;
+                    return <HistoricalFigureView historicalPerson={this.state.historicalFigure}/>;
                 
                 case "Chaines":
                   if(this.state.editMod){
