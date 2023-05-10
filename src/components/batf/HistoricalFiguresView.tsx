@@ -16,8 +16,10 @@
 
     const HistoricalFigureView: NextPage<Props> = (props) => {
         const { historicalPerson } = props;
-        //console.log(historicalPerson)
-
+        
+        if (!historicalPerson) {
+            return null; 
+        }
         return (
             <div className="historicalFigure">
                 <div className="historicalFigureHead">

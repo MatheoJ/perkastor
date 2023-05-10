@@ -32,14 +32,7 @@ const HistoricalFigureList: React.FC<HistoricalFigureListProps> = ( props) => {
     
   };
 
-  const logMessage = () => {
-      // This effect will update the selectedFigure state whenever it changes
-      selectedFigures.map(elem => {
-        console.log('Selected figure in func: ', elem);
-        return ;
-      })
-      
-  };
+
 
   useEffect(() => {
     // This effect will update the selectedFigure state whenever it changes
@@ -55,10 +48,6 @@ const HistoricalFigureList: React.FC<HistoricalFigureListProps> = ( props) => {
       setItems(items.concat(historicalPersonList.slice(items.length, items.length + 10)));
     }, 1500);
   };
-
-  useEffect(() => {
-    console.log('Visible figures:', visibleFigures);
-  }, [visibleFigures]);
 
   const settings = {
     dots: true,

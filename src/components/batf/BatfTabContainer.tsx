@@ -12,7 +12,7 @@ import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
 import { bool } from "aws-sdk/clients/signer";
 import FactList from "../FactList";
 import { Fact } from "@prisma/client";
-import HistoricalFigure from "./HistoricalFigures";
+import HistoricalFigure from "./HistoricalFiguresView";
 
 interface BaftTabContainerProps{
     onMinimizeClick?: () => void;
