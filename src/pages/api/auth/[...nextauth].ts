@@ -5,20 +5,17 @@ import GoogleProvider from "next-auth/providers/google"
 import FacebookProvider from "next-auth/providers/facebook"
 import TwitterProvider from "next-auth/providers/twitter"
 import DiscordProvider from "next-auth/providers/discord"
-
+import ObjectID from 'bson-objectid';
 // Modules needed to support key generation, token encryption, and HTTP cookie manipulation 
 import { randomUUID } from 'crypto'
 import Cookies from 'cookies'
 import { encode, decode } from 'next-auth/jwt'
 
 import { verifyPassword } from '../../../lib/auth';
-import { connectToDatabase } from '../../../lib/db';
 
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { Prisma, PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next/types';
-import ObjectID from 'bson-objectid';
-import { prisma } from '~/server/db';
+import { prisma } from '../../../lib/db'
 
 // calculate the maxAge for a cookie from a expiresIn value in seconds
 const fromDate = (time: number, date = Date.now()) => {
@@ -34,8 +31,7 @@ const GOOGLE_AUTHORIZATION_URL =
     })
 
 // An Adapter in NextAuth.js connects your application to whatever database or backend system you want to use to store data for users, their accounts, sessions, etc.
-const client = new PrismaClient();
-const prismaAdapter = PrismaAdapter(client);
+const prismaAdapter = PrismaAdapter(prisma);
 
 // Helper functions to generate unique keys and calculate the expiry dates for session cookies
 const generateSessionToken = () => {
@@ -149,14 +145,14 @@ export const authOptions: NextAuthOptions = {
                 let user;
                 if (credentials.email) {
                     // find a user by email using prisma
-                    user = await client.user.findUnique({
+                    user = await prisma.user.findUnique({
                         where: {
                             email: credentials.email,
                         },
                     });
                 } else if (credentials.name) {
                     // find a user by name using prisma
-                    user = await client.user.findUnique({
+                    user = await prisma.user.findUnique({
                         where: {
                             name: credentials.name,
                         },
@@ -186,7 +182,7 @@ export const authOptions: NextAuthOptions = {
         
         async signIn({ user, account, profile, email, credentials }) {
             console.log("Check if the user already exists in the database");
-            userData = await client.user.findUnique({
+            userData = await prisma.user.findUnique({
                 where: {
                     email: profile.email,
                 },
@@ -198,7 +194,7 @@ export const authOptions: NextAuthOptions = {
             console.log("User doesn't exist in the database");
             // register the user
             try {
-                userData = await client.user.create({
+                userData = await prisma.user.create({
                     data: {
                         id: ObjectID().toHexString(),
                         fullName: profile.name,
@@ -269,7 +265,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
                 const sessionToken = generateSessionToken()
                 const sessionExpiry = fromDate(authOptions.session.maxAge)
 
-                const session = await client.session.create({
+                const session = await prisma.session.create({
                     data: {
                         id: ObjectID().toHexString(),
                         sessionToken: sessionToken,

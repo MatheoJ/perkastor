@@ -1,10 +1,8 @@
-import { Fact, PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { ExtendedSession } from 'types/types';
-import { connectToDatabase } from '../../lib/db';
 import { authOptions } from './auth/[...nextauth]';
-import ObjectID from 'bson-objectid';
+import { prisma } from '../../lib/db'
 //const { hasSome } = require('prisma-multi-tenant');
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
@@ -14,12 +12,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
 
     try {
-        const client = new PrismaClient();
         let prismaResult;
         switch (method) {
             case "GET":
                 if (fid) {
-                    prismaResult = await client.fact.findUnique({
+                    prismaResult = await prisma.fact.findUnique({
                         where: {
                             id: Array.isArray(fid) ? fid[0] : fid
                         },
@@ -30,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(422).json({ message: `Le fait historique d'id ${fid} n\'existe pas.` });
                     }
                 } else if (userId) {
-                    prismaResult = await client.user.findUnique({
+                    prismaResult = await prisma.user.findUnique({
                         where: {
                             id: Array.isArray(userId) ? userId[0] : userId
                         },
@@ -44,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(422).json({ message: `L'utilisateur d'id ${userId} n\'existe pas.` });
                     }
                 } else if (description) {
-                    prismaResult = await client.fact.findMany({
+                    prismaResult = await prisma.fact.findMany({
                         where: {
                             content: {
                                 contains: Array.isArray(description) ? description[0] : description
@@ -62,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     const inputDate = new Date(Array.isArray(date) ? date[0] : date);
                     console.log(inputDate);
                     // Utiliser la fonction findMany avec une condition pour vérifier si l'une des keyDates a la même année que l'année extraite
-                    const allFacts = await client.fact.findMany();
+                    const allFacts = await prisma.fact.findMany();
                     // add 1 year to the input date
                     const inputEndDate = new Date(inputDate.getFullYear() + 1, inputDate.getMonth(), inputDate.getDate());
                     prismaResult = allFacts.filter((fact) => {
@@ -72,7 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
 
                     /*
-                    prismaResult = await client.fact.findMany({
+                    prismaResult = await prisma.fact.findMany({
                     where: {
                         AND: [
                         hasSome({
@@ -102,7 +99,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     const inputDateStart = new Date(Array.isArray(dateStart) ? dateStart[0] : dateStart);
                     const inputDateEnd = new Date(Array.isArray(dateEnd) ? dateEnd[0] : dateEnd);
                     // Utiliser la fonction findMany avec une condition pour vérifier si l'une des keyDates a la même année que l'année extraite
-                    const allFacts = await client.fact.findMany();
+                    const allFacts = await prisma.fact.findMany();
 
                     prismaResult = allFacts.filter((fact) => {
                         return fact.keyDates.some((date) => {
@@ -111,7 +108,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
 
                     /*
-                    prismaResult = await client.fact.findMany({
+                    prismaResult = await prisma.fact.findMany({
                     where: {
                         AND: [
                         hasSome({
@@ -135,7 +132,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(422).json({ message: `Aucun fait historique ne contient la date ${dateStart} et ${dateEnd}.` });
                     }
                 } else if (histPersonName) {
-                    prismaResult = await client.historicalPerson.findMany({
+                    prismaResult = await prisma.historicalPerson.findMany({
                         where: {
                             name: {
                                 contains: Array.isArray(histPersonName) ? histPersonName[0] : histPersonName,
@@ -166,7 +163,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(422).json({ message: `Aucun personnage historique ne contient le nom ${histPersonName}.` });
                     }
                 } else if (histPersonId) {
-                    prismaResult = await client.historicalPerson.findMany({
+                    prismaResult = await prisma.historicalPerson.findMany({
                         where: {
                             name: {
                                 contains: Array.isArray(histPersonId) ? histPersonId[0] : histPersonId,
@@ -198,7 +195,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
 
                 } else if (locationId || locationName || (latitude && longitude)){
-                    prismaResult = await client.location.findMany({
+                    prismaResult = await prisma.location.findMany({
                         where: {
                             OR: [
                                 {
@@ -228,7 +225,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });  
                               
                 }  else {
-                    prismaResult = await client.fact.findMany();
+                    prismaResult = await prisma.fact.findMany();
                     res.status(200).json({ statusCode: 200, data: prismaResult });
                 }
                 break;
@@ -249,7 +246,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // search location by id
                 if (req.body.location.id && req.body.location.id !== "") {
                     // Check if the fact's location exists
-                    location = await client.location.findUnique({
+                    location = await prisma.location.findUnique({
                         where: {
                             id: req.body.location.id
                         },
@@ -269,7 +266,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(422).json({ message: `Le nom du lieu n'est pas renseigné.` });
                         return;
                     }
-                    location = await client.location.findFirst({
+                    location = await prisma.location.findFirst({
                         where: {
                             
                                     latitude: parseFloat(req.body.location.latitude),
@@ -311,7 +308,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         req.body.author = session.user.id;
                     } else {
                         // check if the author exists
-                        const author = await client.user.findUnique({
+                        const author = await prisma.user.findUnique({
                             where: {
                                 id: req.body.author
                             }
@@ -325,7 +322,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     req.body.author = session.user.id;
                 }
                 // Create a new fact
-                prismaResult = await client.fact.create({
+                prismaResult = await prisma.fact.create({
                     data: {
                         title: req.body.title,
                         shortDesc: req.body.shortDesc,
@@ -364,7 +361,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     res.status(422).json({ message: `L'id du fait historique n\'est pas renseigné.` });
                 }
                 // Check if the fact exists
-                let fact = await client.fact.findUnique({
+                let fact = await prisma.fact.findUnique({
                     where: {
                         id: Array.isArray(fid) ? fid[0] : fid
                     },
@@ -380,7 +377,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         req.body.author = session.user.id;
                     } else {
                         // check if the author exists
-                        const author = await client.user.findUnique({
+                        const author = await prisma.user.findUnique({
                             where: {
                                 id: req.body.author
                             }
@@ -396,7 +393,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 // the difference between http put and http patch is that put is idempotent
                 // so we can't use put to update a fact, we have to use patch
-                prismaResult = await client.fact.update({
+                prismaResult = await prisma.fact.update({
                     where: {
                         id: Array.isArray(fid) ? fid[0] : fid
                     },
@@ -432,7 +429,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     res.status(422).json({ message: `L'id du fait historique n\'est pas renseigné.` });
                 }
                 // Check if the fact exists
-                fact = await client.fact.findUnique({
+                fact = await prisma.fact.findUnique({
                     where: {
                         id: Array.isArray(fid) ? fid[0] : fid
                     },
@@ -478,7 +475,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (req.body.sources) {
                     patchData["sources"] = req.body.sources
                 }
-                prismaResult = await client.fact.update({
+                prismaResult = await prisma.fact.update({
                     where: {
                         id: Array.isArray(fid) ? fid[0] : fid
                     },
@@ -503,7 +500,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     res.status(422).json({ message: `L'id du fait historique n\'est pas renseigné.` });
                 }
                 // Check if the fact exists
-                fact = await client.fact.findUnique({
+                fact = await prisma.fact.findUnique({
                     where: {
                         id: Array.isArray(fid) ? fid[0] : fid
                     },
@@ -515,7 +512,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 // if the user is an admin, he can delete a fact for another user
                 if (session.user.role === "admin" || session.user.id === fact.authorId) {
-                    prismaResult = await client.fact.delete({
+                    prismaResult = await prisma.fact.delete({
                         where: {
                             id: Array.isArray(fid) ? fid[0] : fid
                         },
