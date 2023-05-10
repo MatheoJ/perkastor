@@ -4,16 +4,17 @@ import Tab from "./Tab";
 import FactChainContributions from "../FactChainContributions";
 import FactListContributions from "../FactListContributions";
 import ChainListContributions from "../ChainListContributions";
-import {Chain} from "../../types/Chain";
+//import {Chain} from "../../types/Chain";
 
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
 import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
 import { bool } from "aws-sdk/clients/signer";
 import FactList from "../FactList";
-import { Fact } from "@prisma/client";
+import { Fact, HistoricalPerson } from "@prisma/client";
 import HistoricalFigure from "./HistoricalFigures";
-
+//import ChainList from "../ChainList";
+import { useSession } from 'next-auth/react';
 interface BaftTabContainerProps{
     onMinimizeClick?: () => void;
     onFullScreenClick?: () => void;
@@ -26,28 +27,68 @@ interface BatfTabContainerState{
     facts: Fact[];
     editMod: bool;
     chains: Chain[];
+    historicalFigure : HistoricalPerson;
 }
 
 export default class TabContainer extends React.Component<BaftTabContainerProps, BatfTabContainerState> {
     markerSelected: boolean;
-
-    constructor(props: BaftTabContainerProps) {
+    
+    constructor(props: BaftTabContainerProps) {   
         super(props);
         this.state = {
             selectedTab: 0,
             markerSelected: false,
             facts : [],
             editMod : true,
+            chains: [],
+            historicalFigure : null
         };
         this.onMapChange();
         this.onChangeEditMod();
+        this.onHistoricalFigureChange();
+        
+    }
+    onHistoricalFigureChange = () => {
+        bus.subscribe("historicalFigure", async event => {
+            const historicalFigureId = event.payload;
+            if(historicalFigureId == null){
+                this.setState({
+                    historicalFigure : null
+                });
+            }
+            else{
+              let response = await fetch(`/api/historical-figures?id=${historicalFigureId}`)
+              response = await response.json(); 
+              this.setState({
+                  historicalFigure : response[0]
+              });
+            }
+        });
     }
     onChangeEditMod = () => {
         bus.subscribe("editMod", async event => {
             const editMod = event.payload;
-            this.setState({
-                editMod: editMod
-            });
+            if(!editMod){
+                this.setState({
+                    editMod: false,
+                    facts: [],
+                    chains: [],
+                    historicalFigure : null
+                });
+            }
+            else{
+              let response = await fetch(`/api/facts?userId=${"6458ea3e34ee2ae7924d3813"}`)
+              response = await response.json();
+              console.log("FactsEdit" ,response);
+              let response2 = await fetch(`/api/chains?userId=${"6458ea3e34ee2ae7924d3813"}`)
+              response2 = await response2.json();
+              console.log("ChainsEdit" ,response2);
+              this.setState({
+                  editMod: true,
+                  facts: response[0].facts,
+                  chains: response2[0].chains,
+              });
+            }
         });
     }
 
@@ -59,14 +100,19 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
             this.setState({
                 markerSelected: true
             });
-
-            console.log(this.state.markerSelected);
-            //console.log(geoInfos);
-            let response = await fetch(`/api/facts?locationId=${geoInfos.properties.id}`)
-            response = await response.json();
-            console.log(response);
-            this.setState({
-                facts: response[0].facts});
+            if(!this.state.editMod){
+              console.log(this.state.markerSelected);
+              //console.log(geoInfos);
+              let response = await fetch(`/api/facts?locationId=${geoInfos.properties.id}`)
+              response = await response.json();
+              console.log(response);
+              let response2 = await fetch(`/api/chains?locationId=${geoInfos.properties.id}`)
+              response2 = await response2.json();
+              this.setState({
+                  facts: response[0].facts,
+                  chains: response2[0].chains
+              });
+            }
             /*if (response != undefined){
                 console.log("ici");
                 console.log(response);
@@ -95,14 +141,15 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
                   }
                 
                 case "Personnage Historique":                    
-                    return <HistoricalFigure/>;
+                    return <HistoricalFigure historicalPerson={this.state.historicalFigure}/>;
                 
                 case "Chaines":
                   if(this.state.editMod){
                     return <ChainListContributions chains={this.state.chains}/>;
                   }
                   else{
-                    return <ChainList chains={this.state.chains}/>;
+                    <ChainListContributions chains={this.state.chains}/>;
+                   // return <ChainList chains={this.state.chains}/>;
                   }
             }
        // }

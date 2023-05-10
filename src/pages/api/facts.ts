@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         }
                     });
                     if (prismaResult) {
-                        res.status(200).json({ statusCode: 200, data: prismaResult });
+                        res.status(200).json({ statusCode: 200, data: prismaResult.facts });
                     } else {
                         res.status(422).json({ message: `L'utilisateur d'id ${userId} n\'existe pas.` });
                     }
