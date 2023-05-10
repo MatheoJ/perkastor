@@ -22,10 +22,7 @@ const Fact: React.FC<Props> = (props) => {
                     </div>
                     <div className="factHeadBottomRight">
                         <h2>
-                            {item.fact.keyDates.map((date) => {
-                                var dateObj = new Date(date);
-                                return <li key={dateObj.getTime()}>{dateObj.getDate()} - {dateObj.getMonth()+1} - {dateObj.getFullYear()}</li>
-                            })}
+                            {item.fact.from}
                         </h2>
                     </div>
                 </div>
