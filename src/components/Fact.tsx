@@ -52,7 +52,7 @@ const Fact: React.FC<Props> = ( props ) => {
                 </div>
                 <div className='content-right'>
                     <div className="factImage">
-                        <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                        {/*<Image src={fact.bannerImg} alt="" width={300} height={200} />*/}
                     </div>
                     <ul>
                         {fact.personsInvolved.map((person) => (

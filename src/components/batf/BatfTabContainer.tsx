@@ -36,9 +36,19 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
     onMapChange = () => {
         bus.subscribe(selectMapEvent, async event => {
             const geoInfos = event.payload;
-            var response = await fetch(`/api/facts?locationId=${geoInfos.properties.id}`)
+
+            this.setState({
+                markerSelected: true
+            });
+
+            console.log(this.state.markerSelected);
+            //console.log(geoInfos);
+            let response = await fetch(`/api/facts?locationId=${geoInfos.properties.id}`)
             response = await response.json();
-            if (response != undefined){
+            console.log(response);
+            this.setState({
+                facts: response[0].facts});
+            /*if (response != undefined){
                 console.log("ici");
                 console.log(response);
 
@@ -47,7 +57,7 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
                     facts: response[0].facts,
                     markerSelected: true
                 });
-            }
+            }*/
         });
     }
     selectedComponent(component: string){
@@ -57,13 +67,7 @@ export default class TabContainer extends React.Component<BaftTabContainerProps,
         else{
             switch (component) {
                 case "Évenements":
-                    return <>
-                    <div className="BAFTtest">
-                        <FactList facts={this.state.facts} />
-                    </div>
-  
-
-                    </>;
+                    return <FactList facts={this.state.facts}/>;
                 
                 case "Anecdotes":
                     return <></>;
