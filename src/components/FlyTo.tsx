@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { LngLatLike } from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { NextPage } from 'next';
 
 
 interface FlyToProps {
@@ -9,7 +10,7 @@ interface FlyToProps {
   lngLat?: [number, number];
 }
 
-const FlyTo: React.FC<FlyToProps> = ({ map, lngLat = [0, 0] }) => {
+const FlyTo: NextPage<FlyToProps> = ({ map, lngLat = [0, 0] }) => {
 
     var end: LngLatLike = [2.3160431, 48.7791939 ];    
 

@@ -67,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     } else {
                         res.status(404).json({ message: `Chaine non trouvée pour l'utilisateur ${userId}` });
                     }
-                } else if (locationId) {
+                } else if (locationId && locationId !== "null") {
                     const prismaResult = await prisma.factChain.findMany({
                         where: {
                             items: {

@@ -21,7 +21,7 @@ interface ChainListProps {
   setItemSelected: React.Dispatch<React.SetStateAction<{}>>;
 }
 
-const ChainList: NextPage<ChainListProps> = ({ chain }) => {
+const ChainList: NextPage<ChainListProps> = ({ chain, setItemSelected }) => {
   console.log('chain', chain)
   //const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
   //const [items, setItems] = useState(facts.slice(0, 10));

@@ -24,7 +24,7 @@ const Fact: NextPage<Props> = (props) => {
                     <div className="factHeadBottomRight">
                         <h2>
                             {item.fact.keyDates.map((keyDate) => (
-                                <li >{keyDate.split("T")[0]}</li>
+                                <li >{keyDate.toString().split("T")[0]}</li>
                             ))}
                         </h2>
                     </div>

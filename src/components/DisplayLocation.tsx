@@ -4,6 +4,8 @@ import { MongoClient } from "mongodb";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { selectMapEvent } from "../events/map/SelectMapEvent";
 import { bus } from "../utils/bus";
+import { NextPage } from "next";
+
 interface DisplayLocationProps {
   map: maplibregl.Map;
   locationSelected: any;

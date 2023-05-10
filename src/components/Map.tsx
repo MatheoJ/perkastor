@@ -11,6 +11,7 @@ import { bus } from '../utils/bus';
 import { selectMapEvent } from '../events/map/SelectMapEvent';
 import { selectLocationFromSearchBar } from '~/events/SelectSearchBarResultEvent';
 import { LngLatLike } from 'maplibre-gl';
+import { NextPage } from "next";
 
 const MapTilerApiKey = process.env.MAPTILER_API_KEY;
 
