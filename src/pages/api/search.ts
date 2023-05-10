@@ -52,6 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (query) {
                     if (filters.event || filters.anecdote){
                         prismaResultFact = await client.fact.findMany({
+                            take: 10,
                             where: {
                                 
                                 OR: [
@@ -65,6 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     if (filters.chain){
                         prismaResultChain = await client.factChain.findMany({
+                            take: 10,
                             where: {
                                 OR: [
                                     { title: { contains: query as string } },
@@ -76,6 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     if (filters.location){
                         prismaResultLocation = await client.location.findMany({
+                            take: 10,
                             where: {
                                 name: { contains: query as string }
                             }
@@ -88,6 +91,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             date = undefined;
                         }
                         prismaResultHistoricalFigure = await client.historicalPerson.findMany({
+                            take: 10,
                             where: {
                                 OR: [
                                     { name: { contains: query as string } },
@@ -100,6 +104,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     if (filters.user){
                         prismaResultUser = await client.user.findMany({
+                            take: 10,
                             where: {
                                 name: { contains: query as string }
                             }
