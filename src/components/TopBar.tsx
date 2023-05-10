@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
 import { AccountCircle, VerifiedUserOutlined } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
+import MapIcon from '@mui/icons-material/Map';
 
 function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
     const { data: session, status, update } = useSession({
@@ -40,6 +41,11 @@ function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
                             <div className="logo" style={{ backgroundColor: "transparent" }}>
                                 <Image src={logo} alt="logo" width={40} height={40}/>
                             </div>
+                        </div>
+                    </Link>
+                    <Link href='/mapWrapper'>
+                        <div className="map">
+                            <MapIcon style={{ color: "#F1B706", }}/>
                         </div>
                     </Link>
                 </div>
