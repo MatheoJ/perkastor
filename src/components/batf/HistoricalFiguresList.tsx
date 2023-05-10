@@ -7,7 +7,7 @@ interface HistoricalFigureListProps {
   historicalPersonList: HistoricalPerson []
 }
 
-const HistoricalFigureList: React.FC<HistoricalFigureListProps> = ( props) => {
+const HistoricalFigureList: NextPage<HistoricalFigureListProps> = ( props) => {
   const { historicalPersonList } = props;
 
   

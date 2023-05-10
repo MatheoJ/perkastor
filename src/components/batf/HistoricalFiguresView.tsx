@@ -21,11 +21,6 @@ function get_image_url(filename: string): string {
     return `https://upload.wikimedia.org/wikipedia/commons/${md5hash[0]}/${md5hash.substring(0, 2)}/${filename}`;
 }
 
-let filename = "François_Gerard_-_Napoleon_I_in_Coronation_Robes.jpeg";  // Without the "File:" prefix
-console.log(get_image_url(filename));
-
-
-
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
 

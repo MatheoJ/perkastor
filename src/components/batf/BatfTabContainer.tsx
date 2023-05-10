@@ -17,7 +17,8 @@ import { selectHistoricalFigureFromSearchBar, selectEventFromSearchBar } from '.
 import { HistoricalPerson } from "@prisma/client";
 import Fact from "../Fact";
 import FactChainContributions from "../FactChainContributions";
-const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) => {
+// selectedTab, setSelectedTab
+const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfState}) => {
   const [markerSelected, setMarkerSelected] = useState(false);
   const [facts, setFacts] = useState([]);
   const [editMod, setEditMod] = useState(false);
@@ -27,7 +28,9 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
   const [locationId, setLocationId] = useState(null);
   const { data: session, status, update } = useSession({ required: false });
   const [itemSelected, setItemSelected] = useState(null);
-  const handleMapChange = bus.subscribe(selectMapEvent, event => {
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  bus.subscribe(selectMapEvent, event => {
     if (event.payload == null) {
       setMarkerSelected(false);
       setFacts([]);
@@ -38,42 +41,44 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
       setLocationId(geoInfos.properties.id);
     }
   });
-
-  const handleEditModChange = bus.subscribe(contributionClickEvent, event => {
+  bus.subscribe(contributionClickEvent, event => {
     const newEditMod = !editMod;
     setEditMod(newEditMod)
   });
-
-  const handleHistoricalFigureChange = bus.subscribe("historicalFigure", async event => {
-    const historicalFigureId = event.payload;
-    setHistoricalFigure(historicalFigureId);
-  });
-
-  const handleSelectHistoricalFigures = bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
-    const handlePayload = async () => {
-      const payload = await Promise.resolve(event.payload);
-      setHistoricalFigure(payload);
-
+  bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
+    const handlePayload =  () => {
+      //const payload = await Promise.resolve(event.payload);
+      setHistoricalFigure(event.payload);
     };
-    handlePayload().catch(error => {
-      console.error("Error handling payload:", error);
-    });
+    handlePayload();
   });
 
-  const handleSelectEvent = bus.subscribe(selectEventFromSearchBar, event => {
-    const handlePayload = async () => {
-      const payload = await Promise.resolve(event.payload);
-      setFacts([payload]);
+  bus.subscribe(selectEventFromSearchBar, event => {
+    const handlePayload = () => {
+      //const payload = await Promise.resolve(event.payload);
+      if(batfState == "minimized"){
+        setBatfState("normal");
+      }
+      setSelectedTab(0);
+      setFacts([event.payload]);
     };
-    handlePayload().catch(error => {
-      console.error("Error handling payload:", error);
-    });
+    handlePayload();
   });
+
+  useEffect(() => {
+    if (historicalFigure != null) {
+      if(batfState == "minimized"){
+         setBatfState("normal")
+      }
+      setSelectedTab(1);
+    }
+  }, [historicalFigure]);
 
   useEffect(() => {
     if (!markerSelected) {
       setFacts([]);
       setChains([]);
+      setItemSelected(null);
       setHistoricalFigure(null);
     }
   }, [markerSelected]);
@@ -92,6 +97,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
       }
     }
     fetchData();
+    setSelectedTab(0);
   }, [locationId]);
 
   useEffect(() => {
@@ -99,6 +105,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
       if (!editMod) {
         setFacts([]);
         setChains([]);
+        setItemSelected(null);
         setHistoricalFigure(null);
       }
       else {
@@ -128,20 +135,21 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
     fetchData();
   }, [historicalFigureId]);
 
-  const selectedComponent = (component) => {
-    switch (component) {
-      case "Évenements":
+  const selectedComponent = () => {
+    switch (selectedTab) {
+      case 0:
         if (editMod) {
           return <FactListContributions facts={facts} setFacts={setFacts} />;
         }
         else {
           return <FactList facts={facts} />;
         }
-      case "Personnage Historique":
+      case 1:
         return <HistoricalFiguresView historicalPerson={historicalFigure} />;
 
-      case "Chaines":
+      case 2:
         if (editMod) {
+          
           if(itemSelected == null){
             return <ChainListContributions chains={chains} />;
           }else{
@@ -149,10 +157,11 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
           }
         }
         else {
+          console.log("itemSelected", itemSelected)
           if(itemSelected == null){
             return <ChainList chains={chains} setItemSelected={setItemSelected} />;
           }else{
-            return <Chain chain={itemSelected} />;
+            return <Chain chain={itemSelected} setItemSelected={setItemSelected} />;
           }
         }
     }
@@ -170,16 +179,15 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
         </button>
       </div>
 
-      <Tabs key={editMod ? 'edit' : 'view'}>
-
+      <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} key={editMod ? 'edit' : 'view'}>
         <Tab className={"tab-content"} title="Événements">
-          {selectedComponent("Évenements")}
+          {selectedComponent()}
         </Tab>
         <Tab className={"tab-content"} title="Personnage Historique">
-          {selectedComponent("Personnage Historique")}
+          {selectedComponent()}
         </Tab>
         <Tab className={"tab-content"} title="Chaines">
-          {selectedComponent("Chaines")}
+          {selectedComponent()}
         </Tab>
 
       </Tabs>

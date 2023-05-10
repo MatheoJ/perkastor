@@ -5,7 +5,7 @@ type Props = {
   title: string;
 }
 
-const Tab: React.FC<Props> = ({ children }) => {
+const Tab: NextPage<Props> = ({ children }) => {
   return <div>{children}</div>
 }
 

@@ -2,12 +2,13 @@ import React, { useEffect } from 'react';
 import maplibregl from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { NextPage } from 'next';
 
 interface DataPointsProps {
   map: maplibregl.Map;
 }
 
-const DataPoints: React.FC<DataPointsProps> = ({ map }) => {
+const DataPoints: NextPage<DataPointsProps> = ({ map }) => {
 
   const highMagnitudeThreshold = 5.0;
   const zoomThreshold = 5;
@@ -58,7 +59,8 @@ const DataPoints: React.FC<DataPointsProps> = ({ map }) => {
     }, [map]);
 
     map.on('click', 'unclustered-point', function (e) {
-      var coordinates = e.features[0].geometry.coordinates.slice();
+      // @ts-ignore
+      var coordinates = e.features[0].geometry.coordinates.slice(); // DO NOT MODIFY THIS LINE
       var mag = e.features[0].properties.mag;
       var tsunami;
         

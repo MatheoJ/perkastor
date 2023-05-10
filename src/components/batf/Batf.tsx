@@ -1,73 +1,62 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import BatfTabContainer from "./BatfTabContainer";
+import { bus } from "../../utils/bus";
+import { selectMapEvent } from "~/events/map/SelectMapEvent";
+import { NextPage } from "next";
 
 interface BatfProps {
-  children: React.ReactNode
+    children: React.ReactNode
 }
 
-interface BatfState{
-    state: "normal" | "fullscreen" | "minimized";
-    selectedTab: "Événements" | "Anecdotes" | "Chaînes";
-}
+const Batf: NextPage<BatfProps> = ({ children }) => {
+    const [state, setState] = useState<"normal" | "fullscreen" | "minimized">("minimized");
+    //const [selectedTab, setSelectedTab] = useState<"Événements" | "Anecdotes" | "Chaînes">("Événements");
 
-export default class Batf extends React.Component<BatfProps, BatfState> {
-    constructor(props: BatfProps) {
-        super(props);
+    const handleMapChange = bus.subscribe(selectMapEvent, event => {
+        if (event.payload != null) {
+            setState("normal");
+            //setSelectedTab("Événements");
+        }
+    });
 
-        this.state = {
-            state: "minimized",
-            selectedTab: "Événements"
-        };
+
+    const maximize = () => {
+        setState(currentState => currentState !== "fullscreen" ? "fullscreen" : "normal");
     }
 
-    maximize = () => {
-        this.setState({
-            state: this.state.state != "fullscreen" ? "fullscreen" : "normal"
-        });
+    const hide = () => {
+        setState("minimized");
     }
 
-    hide = ()=>  {
-        this.setState({
-            state: "minimized"
-        });
+    const show = () => {
+        setState("normal");
     }
 
-    show = ()=> {
-        this.setState({
-            state: "normal"
-        });
-    }
-
-    classAssigner(){
-        if (this.state.state != "minimized" && this.state.state != "fullscreen"){
+    const classAssigner = () => {
+        if (state !== "minimized" && state !== "fullscreen") {
             return '';
         }
 
-        return 'batf-' + this.state.state;
+        return 'batf-' + state;
     }
 
-    render() {
-        const { children } = this.props;
-        const { state } = this.state;
-
-        return (
-            <div className={`batf ${this.classAssigner()}`}>
-                {
-                    (() => {
-                        if (state !== "minimized"){
-                            return <>
-                                <BatfTabContainer onFullScreenClick={this.maximize} onMinimizeClick={this.hide}></BatfTabContainer>
-                            </>;
-                        }
-                        else{
-                            return <button className="toggle batf-minimized-btn" onClick={this.show}>
-                                <i className="fa fa-bars"></i>
-                            </button>;
-                        }
-                    })()
-                }
-                {children}
-            </div>
-        );
-    }
+    return (
+        <div className={`batf ${classAssigner()}`}>
+            <BatfTabContainer 
+                style={{ display: state === "minimized" ? "none" : "block" }} 
+                onFullScreenClick={maximize} 
+                onMinimizeClick={hide} 
+                setBatfState={setState} 
+                batfSate={state}
+            />
+            {state === "minimized" && (
+                <button className="toggle batf-minimized-btn" onClick={show}>
+                    <i className="fa fa-bars"></i>
+                </button>
+            )}
+            {children}
+        </div>
+    );
 }
+
+export default Batf;

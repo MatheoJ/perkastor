@@ -4,30 +4,14 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import { Fact as FactType, HistoricalPerson } from '@prisma/client'
 import logo from "src/images/perecastor.png";
+import { NextPage } from 'next';
+import { FactProps } from 'types/types';
 
-interface FactProps extends FactType {
-    author: {
-        id: string;
-        name: string;
-    };
-    location: {
-        id: string;
-        name: string;
-    };
-    personsInvolved: [
-        {
-            historicalPerson: HistoricalPerson;
-        }
-    ];
-    keyDates: Date[];
-}
 interface Props {
     fact: FactProps;
 }
 
-const Fact: React.FC<Props> = (props) => {
-    const { fact } = props;
-
+const Fact: NextPage<Props> = ({fact}) => {
     // Tri des keyDates dans l'ordre chronologique
     const sortedDates = fact.keyDates
         .map(dateStr => new Date(Date.parse(dateStr.toString())))
@@ -58,7 +42,7 @@ const Fact: React.FC<Props> = (props) => {
                 </div>
             </div>
             <div className="factBody">
-                {fact.bannerImg && fact.personsInvolved.length ? ( //test : there are both images and personsInvolved
+                {fact.bannerImg && fact.personsInvolved && fact.personsInvolved.length ? ( //test : there are both images and personsInvolved
                     <>
                         <div className="content-left">
                             <strong>Description</strong>
@@ -69,11 +53,7 @@ const Fact: React.FC<Props> = (props) => {
                                 <Image src={logo} alt="" width={300} height={200} />
                             </div>
                             <ul>
-                                {fact.personsInvolved.map((person) => (
-                                    <li key={person.historicalPerson.id}>
-                                        {person.historicalPerson.name}
-                                    </li>
-                                ))}
+                            {fact.personsInvolved.map((person) => (<li key={person.historicalPerson.id}>{person.historicalPerson.name}</li>))} 
                             </ul>
                         </div>
                     </>
@@ -89,7 +69,7 @@ const Fact: React.FC<Props> = (props) => {
                             </div>
                         </div>
                     </>
-                ) : fact.personsInvolved.length ? ( //test : there are personsInvolved and no image 
+                ) : fact.personsInvolved && fact.personsInvolved.length ? ( //test : there are personsInvolved and no image 
                     <>
                         <div className="content-left">
                             <strong>Description</strong>

@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { method } = req;
 
     const { fid, userId, description, startDate, endDate, histPersonName, histPersonId, locationId, locationName, latitude, longitude} = req.query;
-    console.log(req.query)
+
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
 
     try {
@@ -86,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     let date = startDate || endDate;
                     // Extraire l'année de la date passée en paramètre
                     const inputDate = new Date(Array.isArray(date) ? date[0] : date);
-                    console.log(inputDate);
+
                     // Utiliser la fonction findMany avec une condition pour vérifier si l'une des keyDates a la même année que l'année extraite
                     const allFacts = await prisma.fact.findMany();
                     // add 1 year to the input date
@@ -327,7 +327,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 }        
                         
                     });
-                    console.log(location);
+                    
                     if (!location) {
                         createLocation = true;
                     }

@@ -39,6 +39,7 @@ body {
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
     }
   }
 }
@@ -76,5 +77,5 @@ h4 {
 
 p {
   // font size relative to view width
-  font-size: calc(0.5rem + 0.5vw);
+  font-size: calc(0.8rem + 0.5vw);
 }

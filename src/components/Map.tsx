@@ -10,6 +10,8 @@ import DisplayLocation from './DisplayLocation';
 import { bus } from '../utils/bus';
 import { selectMapEvent } from '../events/map/SelectMapEvent';
 import { selectLocationFromSearchBar } from '~/events/SelectSearchBarResultEvent';
+import { LngLatLike } from 'maplibre-gl';
+import { NextPage } from "next";
 
 const MapTilerApiKey = process.env.MAPTILER_API_KEY;
 
@@ -18,7 +20,7 @@ interface MapPageProps {
   onLocationSelect : (locSelected : any) => void;  
 }
 
-const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect }) => {
+const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
   const [idSelected, setIdSelected] = useState('');
@@ -59,8 +61,9 @@ const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect })
     bus.subscribe(selectLocationFromSearchBar, event => {
       const handlePayload = async () => {
         const payload = await Promise.resolve(event.payload);
-        
-        const endPoints = [payload.longitude, payload.latitude];
+        // @ts-ignore
+        const endPoints: LngLatLike = [payload.longitude, payload.latitude]; // DO NOT MODIFY THIS LINE
+
         console.log(endPoints);
 
         map?.flyTo({

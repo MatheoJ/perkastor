@@ -1,14 +1,6 @@
-import { Fact, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth/next';
-import { ExtendedSession, SearchFilters } from 'types/types';
-import { ExtendedSession, SearchFilters, SearchResult } from 'types/types';
-import { connectToDatabase } from '../../lib/db';
-import { authOptions } from './auth/[...nextauth]';
-import ObjectID from 'bson-objectid';
-import { prisma } from '~/server/db';
-import { bool } from 'aws-sdk/clients/signer';
-//const { hasSome } = require('prisma-multi-tenant');
+import { SearchFilters, SearchResult } from 'types/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
@@ -27,8 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             user: true
         }
     }
-    console.log(req.query)
-    const session: ExtendedSession = await getServerSession(req, res, authOptions);
+    
     let isEventValue;
     if ((filters.event && filters.anecdote) || (!filters.event && !filters.anecdote)) {
         // if both event and anecdote are true, ignore isEvent filter
@@ -55,13 +46,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         prismaResultFact = await client.fact.findMany({
                             take: 10,
                             where: {
-                                
                                 OR: [
                                     { title: { contains: query as string, mode: "insensitive" } },
                                     { content: { contains: query as string, mode: "insensitive"} },
                                     { author: { name: { contains: query as string, mode: "insensitive" } } },
                                 ],
-                                isEvent: isEventValue
                             },
                             include: {
                                 location: true,
@@ -122,7 +111,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (prismaResultFact || prismaResultChain || prismaResultLocation || prismaResultHistoricalFigure || prismaResultUser) {
                     const resultat : SearchResult = {
                         events: prismaResultFact,
-                        anecdotes: prismaResultFact,
                         chains: prismaResultChain,
                         locations: prismaResultLocation,
                         historicalPersons: prismaResultHistoricalFigure,
