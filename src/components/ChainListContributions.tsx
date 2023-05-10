@@ -10,7 +10,7 @@ interface ChainListContributionsProps {
   chains: ChainListProps[];
 }
 
-const ChainListContributions: React.FC<ChainListContributionsProps> = ({ chains }) => {
+const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains }) => {
   const [chainList, setChainList] = useState(chains);
 
   const handleDeleteChain = (factIndex: number) => {

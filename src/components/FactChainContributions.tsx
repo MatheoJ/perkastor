@@ -6,6 +6,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Add from '@material-ui/icons/Add';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Swal from 'sweetalert2';
+import { NextPage } from 'next';
 
 interface FactChainContributionsProps {
   facts: {
@@ -40,7 +41,7 @@ interface FactChainContributionsProps {
   setFacts: React.Dispatch<React.SetStateAction<{}[]>>;
 }
 
-const FactChainContributions: React.FC<FactChainContributionsProps> = ({ chain, setChain }) => {
+const FactChainContributions: NextPage<FactChainContributionsProps> = ({ facts, setFacts }) => {
 
   const handleMoveFact = async (currentIndex: number, newIndex: number) => {
     await fetch(`api/chains&`)
@@ -107,7 +108,7 @@ const FactChainContributions: React.FC<FactChainContributionsProps> = ({ chain, 
             </div>
             <div className="factTitle">
               <img src={fact.bannerImg} alt="fact image" id='imageFactList' />
-              <div className='factTitleText'> <p>{fact.title} <br /> {fact.from}</p> </div>
+              <div className='factTitleText'> <p>{fact.title} <br /> {fact.keyDates.join(', ')}</p> </div>
             </div>
             <div className='deleteBtn'>
               <button className="factActionBtn" onClick={() => handleDeleteFact(index)}>

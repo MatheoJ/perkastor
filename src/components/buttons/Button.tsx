@@ -14,7 +14,7 @@ const ButtonType = {
   "tertiary": "btn--tertiary",
 }
 
-const Button: React.FC<Props> = ({
+const Button: NextPage<Props> = ({
   children,
   onClick,
   disabled = false,

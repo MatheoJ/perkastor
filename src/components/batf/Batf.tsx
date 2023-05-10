@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import BatfTabContainer from "./BatfTabContainer";
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
+import { NextPage } from "next";
 
 interface BatfProps {
     children: React.ReactNode
 }
 
-const Batf: React.FC<BatfProps> = ({ children }) => {
+const Batf: NextPage<BatfProps> = ({ children }) => {
     const [state, setState] = useState<"normal" | "fullscreen" | "minimized">("minimized");
     //const [selectedTab, setSelectedTab] = useState<"Événements" | "Anecdotes" | "Chaînes">("Événements");
 

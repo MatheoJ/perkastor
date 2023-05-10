@@ -4,13 +4,15 @@ import { MongoClient } from "mongodb";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { selectMapEvent } from "../events/map/SelectMapEvent";
 import { bus } from "../utils/bus";
+import { NextPage } from "next";
+
 interface DisplayLocationProps {
   map: maplibregl.Map;
   locationSelected: any;
   onLocationSelect: (locSelected: any) => void;
 }
 
-const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected, onLocationSelect }) => {
+const DisplayLocation: NextPage<DisplayLocationProps> = ({ map, locationSelected, onLocationSelect }) => {
 
   const updateLocation = async () => {
 
@@ -30,28 +32,28 @@ const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected
       // Check if the response status is 200
       const responseData = await response.json();
 
-      if (map.getLayer("unclustered-point_loc")) {
-        map.removeLayer("unclustered-point_loc");
-        map.removeSource("dataLoc"); // Remove the associated source as well
+      if (!map.getSource("dataLoc")) {
+        map.addSource("dataLoc", {
+          type: "geojson",
+          data: responseData,
+          cluster: false,
+        });
+      } else {
+        // @ts-ignore
+        map.getSource("dataLoc").setData(responseData); // DO NOT MODIFY THIS LINE
       }
-
-      
-      map.addSource("dataLoc", {
-        type: "geojson",
-        data: responseData,
-        cluster: false,
-      });
-
-      map.addLayer({
-        id: "unclustered-point_loc",
-        type: "symbol",
-        source: "dataLoc",
-        layout: {
-          "icon-image": "pin_event",
-          "icon-size": 0.5,
-          "icon-allow-overlap": true,
-        },
-      });
+      if (!map.getLayer("unclustered-point_loc")) {
+        map.addLayer({
+          id: "unclustered-point_loc",
+          type: "symbol",
+          source: "dataLoc",
+          layout: {
+            "icon-image": "pin_event",
+            "icon-size": 0.5,
+            "icon-allow-overlap": true,
+          },
+        });
+      }
     }
   };
 
@@ -61,6 +63,7 @@ const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected
     map.on("moveend", updateLocation);
 
     map.on('click', 'unclustered-point_loc', function (e) {
+      // @ts-ignore
       var coordinates = e.features[0].geometry.coordinates.slice(); // DO NOT MODIFY THIS LINE
       var name = e.features[0].properties.name;
 

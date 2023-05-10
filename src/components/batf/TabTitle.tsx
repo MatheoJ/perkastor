@@ -4,8 +4,8 @@ type Props = {
   title: string
   index: number;
   setSelectedTab: (index: number) => void;
-  className: string;
   selectedTab: number;
+  className?: string;
 }
 
 export default class TabTitle extends React.Component<Props> {

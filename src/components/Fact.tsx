@@ -4,30 +4,14 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import { Fact as FactType, HistoricalPerson } from '@prisma/client'
 import logo from "src/images/perecastor.png";
+import { NextPage } from 'next';
+import { FactProps } from 'types/types';
 
-interface FactProps extends FactType {
-    author: {
-        id: string;
-        name: string;
-    };
-    location: {
-        id: string;
-        name: string;
-    };
-    personsInvolved: [
-        {
-            historicalPerson: HistoricalPerson;
-        }
-    ];
-    keyDates: Date[];
-}
 interface Props {
     fact: FactProps;
 }
 
-const Fact: React.FC<Props> = (props) => {
-    const { fact } = props;
-
+const Fact: NextPage<Props> = ({fact}) => {
     // Tri des keyDates dans l'ordre chronologique
     const sortedDates = fact.keyDates
         .map(dateStr => new Date(Date.parse(dateStr.toString())))

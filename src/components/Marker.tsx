@@ -7,13 +7,14 @@ import { selectMapEvent } from "../events/map/SelectMapEvent";
 import { bus } from "../utils/bus";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import { NextPage } from "next";
 
 interface MarkerProps {
   map: maplibregl.Map;
   lngLat?: [number, number];
 }
 
-const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
+const Marker: NextPage<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
   const coordinates = React.useRef<HTMLPreElement | null>(null);
 
   const getPlaceInfo = async (latitude, longitude, zoom) => {

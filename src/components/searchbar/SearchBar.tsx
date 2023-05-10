@@ -163,7 +163,6 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
         <div className="checklist-area">
           <FiltersChecklist filters={{
             event: true,
-            anecdote: false,
             chain: true,
             historicalFigure: true,
             location: true,

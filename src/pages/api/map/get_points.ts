@@ -1,52 +1,18 @@
 // pages/api/locations.js
 
-import geojson from "geojson";
-import { MongoClient } from "mongodb";
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { connectToDatabase } from '../../../lib/db';
-import { type } from "os";
-
-
-
-async function convertToGeoJSON(location, geoJSON) {
-  const { id, geometry, latitude, longitude, area, type, name } = location;
-  const coordinates = [longitude, latitude];
-
-  console.log("location : ");
-  
-
-  geoJSON.features.push({
-    type:"Feature",
-    geometry:{
-      type: geometry,
-      coordinates: coordinates
-    },
-    properties :{
-      id: id,
-      area: area,
-      type: type,
-      name: name
-      // include any additional properties here
-   }});
-
-}
+import { convertToGeoJSON } from '~/lib/map-utils';
+import { connectToDatabase } from "~/lib/mongodb";
 
 async function handler(req : NextApiRequest, res : NextApiResponse) {
   
-  console.log("laa : ");
-  console.log(req.query.type);
-  console.log(req.query.maxLongitude)
-  console.log(req.query.minLongitude)
-  console.log(req.query.maxLatitude)
-  console.log(req.query.minLatitude)
-
     if (req.method !== 'GET') {
         return;
     }
 
     var typeOfLocation ;
 
-    if(req.query.type < 10){
+    if (Number(Array.isArray(req.query.type) ? req.query.type[0] : req.query.type) < 10){
         typeOfLocation = "ville";
     }
 
@@ -54,9 +20,6 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
     const maxLatitude = req.query.maxLatitude;
     const minLongitude = req.query.minLongitude;
     const maxLongitude = req.query.maxLongitude;
-
-
-
 
     var query = {
       $and: [
@@ -77,8 +40,8 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
       features: [],
     };
 
-    await cursor.forEach(async (location) => {
-      const feature = await convertToGeoJSON(location, geojson);
+    cursor.map((location) => {
+      convertToGeoJSON(location, geojson);
     });
 
 
@@ -89,15 +52,6 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
     res.status(500).json({ message: 'Impossible de se connecter à la base de données !' });
     return;    
   }
-
-  res.status(200);
-
-  res.json({
-    key: "value",
-    anotherKey: "anotherValue",
-  });
-
-  return;
 }
 
 export default handler;

@@ -28,20 +28,20 @@ const Home: NextPage<{}> = () => {
   const [imageName, setImageName] = useState(images[0].name);
 
   // Change of banner image every 5 seconds
-  // useEffect(() => {
-  //   let index = 0;
-  //   const intervalId = setInterval(() => {
-  //     index = (index + 1) % images.length; // Loop over images
-  //     setCurrentImageIndex(index);
-  //     setImageAuthor(images[index].author);
-  //     setImageUrl(images[index].url);
-  //     setImageName(images[index].name);
-  //   }, 5000); // Change image every 5 seconds
+  useEffect(() => {
+    let index = 0;
+    const intervalId = setInterval(() => {
+      index = (index + 1) % images.length; // Loop over images
+      setCurrentImageIndex(index);
+      setImageAuthor(images[index].author);
+      setImageUrl(images[index].url);
+      setImageName(images[index].name);
+    }, 5000); // Change image every 5 seconds
 
-  //   return () => {
-  //     clearInterval(intervalId); // Clean up on unmount
-  //   };
-  // }, []);
+    return () => {
+      clearInterval(intervalId); // Clean up on unmount
+    };
+  }, []);
 
 
   return (
@@ -54,7 +54,7 @@ const Home: NextPage<{}> = () => {
                 return (
                   <div key={index}
                     className={`${styles.image} ${(index === currentImageIndex) ? styles.active : ''}`}
-                    style={{ background: `linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url(/images_home/${imageInfo.filename})` }} />
+                    style={{ backgroundImage: `linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ), url(/images_home/${imageInfo.filename})` }} />
                 )
               })
             }

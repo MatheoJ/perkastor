@@ -1,3 +1,4 @@
+import { NextPage } from "next"
 import React, { ReactElement, useState } from "react"
 
 import TabTitle from "./TabTitle"
@@ -8,8 +9,8 @@ type Props = {
   setSelectedTab: React.Dispatch<React.SetStateAction<number>>
 }
 
-const Tabs: React.FC<Props> = ({ children, selectedTab, setSelectedTab}) => {
-
+const Tabs: NextPage<Props> = ({ children, selectedTab, setSelectedTab }) => {
+  
   function handleTabChange(tab: number){
     setSelectedTab(tab);
   }

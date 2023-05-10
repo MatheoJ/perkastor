@@ -1,45 +1,10 @@
 // pages/api/locations.js
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getServerSession } from 'next-auth';
-import { authOptions } from './auth/[...nextauth]';
+import { convertToGeoJSON } from '~/lib/map-utils';
 import { connectToDatabase}from '../../lib/mongodb';
 
-import { ExtendedSession } from 'types/types';
-
-
-async function convertToGeoJSON(location, geoJSON) {
-  const { _id, geometry, latitude, longitude, area, type, name } = location;
-  const coordinates = [longitude, latitude];
-
-  console.log(location);
-
-  geoJSON.features.push({
-    type:"Feature",
-    geometry:{
-      type: geometry,
-      coordinates: coordinates
-    },
-    properties :{
-      id: _id,
-      area: area,
-      type: type,
-      name: name
-      // include any additional properties here
-   }});
-
-}
-
 async function handler(req : NextApiRequest, res : NextApiResponse) {
-  
-    const session: ExtendedSession = await getServerSession(req, res, authOptions);
-
-  console.log("laa3 : ");
-  console.log(req.query.type);
-  console.log(req.query.maxLongitude)
-  console.log(req.query.minLongitude)
-  console.log(req.query.maxLatitude)
-  console.log(req.query.minLatitude)
 
     if (req.method !== 'GET') {
         res.status(500).json({ message: 'Requettes Get autorisées uniquement' });
@@ -75,11 +40,6 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
       ],
     };
 
-
-  
-  console.log(query);
-
-     
   try {    
    /*  const collection = (await clientPromise).db().collection("locations");
     const cursor = collection.find(query); */
@@ -95,10 +55,8 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
       features: [],
     };
 
-    console.log(cursor);
-
-    await cursor.forEach(async (location) => {
-      const feature = await convertToGeoJSON(location, geojson);
+    cursor.map(async (location) => {
+      convertToGeoJSON(location, geojson);
     });
 
     res.status(200).json(geojson);
