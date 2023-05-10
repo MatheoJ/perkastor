@@ -1,12 +1,10 @@
 // pages/api/locations.js
 
-import geojson from "geojson";
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth';
 import { authOptions } from './auth/[...nextauth]';
-import { MongoClient } from "mongodb";
-import { connectToDatabase } from '../../lib/db';
-import { type } from "os";
+import { connectToDatabase}from '../../lib/mongodb';
+
 import { ExtendedSession } from 'types/types';
 
 
@@ -36,7 +34,7 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
   
     const session: ExtendedSession = await getServerSession(req, res, authOptions);
 
-  console.log("laa2 : ");
+  console.log("laa3 : ");
   console.log(req.query.type);
   console.log(req.query.maxLongitude)
   console.log(req.query.minLongitude)
@@ -50,23 +48,23 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
 
     var typeOfLocation ;
 
-    if(req.query.type > 13){
-        typeOfLocation = "rue";
+    if (Number(req.query.type) > 13) {
+      typeOfLocation = "rue";
     }
-    else if(req.query.type > 8){
-        typeOfLocation = "ville";
+    else if (Number(req.query.type) > 8) {
+      typeOfLocation = "ville";
     }
-    else if(req.query.type > 6){
-        typeOfLocation = "departement";
+    else if (Number(req.query.type) > 6) {
+      typeOfLocation = "departement";
     }
-    else{
-        typeOfLocation = "region";
+    else {
+      typeOfLocation = "region";
     }
 
-    const minLatitude = req.query.minLatitude;
-    const maxLatitude = req.query.maxLatitude;
-    const minLongitude = req.query.minLongitude;
-    const maxLongitude = req.query.maxLongitude;
+    const minLatitude = Array.isArray(req.query.minLatitude) ? req.query.minLatitude[0] : req.query.minLatitude;
+    const maxLatitude = Array.isArray(req.query.maxLatitude) ? req.query.maxLatitude[0] : req.query.maxLatitude;
+    const minLongitude = Array.isArray(req.query.minLongitude) ? req.query.minLongitude[0] : req.query.minLongitude;
+    const maxLongitude = Array.isArray(req.query.maxLongitude) ? req.query.maxLongitude[0] : req.query.maxLongitude;
 
 
     var query = {
@@ -83,6 +81,11 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
 
      
   try {    
+   /*  const collection = (await clientPromise).db().collection("locations");
+    const cursor = collection.find(query); */
+
+   
+
     const client = await connectToDatabase();
     const collection = client.db().collection("locations");
     const cursor = collection.find(query);
@@ -92,11 +95,12 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
       features: [],
     };
 
+    console.log(cursor);
+
     await cursor.forEach(async (location) => {
       const feature = await convertToGeoJSON(location, geojson);
-    });    
-    
-    client.close();
+    });
+
     res.status(200).json(geojson);
     return;
 

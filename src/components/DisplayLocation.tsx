@@ -22,7 +22,7 @@ const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected
       minLatitude: map.getBounds()._sw.lat.toString(),
     });
 
-    const response = await fetch(`/api/locationFact?${queryParams}`, {
+    const response = await fetch(`/api/locations?${queryParams}`, {
       method: "GET",
     });
 
