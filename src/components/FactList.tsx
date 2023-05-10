@@ -3,8 +3,7 @@ import Fact from './Fact';
 import Slider from 'react-slick';
 import { NextPage } from 'next';
 import { FactListProps } from 'types/types';
-import { getEearliestDate } from '~/lib/date-utils';
-
+import { getEarliestDate } from '~/lib/date-utils';
 
 
 const FactList: NextPage<FactListProps> = ({ facts }) => {
@@ -17,8 +16,7 @@ const FactList: NextPage<FactListProps> = ({ facts }) => {
     }, 1500);
   };
   console.log(facts[0])
-  const sortedFacts = facts;
-  // const sortedFacts = facts.sort((a, b) => getEearliestDate(a.keyDates).getTime() - getEearliestDate(b.keyDates).getTime());
+  const sortedFacts = facts.sort((a, b) => Date.parse(getEarliestDate(a.keyDates)) - Date.parse(getEarliestDate(b.keyDates)));
 
   /*
     useEffect(() => {
