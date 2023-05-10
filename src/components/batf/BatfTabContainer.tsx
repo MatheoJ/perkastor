@@ -4,11 +4,14 @@ import Tab from "./Tab";
 import FactChainContributions from "../FactChainContributions";
 import FactListContributions from "../FactListContributions";
 import ChainListContributions from "../ChainListContributions";
+import FactChainItem from "../FactChainItem";
+import ChainList from "../ChainList";
+
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
 import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
 import FactList from "../FactList";
-import { Fact, HistoricalPerson } from "@prisma/client";
+import { Fact, Chain, HistoricalPerson } from "@prisma/client";
 import { useSession } from 'next-auth/react';
 import HistoricalFigureView from "./HistoricalFiguresView";
 import { contributionClickEvent } from "~/events/ContributionClickEvent";
