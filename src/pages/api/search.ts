@@ -1,8 +1,13 @@
+import { Fact, PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
+import { ExtendedSession, SearchFilters } from 'types/types';
 import { ExtendedSession, SearchFilters, SearchResult } from 'types/types';
+import { connectToDatabase } from '../../lib/db';
 import { authOptions } from './auth/[...nextauth]';
-import { prisma } from '../../lib/db'
+import ObjectID from 'bson-objectid';
+import { prisma } from '~/server/db';
+import { bool } from 'aws-sdk/clients/signer';
 //const { hasSome } = require('prisma-multi-tenant');
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -36,6 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         isEventValue = false;
     }
     try {
+        const client = new PrismaClient();
         switch (method) {
             case 'GET':
                 let prismaResultFact;
@@ -46,7 +52,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // Get data from your database
                 if (query) {
                     if (filters.event || filters.anecdote){
-                        prismaResultFact = await prisma.fact.findMany({
+                        prismaResultFact = await client.fact.findMany({
+                            take: 10,
                             where: {
                                 
                                 OR: [
@@ -59,7 +66,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                     }
                     if (filters.chain){
-                        prismaResultChain = await prisma.factChain.findMany({
+                        prismaResultChain = await client.factChain.findMany({
+                            take: 10,
                             where: {
                                 OR: [
                                     { title: { contains: query as string } },
@@ -70,7 +78,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                     }
                     if (filters.location){
-                        prismaResultLocation = await prisma.location.findMany({
+                        prismaResultLocation = await client.location.findMany({
+                            take: 10,
                             where: {
                                 name: { contains: query as string }
                             }
@@ -82,7 +91,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         if(isNaN(date.getTime())){
                             date = undefined;
                         }
-                        prismaResultHistoricalFigure = await prisma.historicalPerson.findMany({
+                        prismaResultHistoricalFigure = await client.historicalPerson.findMany({
+                            take: 10,
                             where: {
                                 OR: [
                                     { name: { contains: query as string } },
@@ -94,7 +104,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                     }
                     if (filters.user){
-                        prismaResultUser = await prisma.user.findMany({
+                        prismaResultUser = await client.user.findMany({
+                            take: 10,
                             where: {
                                 name: { contains: query as string }
                             }
