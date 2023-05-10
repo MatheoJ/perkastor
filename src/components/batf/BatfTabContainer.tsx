@@ -18,7 +18,7 @@ import { HistoricalPerson } from "@prisma/client";
 import Fact from "../Fact";
 import FactChainContributions from "../FactChainContributions";
 // selectedTab, setSelectedTab
-const TabContainer = ({ onMinimizeClick, onFullScreenClick}) => {
+const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfState}) => {
   const [markerSelected, setMarkerSelected] = useState(false);
   const [facts, setFacts] = useState([]);
   const [editMod, setEditMod] = useState(false);
@@ -30,7 +30,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick}) => {
   const [itemSelected, setItemSelected] = useState(null);
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const handleMapChange = bus.subscribe(selectMapEvent, event => {
+  bus.subscribe(selectMapEvent, event => {
     if (event.payload == null) {
       setMarkerSelected(false);
       setFacts([]);
@@ -41,38 +41,39 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick}) => {
       setLocationId(geoInfos.properties.id);
     }
   });
-
-  const handleEditModChange = bus.subscribe(contributionClickEvent, event => {
+  bus.subscribe(contributionClickEvent, event => {
     const newEditMod = !editMod;
     setEditMod(newEditMod)
   });
-
-  const handleSelectHistoricalFigures = bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
-    const handlePayload = async () => {
-      const payload = await Promise.resolve(event.payload);
-      setHistoricalFigure(payload);
-
+  bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
+    const handlePayload =  () => {
+      //const payload = await Promise.resolve(event.payload);
+      setHistoricalFigure(event.payload);
     };
-    handlePayload().catch(error => {
-      console.error("Error handling payload:", error);
-    });
+    handlePayload();
   });
 
-  const handleSelectEvent = bus.subscribe(selectEventFromSearchBar, event => {
-    const handlePayload = async () => {
-      const payload = await Promise.resolve(event.payload);
-      setFacts([payload]);
+  bus.subscribe(selectEventFromSearchBar, event => {
+    const handlePayload = () => {
+      //const payload = await Promise.resolve(event.payload);
+      if(batfState == "minimized"){
+        setBatfState("normal");
+      }
+      setSelectedTab(0);
+      setFacts([event.payload]);
     };
-    handlePayload().catch(error => {
-      console.error("Error handling payload:", error);
-    });
+    handlePayload();
   });
+
   useEffect(() => {
-    if (historicalFigure) {
+    if (historicalFigure != null) {
+      if(batfState == "minimized"){
+         setBatfState("normal")
+      }
       setSelectedTab(1);
     }
   }, [historicalFigure]);
-  
+
   useEffect(() => {
     if (!markerSelected) {
       setFacts([]);
@@ -96,6 +97,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick}) => {
       }
     }
     fetchData();
+    setSelectedTab(0);
   }, [locationId]);
 
   useEffect(() => {

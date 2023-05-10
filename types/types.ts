@@ -13,7 +13,7 @@ export type ExtendedSession = {
 }
 export type SearchFilters = {
     event: boolean,
-    anecdote: boolean,
+    //anecdote: boolean,
     chain: boolean,
     historicalFigure: boolean,
     location: boolean,
@@ -23,7 +23,7 @@ export type SearchResult = {
     slice(arg0: number, arg1: number): unknown
     length: number
     events: Fact[],
-    anecdotes: Fact[],
+    //anecdotes: Fact[],
     chains: FactChain[],
     users: User[],
     locations: Location[],

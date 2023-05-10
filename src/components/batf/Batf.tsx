@@ -41,21 +41,18 @@ const Batf: React.FC<BatfProps> = ({ children }) => {
 
     return (
         <div className={`batf ${classAssigner()}`}>
-            {
-                (() => {
-                    if (state !== "minimized") {
-                        //selectedTab={selectedTab} setSelectedTab={setSelectedTab}
-                        return <>
-                            <BatfTabContainer onFullScreenClick={maximize} onMinimizeClick={hide}></BatfTabContainer>
-                        </>;
-                    }
-                    else {
-                        return <button className="toggle batf-minimized-btn" onClick={show}>
-                            <i className="fa fa-bars"></i>
-                        </button>;
-                    }
-                })()
-            }
+            <BatfTabContainer 
+                style={{ display: state === "minimized" ? "none" : "block" }} 
+                onFullScreenClick={maximize} 
+                onMinimizeClick={hide} 
+                setBatfState={setState} 
+                batfSate={state}
+            />
+            {state === "minimized" && (
+                <button className="toggle batf-minimized-btn" onClick={show}>
+                    <i className="fa fa-bars"></i>
+                </button>
+            )}
             {children}
         </div>
     );

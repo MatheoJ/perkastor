@@ -55,13 +55,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         prismaResultFact = await client.fact.findMany({
                             take: 10,
                             where: {
-                                
                                 OR: [
                                     { title: { contains: query as string, mode: "insensitive" } },
                                     { content: { contains: query as string, mode: "insensitive"} },
                                     { author: { name: { contains: query as string, mode: "insensitive" } } },
                                 ],
-                                isEvent: isEventValue
                             },
                             include: {
                                 location: true,
@@ -122,7 +120,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (prismaResultFact || prismaResultChain || prismaResultLocation || prismaResultHistoricalFigure || prismaResultUser) {
                     const resultat : SearchResult = {
                         events: prismaResultFact,
-                        anecdotes: prismaResultFact,
                         chains: prismaResultChain,
                         locations: prismaResultLocation,
                         historicalPersons: prismaResultHistoricalFigure,

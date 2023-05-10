@@ -3,7 +3,9 @@ import React, { ReactElement, useState } from "react"
 import TabTitle from "./TabTitle"
 
 type Props = {
-  children: ReactElement[]
+  children: ReactElement[],
+  selectedTab: number,
+  setSelectedTab: React.Dispatch<React.SetStateAction<number>>
 }
 
 const Tabs: React.FC<Props> = ({ children, selectedTab, setSelectedTab}) => {

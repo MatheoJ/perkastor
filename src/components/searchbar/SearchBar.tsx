@@ -16,7 +16,6 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [filters, setFilters] = useState<SearchFilters>({
     event: true,
-    anecdote: false,
     historicalFigure: true,
     location: true,
     chain: true,
@@ -37,22 +36,11 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
 
     setSearchResults(resultat.data);
     setIsLoading(false);
-
-    console.log(resultat);
-  };
-
-  const sendDataToBatf = (result: SearchResult) => {
-    bus.publish(selectSearchBarResultEvent(result));
-
-    console.log("sending data to batf");
-    console.log(searchResults);
   };
 
   function renderResults(results: any[], category: string) {
-
     return results.map((result, index) => {
       let resultTitle = '';
-  
       switch (category) {
         case 'events':
         case 'anecdotes':
@@ -120,8 +108,6 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
   }
 
   function handleClickOnResult(results: any, category:string, i: number){
-    console.log(results[i]);
-
     switch (category) {
       case 'events':
         bus.publish(selectEventFromSearchBar(results[i] as Fact));

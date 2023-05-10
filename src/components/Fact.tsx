@@ -58,7 +58,7 @@ const Fact: React.FC<Props> = (props) => {
                 </div>
             </div>
             <div className="factBody">
-                {fact.bannerImg && fact.personsInvolved.length ? ( //test : there are both images and personsInvolved
+                {fact.bannerImg && fact.personsInvolved && fact.personsInvolved.length ? ( //test : there are both images and personsInvolved
                     <>
                         <div className="content-left">
                             <strong>Description</strong>
@@ -69,11 +69,7 @@ const Fact: React.FC<Props> = (props) => {
                                 <Image src={logo} alt="" width={300} height={200} />
                             </div>
                             <ul>
-                                {fact.personsInvolved.map((person) => (
-                                    <li key={person.historicalPerson.id}>
-                                        {person.historicalPerson.name}
-                                    </li>
-                                ))}
+                            {fact.personsInvolved.map((person) => (<li key={person.historicalPerson.id}>{person.historicalPerson.name}</li>))} 
                             </ul>
                         </div>
                     </>
@@ -89,7 +85,7 @@ const Fact: React.FC<Props> = (props) => {
                             </div>
                         </div>
                     </>
-                ) : fact.personsInvolved.length ? ( //test : there are personsInvolved and no image 
+                ) : fact.personsInvolved && fact.personsInvolved.length ? ( //test : there are personsInvolved and no image 
                     <>
                         <div className="content-left">
                             <strong>Description</strong>
