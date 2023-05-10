@@ -8,7 +8,7 @@ import { prisma } from '../../lib/db'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
 
-    const { userId, chainId } = req.query;
+    const { userId, chainId, locationId } = req.query;
     console.log(req.query)
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
     try {
@@ -34,6 +34,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(200).json({ data: prismaResult });
                     } else {
                         res.status(404).json({ message: `Chaine non trouvée pour l'utilisateur ${userId}` });
+                    }
+                } else if (locationId) {
+                    const prismaResult = await prisma.factChain.findMany({
+                        where: {
+                          items: {
+                            some: {
+                              fact: {
+                                locationId: locationId as string
+                              }
+                            }
+                          }
+                        }
+                      });
+                    if (prismaResult) {
+                        res.status(200).json({ data: prismaResult });
+                    }
+                    else {
+                        res.status(404).json({ message: `Chaine non trouvée pour la localisation ${locationId}` });
                     }
                 } else {
                     prismaResult = await prisma.factChain.findMany();
