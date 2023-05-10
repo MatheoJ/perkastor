@@ -4,6 +4,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Add from '@material-ui/icons/Add';
 import Swal from 'sweetalert2';
 import {ChainListProps} from '../../types/types';
+import { createDeflate } from 'zlib';
 
 interface ChainListContributionsProps {
   chains: ChainListProps[];
@@ -38,7 +39,7 @@ const ChainListContributions: React.FC<ChainListContributionsProps> = ({ chains 
         >
           <div className="chainTitle">
             <img src={chain.image} alt="chain image" id='imageChainList' />
-            <div className='chainTitleText'> <p>{chain.title} <br/> {chain.createdAt.getDay()}-{chain.createdAt.getMonth()+1}-{chain.createdAt.getFullYear()}</p> </div>
+            <div className='chainTitleText'> <p>{chain.title} <br/> {chain.createdAt}</p> </div>
           </div>
           <div className='deleteBtn'>
             <button className="chainActionBtn" onClick={() => handleDeleteChain(index)}>
