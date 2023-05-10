@@ -8,7 +8,7 @@ import Batf from './batf/Batf';
 import Button from './buttons/Button';
 import DisplayLocation from './DisplayLocation';
 import { bus } from '../utils/bus';
-import { selectLocationFromSeachBar } from '~/events/SelectSearchBarResultEvent';
+import { selectLocationFromSearchBar } from '~/events/SelectSearchBarResultEvent';
 
 const MapTilerApiKey = process.env.MAPTILER_API_KEY;
 
@@ -48,7 +48,7 @@ const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect })
       }
     );
     
-    bus.subscribe(selectLocationFromSeachBar, event => {
+    bus.subscribe(selectLocationFromSearchBar, event => {
       const handlePayload = async () => {
         const payload = await Promise.resolve(event.payload);
         

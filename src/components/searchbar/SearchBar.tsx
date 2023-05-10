@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import { CircularProgress, IconButton } from "@mui/material";
-import { set } from "zod";
-import { ExtendedSession, SearchFilters, SearchResult } from 'types/types';
+import { SearchFilters, SearchResult } from 'types/types';
 import { bus } from "~/utils/bus";
-import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSeachBar, selectSearchBarResultEvent} from '../../events/SelectSearchBarResultEvent';
+import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent} from '../../events/SelectSearchBarResultEvent';
 import { Fact, HistoricalPerson } from "@prisma/client";
-import { AnyAaaaRecord } from "dns";
 import {Geometry} from "geojson";
+import FiltersChecklist from "./FiltersChecklist";
 
-function SearchBar() {
+
+function SearchBar({ showChecklist }: { showChecklist: boolean }) {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -127,7 +127,7 @@ function SearchBar() {
         bus.publish(selectHistoricalFigureFromSearchBar(results[i] as HistoricalPerson));
         break;
       case 'locations':
-        bus.publish(selectLocationFromSeachBar(results[i] as Geometry));
+        bus.publish(selectLocationFromSearchBar(results[i] as Geometry));
         break;
     }
   }

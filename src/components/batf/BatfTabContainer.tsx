@@ -9,13 +9,11 @@ import ChainList from "../ChainList";
 
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
-import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
-import FactList from "../FactList";
-import { Fact, Chain, HistoricalPerson } from "@prisma/client";
+
 import { useSession } from 'next-auth/react';
-import HistoricalFigureView from "./HistoricalFiguresView";
 import { contributionClickEvent } from "~/events/ContributionClickEvent";
 import { set } from "react-hook-form";
+import {selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar} from '../../events/SelectSearchBarResultEvent';
 
 const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) => {
     const [markerSelected, setMarkerSelected] = useState(false);
@@ -26,15 +24,18 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
     const [historicalFigureId, setHistoricalFigureId] = useState(null);
     const [locationId, setLocationId] = useState(null);
     const {data : session, status, update} = useSession({required: false});
+
     const handleMapChange = bus.subscribe(selectMapEvent, event => {
         const geoInfos = event.payload;
         setMarkerSelected(true);
         setLocationId(geoInfos.properties.id);
     });
+
     const handleEditModChange = bus.subscribe(contributionClickEvent, event => {
         const newEditMod = !editMod;
         setEditMod(newEditMod)
     });
+
     const handleHistoricalFigureChange = bus.subscribe("historicalFigure", async event => {
       const historicalFigureId = event.payload;
       setHistoricalFigure(historicalFigureId);
@@ -100,25 +101,25 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) =
     }, [historicalFigureId]);
 
     onSearchResultReceived = () => {
-        bus.subscribe(selectHistoricalFigure, event => {
-            const payload = await Promise.resolve(event.payload);
+        bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
           const handlePayload = async () => {
-          handlePayload().catch(error => {
+            const payload = await Promise.resolve(event.payload);
           };
-          });
+          handlePayload().catch(error => {
             console.error("Error handling payload:", error);
+          });
         });
-        bus.subscribe(selectEventFromSearchBar, event => {
 
+        bus.subscribe(selectEventFromSearchBar, event => {
             const handlePayload = async () => {
               const payload = await Promise.resolve(event.payload);
-              setFacts(payload);
-              setMarkerSelected(true);
+              this.setFacts([payload]);
             };
             handlePayload().catch(error => {
               console.error("Error handling payload:", error);
             });
           });
-      };
+    };
+};
 
     
