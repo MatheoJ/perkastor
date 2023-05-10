@@ -4,8 +4,10 @@ import { CircularProgress, IconButton } from "@mui/material";
 import { set } from "zod";
 import { ExtendedSession, SearchFilters, SearchResult } from 'types/types';
 import { bus } from "~/utils/bus";
-import {selectSearchBarResultEvent} from '../../events/SelectSearchBarResultEvent';
-
+import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSeachBar, selectSearchBarResultEvent} from '../../events/SelectSearchBarResultEvent';
+import { Fact, HistoricalPerson } from "@prisma/client";
+import { AnyAaaaRecord } from "dns";
+import {Geometry} from "geojson";
 
 function SearchBar() {
   const [showSearchBar, setShowSearchBar] = useState(false);
@@ -39,9 +41,8 @@ function SearchBar() {
   };
 
   function renderResults(results: any[], category: string) {
-    const renderedResults = [];
-  
-    for (const result of results) {
+
+    return results.map((result, index) => {
       let resultTitle = '';
   
       switch (category) {
@@ -82,16 +83,12 @@ function SearchBar() {
           break;
       }
   
-      const renderedResult = (
+      return (
         <div key={result.id} className="dataItem">
-          <span className="dataItem__name" onClick={handleClickOnResult} category={category}>{resultTitle}</span>
+          <button className="dataItem__name" onClick={() => handleClickOnResult(results, category, index)}>{resultTitle}</button>
         </div>
-      );
-  
-      renderedResults.push(renderedResult);
-    }
-  
-    return renderedResults;
+      )
+    })
   }
 
   function rawCategoryToPrintable(category: string){
@@ -111,10 +108,20 @@ function SearchBar() {
     }
   }
 
-  function handleClickOnResult(result: SearchResult){
-    console.log(result);
+  function handleClickOnResult(results: any, category:string, i: number){
+    console.log(results[i]);
 
-    sendDataToBatf(result);
+    switch (category) {
+      case 'events':
+        bus.publish(selectEventFromSearchBar(results[i] as Fact));
+      break;
+      case 'historicalPersons':
+        bus.publish(selectHistoricalFigureFromSearchBar(results[i] as HistoricalPerson));
+        break;
+      case 'locations':
+        bus.publish(selectLocationFromSeachBar(results[i] as Geometry));
+        break;
+    }
   }
   
 

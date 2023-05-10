@@ -1,7 +1,3 @@
-/* export default function MapPage() {
-    return <div>About us</div>
-} */
-
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import Marker from './Marker';
@@ -11,6 +7,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import Batf from './batf/Batf';
 import Button from './buttons/Button';
 import DisplayLocation from './DisplayLocation';
+import { bus } from '../utils/bus';
+import { selectLocationFromSeachBar } from '~/events/SelectSearchBarResultEvent';
 
 const MapTilerApiKey = process.env.MAPTILER_API_KEY;
 
@@ -26,28 +24,20 @@ const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect })
 
   const handleSelectLocation = (location : any) => {
   };
-  
+
 
   useEffect(() => {
     if (!mapContainer.current) return;
 
     const map = new maplibregl.Map({
       container: mapContainer.current,
-      style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=KeNNPlHwOHbhaGFsVoos',
+      style: `https://api.maptiler.com/maps/basic-v2/style.json?key=KeNNPlHwOHbhaGFsVoos`,
       center: [2.3, 43.5],
       zoom: 4,
     });
 
     map.on('load', () => {
         setMapInstance(map);
-        map.addSource('earthquakes', {
-            type: 'geojson',
-            // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
-            // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
-            data: 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson',
-            cluster: false
-        });
-
     });
 
     map.loadImage(
@@ -57,6 +47,33 @@ const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect })
         map.addImage('pin_event', image);
       }
     );
+    
+    bus.subscribe(selectLocationFromSeachBar, event => {
+      const handlePayload = async () => {
+        const payload = await Promise.resolve(event.payload);
+        
+        const endPoints = [payload.longitude, payload.latitude];
+        console.log(endPoints);
+
+        map?.flyTo({
+          center: endPoints,
+          zoom: 15,
+          bearing: 0,
+          speed: 1.5, // make the flying slow
+          curve: 1, // change the speed at which it zooms out
+          // This can be any easing function: it takes a number between
+          // 0 and 1 and returns another number between 0 and 1.
+          easing: function (t) {
+            return t;
+          },
+          // this animation is considered essential with respect to prefers-reduced-motion
+          essential: true
+        });
+      };
+      handlePayload().catch(error => {
+        console.error("Error handling payload:", error);
+      });
+    });
 
     return () => {
       map.remove();
