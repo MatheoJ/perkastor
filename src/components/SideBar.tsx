@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import Head from 'next/head';
-import { boolean } from 'zod';
+import FolderSharedIcon from '@mui/icons-material/FolderShared';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setInsertMode }:
     { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({ item }: { item: String }) => void, insertMode: boolean, setInsertMode: ({ insertMode }: { insertMode: boolean }) => void }) {
@@ -31,7 +31,7 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                         <li>
                             <div className="icon">
                                 <button title='Accéder à mes contributions' onClick={() => handleClick({ item: "contributions" })}>
-                                    <i className="far fa-lightbulb" style={{ color: "#F1B706", }}></i>
+                                    <FolderSharedIcon style={{ color: '#F1B706' }} />
                                     <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Contributions</span>
                                 </button>
                             </div>
@@ -39,7 +39,7 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                         <li>
                             <div className="icon">
                                 <button onClick={() => handleClick({ item: "addEvent" })}>
-                                    <i className="far fa-google-plus" style={{ color: "#F1B706", }}></i>
+                                    <AddCircleIcon style={{ color: '#F1B706' }} />
                                     <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter un évènement</span>
                                 </button>
                             </div>

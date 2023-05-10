@@ -61,7 +61,7 @@ const DisplayLocation: React.FC<DisplayLocationProps> = ({ map, locationSelected
     map.on("moveend",updateLocation);
 
     map.on('click', 'unclustered-point_loc', function (e) {
-      var coordinates = e.features[0].geometry.coordinates.slice();
+      var coordinates = e.features[0].geometry.coordinates.slice(); // DO NOT MODIFY THIS LINE
       var name = e.features[0].properties.name;
       
       // Ensure that if the map is zoomed out such that
