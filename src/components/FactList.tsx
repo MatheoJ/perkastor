@@ -63,8 +63,8 @@ const FactList: React.FC<FactListProps> = ({ facts }) => {
     swipeToSlide: true,
     arrows: false,
     variableWidth: false,
-    outerWidth:100,
-    autoplay: true,
+    outerWidth:100
+    // autoplay: true,
   };
 
 
