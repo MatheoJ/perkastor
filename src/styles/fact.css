@@ -1,13 +1,16 @@
 .fact {
     height: 90%;
-    max-height: 350px;
+    max-height: 450px;
     color: black;
     border-radius: 5px;
-    padding: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: calc(2em + 1vw);
+    padding-right: calc(2em + 1vw);
     overflow-x: hidden;
-    background-color: #ccc;
+    background-color: #fff;
     box-shadow: 5px 5px 5px 1px rgba(0, 0, 0, 0.66);
-    width: 90%;
+    width: 70%;
     margin-left: auto;
     margin-right: auto;
     margin-top: calc(0.5em + 1vh);
@@ -24,8 +27,12 @@
 
 .factHead h1 {
     line-height: 30px;
-    font-size: 25px;
-    font-weight: bold;
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.factHead h1 span {
+    font-weight: 700;
 }
 
 .factHead h2 {
@@ -35,7 +42,7 @@
 }
 
 .factHeadTop {
-    text-align: center;
+    text-align: left;
 }
 
 .factHeadBottom {
@@ -43,9 +50,12 @@
     display: flex;
     justify-content: space-between;
     margin: 5px;
-    flex: 1;
+    flex: 1; 
 }
 
+.factHeadBottomRight, .factHeadBottomLeft {
+    flex-basis: 50%;
+}
 .factHeadBottomRight ul{
     display: inline-block;
     height: max-content ;
@@ -55,7 +65,6 @@
     display: inline-block;
     height: max-content ;
     text-align: center;
-    font-size: 30px;
     margin: 0px 5px 0px 5px;
 }
 
@@ -81,6 +90,9 @@
     width: 100%;
     display: flex;
     flex-direction: row;
+}
+.uncheckedIcon .verifiedIcon {
+    margin-right: 1em;
 }
 .verifiedText {
     margin: 0;
@@ -119,7 +131,7 @@
 }
 
 .fact::-webkit-scrollbar-thumb {
-    background-color: #ccc;
+    background-color: #fff;
     border-radius: 5px;
 }
 
@@ -127,11 +139,13 @@
     background-color: #aaa;
 }
 
-.factImage {
-    margin-top: 20px;
-    background-size: cover;
-    background-position: center;
-    background-color: #344453;
-    /* border: 1px solid #344453; */
-    
+.padding-m {
+    padding: 30px;
+}
+.factImage img {
+    height: auto;
+    width: auto;
+    max-height: 100%;
+    max-width: 100px;
+    margin-left: auto;
 }

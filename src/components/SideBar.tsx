@@ -16,8 +16,13 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
         onSidebarItemClick({ item });
 
         if(item == "edit"){
-            setEditMode(!editMode);
-            bus.publish(contributionClickEvent(!editMode));
+            // si l'utilisateur n'est pas connecté, on le redirige vers la page de connexion
+            if(!localStorage.getItem("user")){
+                window.location.href = "/auth";
+            }else{
+                setEditMode(!editMode);
+                bus.publish(contributionClickEvent(!editMode));
+            }
         }
         if (item == "addEvent") {
             window.location.href = "/eventForm";

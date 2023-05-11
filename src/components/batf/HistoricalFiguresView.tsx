@@ -72,9 +72,11 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
             </div>
             <div className="historicalFigureBody">
                 <div className='content-left'>
-                    <p>{historicalPerson.shortDesc}</p>
-                    <p>{historicalPerson.content}</p>
+                    <strong>Description</strong>
+                    {historicalPerson.shortDesc && <p>{historicalPerson.shortDesc.charAt(0).toUpperCase() + historicalPerson.shortDesc.slice(1)}</p>}
+                    {historicalPerson.content && <p>{historicalPerson.content.charAt(0).toUpperCase() + historicalPerson.content.slice(1)}</p>}
                 </div>
+
                 <div className='content-right'>
 
                     {historicalPerson.image && (
