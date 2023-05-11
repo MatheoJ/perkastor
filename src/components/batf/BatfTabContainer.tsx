@@ -49,21 +49,18 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
     const newEditMod = !editMod;
     setEditMod(newEditMod)
   });
-
-  const handleSelectHistoricalFigures = bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
-    const handlePayload = async () => {
-      const payload = event.payload;
-      setHistoricalFigure(payload);
-    };
-    handlePayload();
+  bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
+      //const payload = await Promise.resolve(event.payload);
+      setHistoricalFigure(event.payload);
   });
 
-  const handleSelectEvent = bus.subscribe(selectEventFromSearchBar, event => {
-    const handlePayload = async () => {
-      const payload = event.payload;
-      setFacts([payload]);
-    };
-    handlePayload();
+  bus.subscribe(selectEventFromSearchBar, event => {
+      //const payload = await Promise.resolve(event.payload);
+      if(batfState == "minimized"){
+        setBatfState("normal");
+      }
+      setSelectedTab(0);
+      setFacts([event.payload]);
   });
 
   async function fetchLocationData() {

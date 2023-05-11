@@ -30,7 +30,7 @@ const FactList: NextPage<FactListProps> = ({ facts }) => {
       <Slider className='sliderFactList' {...settings}>
         {sortedFacts.map((fact) => (
           <div className='sortedFact' key={fact.id} style={{ width: '100%' }}>
-            <Fact fact={fact} />
+            <Fact fact={fact}/>
           </div>
         ))}
       </Slider>

@@ -6,6 +6,8 @@ import { Fact as FactType, HistoricalPerson } from '@prisma/client'
 import logo from "src/images/perecastor.png";
 import { NextPage } from 'next';
 import { FactProps } from 'types/types';
+import { selectHistoricalFigureFromSearchBar } from '~/events/SelectSearchBarResultEvent';
+import { bus } from "../utils/bus";
 
 interface Props {
     fact: FactProps;
@@ -69,7 +71,7 @@ const Fact: NextPage<Props> = ({fact}) => {
                             </div>
                         </div>
                     </>
-                ) : fact.personsInvolved && fact.personsInvolved.length ? ( //test : there are personsInvolved and no image 
+                ) : fact.personsInvolved && fact.personsInvolved.length  ? ( //test : there are personsInvolved and no image 
                     <>
                         <div className="content-left">
                             <strong>Description</strong>
@@ -79,7 +81,7 @@ const Fact: NextPage<Props> = ({fact}) => {
                             <strong>Personnages historiques</strong>
                             <ul>
                                 {fact.personsInvolved.map((person) => (
-                                    <li key={person.historicalPerson.id}>
+                                    <li onClick={() => {bus.publish(selectHistoricalFigureFromSearchBar(person.historicalPerson as HistoricalPerson))}} style={{cursor:"pointer", textDecoration : "underline"}} key={person.historicalPerson.id}>
                                         {person.historicalPerson.name}
                                     </li>
                                 ))}

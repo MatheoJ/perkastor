@@ -22,7 +22,7 @@ const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains,
           onClick={() => setItemSelected(chain)}
         >
           <div className="chainTitle">
-            <img src={chain.image ? chain.image : "images_default/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
+            <img src={chain.image ? chain.image : "/images_default/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
             <div className='chainTitleText'> <p>{chain.title} <br /> {chain.createdAt.toString().split("T")[0]}</p> </div>
           </div>
         </div>

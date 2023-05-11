@@ -8,23 +8,29 @@ import { createDeflate } from 'zlib';
 
 interface ChainListContributionsProps {
   chains: ChainListProps[];
+  setItemSelected: React.Dispatch<React.SetStateAction<{}>>;
 }
 
-const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains }) => {
-  const [chainList, setChainList] = useState(chains);
+const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains, setChains, setItemSelected}) => {
 
-  const handleDeleteChain = (factIndex: number) => {
+  const handleDeleteChain = (chainIndex: number) => {
     Swal.fire({
       title: 'Êtes-vous sûr de vouloir supprimer cette chaine ?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Supprimer',
       cancelButtonText: 'Annuler',
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        const newChainList = [...chainList];
-        newChainList.splice(factIndex, 1);
-        setChainList(newChainList);
+        const newChain = await fetch(`api/chains?id=${chains[chainIndex].id}`, {
+          method: 'DELETE',
+        });
+        if(newChain.status >=300) {
+          setItemSelected(null);
+          Swal.fire('Erreur', 'Une erreur est survenue lors de la suppression de la chaine', 'error');
+          return;
+        }
+        setChains(chains.filter((chain, index) => index !== chainIndex));
         Swal.fire('Chaine supprimée', '', 'success');
       }
     });
@@ -32,13 +38,16 @@ const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains 
 
   return (
     <div className="chainListContributions">
-      {chainList.map((chain, index) => (
+      {chains.map((chain, index) => (
         <div
           key={chain.id}
           className="chainContainer"
+          
         >
-          <div className="chainTitle">
-            <img src={chain.image ? chain.image : "images_home/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
+          <div className="chainTitle" onClick={() => {
+            setItemSelected(chain);
+          }}>
+            <img src={chain.image ? chain.image : "/images_default/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
             <div className='chainTitleText'> <p>{chain.title} <br/> {chain.createdAt.split("T")[0]}</p> </div>
           </div>
           <div className='deleteBtn'>
