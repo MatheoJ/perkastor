@@ -7,49 +7,78 @@ import Add from '@material-ui/icons/Add';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Swal from 'sweetalert2';
 import { NextPage } from 'next';
+import Image from 'next/image';
 
 interface FactChainContributionsProps {
-  facts: {
+  chain: {
+    items: {
+      fact: {
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        title: string;
+        shortDesc?: string;
+        content: string;
+        keyDates: string[];
+        bannerImg?: string;
+        verified: boolean;
+        video: string[];
+        audio: string[];
+        author: {
+          id: string;
+          name: string;
+        };
+        tags: {
+          id: string;
+          name: string;
+        }[];
+        locations: {
+          id: string;
+          name: string;
+        }[];
+        personsInvolved: {
+          id: string;
+          name: string;
+        }[];
+      },
+      comment: string;
+      id : string;
+      position: number;
+    }[];
     id: string;
     createdAt: string;
     updatedAt: string;
     title: string;
-    shortDesc?: string;
-    content: string;
-    keyDates: string[];
-    bannerImg?: string;
-    verified: boolean;
-    video: string[];
-    audio: string[];
-    author: {
-      id: string;
-      name: string;
-    };
-    tags: {
-      id: string;
-      name: string;
-    }[];
-    locations: {
-      id: string;
-      name: string;
-    }[];
-    personsInvolved: {
-      id: string;
-      name: string;
-    }[];
-  }[];
-  setFacts: React.Dispatch<React.SetStateAction<{}[]>>;
+    description: string;
+  };
+  setItemSelected: React.Dispatch<React.SetStateAction<{}>>;
 }
 
-const FactChainContributions: NextPage<FactChainContributionsProps> = ({ facts, setFacts }) => {
+const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, setItemSelected }) => {
+  
+  const updateFacts = (chain) => {
+    const facts = chain.items.sort((a, b) => a.position - b.position).map((item) => item.fact);
+    return facts;
+  };
 
+  const [facts, setFacts] = useState(updateFacts(chain));
+  //trier les facts par position de l'item
   const handleMoveFact = async (currentIndex: number, newIndex: number) => {
-    await fetch(`api/chains&`)
-    const newFactList = [...facts];
-    const movedFact = newFactList[currentIndex];
-    newFactList.splice(currentIndex, 1);
-    newFactList.splice(newIndex, 0, movedFact);
-    setFacts(newFactList);
+    if(newIndex < 0 || newIndex >= facts.length || currentIndex === newIndex) {
+      return;
+    }
+    const itemsToSwap = [chain.items[currentIndex].id, chain.items[newIndex].id];
+    const chainItemIdsToSwapArray = JSON.stringify(itemsToSwap);
+    const newChain = await fetch(`api/chain-items?chainItemIdsToSwapArray=${chainItemIdsToSwapArray}`, {
+      method: 'PATCH',
+    });
+    if(newChain.status >=300) {
+      setItemSelected(null);
+      Swal.fire('Erreur', 'Une erreur est survenue lors de la modification de la chaîne', 'error');
+      return;
+    }
+    const newChainJson = await newChain.json();
+    setItemSelected(updateFacts(newChainJson));
   };
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
@@ -71,11 +100,20 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ facts, 
       showCancelButton: true,
       confirmButtonText: 'Supprimer',
       cancelButtonText: 'Annuler',
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        const newFactList = [...facts];
-        newFactList.splice(factIndex, 1);
-        setFacts(newFactList);
+        var newChain = await fetch(`api/chain-items?chainItemId=${chain.items[factIndex].id}`, {
+          method: 'DELETE',
+        });
+        if(newChain.status >=300) {
+          setItemSelected(null);
+          Swal.fire('Erreur', 'Une erreur est survenue lors de la suppression de l\'évènement', 'error');
+          return;
+        }
+        newChain = await newChain.json();
+        console.log("new chain", newChain);
+        setItemSelected(newChain);
+        setFacts(updateFacts(newChain));
         Swal.fire('Évènement supprimé', '', 'success');
       }
     });
@@ -85,7 +123,7 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ facts, 
     <>
       <div className="factChainContributions">
         <div className="factChainHeader">
-          <button className="returnBtn">
+          <button className="returnBtn" onClick={() => setItemSelected(null)}>
             <ArrowBackIcon />
           </button>
           <h3>&thinsp;Chaîne d'évènements</h3>
@@ -107,8 +145,8 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ facts, 
               </button>
             </div>
             <div className="factTitle">
-              <img src={fact.bannerImg} alt="fact image" id='imageFactList' />
-              <div className='factTitleText'> <p>{fact.title} <br /> {fact.keyDates.join(', ')}</p> </div>
+                {<Image src={fact.bannerImg ? fact.bannerImg : "/images_default/perecastor.png"} alt="" width={200} height={100} />}
+              <div className='factTitleText'> <p>{fact.title} <br /> {fact.keyDates.join(",")}</p> </div>
             </div>
             <div className='deleteBtn'>
               <button className="factActionBtn" onClick={() => handleDeleteFact(index)}>

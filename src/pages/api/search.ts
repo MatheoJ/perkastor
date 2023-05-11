@@ -12,7 +12,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (error) {
         filters = {
             event: true,
-            anecdote: true,
             chain: true,
             historicalFigure: true,
             location: true,
@@ -20,17 +19,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     }
     
-    let isEventValue;
-    if ((filters.event && filters.anecdote) || (!filters.event && !filters.anecdote)) {
-        // if both event and anecdote are true, ignore isEvent filter
-        isEventValue = undefined;
-    } else if (filters.event) {
-        // if only event is true, set isEvent to true
-        isEventValue = true;
-    } else if (filters.anecdote) {
-        // if only anecdote is true, set isEvent to false
-        isEventValue = false;
-    }
     try {
         const client = new PrismaClient();
         switch (method) {
@@ -42,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 let prismaResultUser;
                 // Get data from your database
                 if (query) {
-                    if (filters.event || filters.anecdote){
+                    if (filters.event){
                         prismaResultFact = await client.fact.findMany({
                             take: 10,
                             where: {
@@ -55,7 +43,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             include: {
                                 location: true,
                                 author: true,
-                                personsInvolved: true
+                                personsInvolved: {
+                                    include: {
+                                        historicalPerson: {
+                                            include: {
+                                                FactHistoricalPerson: {
+                                                    include: {
+                                                        fact: true
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         });
                     }
@@ -68,6 +68,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                     { description: { contains: query as string, mode: "insensitive" } },
                                     { author: { name: { contains: query as string, mode: "insensitive" } } },
                                 ]
+                            },
+                            include: {
+                                items: {
+                                    include: {
+                                        fact: {
+                                            include: {
+                                                location: true,
+                                            }
+                                        }
+                                    }
+                                },
+                                
                             }
                         });
                     }

@@ -55,7 +55,7 @@ const FactChain: NextPage<FactChainProps> = ({ facts, setFacts }) => {
           method: 'DELETE',
         });
 
-        if (!res) {
+        if (res.status >= 300) {
           Swal.fire('Erreur', 'Une erreur est survenue lors de la suppression de l\'évènement', 'error');
           return;
         }

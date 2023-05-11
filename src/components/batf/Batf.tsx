@@ -39,7 +39,7 @@ const Batf: NextPage<BatfProps> = ({ children }) => {
 
         return 'batf-' + state;
     }
-
+    /*
     return (
         <div className={`batf ${classAssigner()}`}>
             <BatfTabContainer 
@@ -57,6 +57,28 @@ const Batf: NextPage<BatfProps> = ({ children }) => {
             {children}
         </div>
     );
+    */
+    return (
+            <div className={`batf ${classAssigner()}`}>
+            {
+                (() => {
+                    if (state !== "minimized") {
+                        //selectedTab={selectedTab} setSelectedTab={setSelectedTab}
+                        return <>
+                            <BatfTabContainer onFullScreenClick={maximize} onMinimizeClick={hide}></BatfTabContainer>
+                        </>;
+                    }
+                    else {
+                        return <button className="toggle batf-minimized-btn" onClick={show}>
+                            <i className="fa fa-bars"></i>
+                        </button>;
+                    }
+                })()
+            }
+            {children}
+        </div>
+    );
+        
 }
 
 export default Batf;

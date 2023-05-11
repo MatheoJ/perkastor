@@ -46,23 +46,17 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
     setEditMod(newEditMod)
   });
   bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
-    const handlePayload =  () => {
       //const payload = await Promise.resolve(event.payload);
       setHistoricalFigure(event.payload);
-    };
-    handlePayload();
   });
 
   bus.subscribe(selectEventFromSearchBar, event => {
-    const handlePayload = () => {
       //const payload = await Promise.resolve(event.payload);
       if(batfState == "minimized"){
         setBatfState("normal");
       }
       setSelectedTab(0);
       setFacts([event.payload]);
-    };
-    handlePayload();
   });
 
   useEffect(() => {
@@ -151,9 +145,9 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
         if (editMod) {
           
           if(itemSelected == null){
-            return <ChainListContributions chains={chains} />;
+            return <ChainListContributions chains={chains} setChains={setChains} setItemSelected={setItemSelected}/>;
           }else{
-            return <FactChainContributions chain={itemSelected} />;
+            return <FactChainContributions chain={itemSelected} setItemSelected={setItemSelected}/>;
           }
         }
         else {
