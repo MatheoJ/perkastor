@@ -133,6 +133,7 @@ li {
   align-items: center;
   justify-content: center;
   color: white;
+  flex-direction: row;
 
   li {
     background-color: hsl(209deg 10.48% 59.54%);
@@ -157,4 +158,10 @@ li {
 
 .sortedFigure {
   height: 400px;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center!important;
+  justify-content: center!important;
 }
