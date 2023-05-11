@@ -24,6 +24,7 @@ function getImageUrl(filename: string): string {
 
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
+    var errorDeathDate = false;
     if (!historicalPerson) {
         return null;
     }
@@ -36,12 +37,11 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
         historicalPerson.birthDate = new Date(historicalPerson.birthDate)
     }
     if (!((historicalPerson.deathDate) instanceof Date)) {
-        if (historicalPerson.deathDate == "1970-01-01T00:00:00.000+00:00") {
-            historicalPerson.deathDate = null;
-        }
         historicalPerson.deathDate = new Date(historicalPerson.deathDate)
     }
-
+    if (historicalPerson.deathDate.toDateString().split(' ')[1] === 'Jan' && historicalPerson.deathDate.toDateString().split(' ')[2] === '01' && historicalPerson.deathDate.getFullYear() === 1970) {
+        errorDeathDate = true;
+    }
     return (
         <div className="fact">
             <div className="factHead">
@@ -62,7 +62,7 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                             </p>
                         }
                         {
-                            !isNaN(historicalPerson.deathDate.getTime()) &&
+                            !errorDeathDate &&
                             <p>
                                 Mort.e le {historicalPerson.deathDate.toLocaleDateString('fr-FR', {
                                     weekday: 'long',
