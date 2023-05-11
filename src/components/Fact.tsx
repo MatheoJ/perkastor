@@ -95,7 +95,7 @@ const Fact: NextPage<Props> = ({ fact }) => {
                         </div>
                         <div className='content-right'>
                             <div className="factImage">
-                                <Image src={logo} alt="" width={300} height={200} />
+                                <Image src={fact.bannerImg} alt="" width={300} height={200} />
                             </div>
                             <ul>
                                 {fact.personsInvolved.map((person) => (<li key={person.historicalPerson.id}>{person.historicalPerson.name}</li>))}
@@ -110,7 +110,7 @@ const Fact: NextPage<Props> = ({ fact }) => {
                         </div>
                         <div className='content-right'>
                             <div className="factImage">
-                                <Image src={logo} alt="" width={300} height={200} />
+                                <Image src={fact.bannerImg} alt="" width={300} height={200} />
                             </div>
                         </div>
                     </>

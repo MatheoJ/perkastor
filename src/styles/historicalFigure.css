@@ -22,7 +22,7 @@
     flex: 1;
     margin-bottom: 5px;
     border-bottom: 1px solid black;
-    color: #344453; 
+    color: #344453;
     font-weight: bold;
 }
 
@@ -125,4 +125,11 @@
 
 .historicalFigureBody li {
     list-style-type: disc;
+}
+
+.historicalFigureImage {
+    background-size: cover;
+    background-position: center;
+    background-color: #344453;
+    border-radius: 5px;
 }
