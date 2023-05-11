@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
+import { Button } from '@mui/material';
+
 function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setInsertMode }:
     { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({ item }: { item: String }) => void, insertMode: boolean, setInsertMode: ({ insertMode }: { insertMode: boolean }) => void }) {
     
@@ -38,18 +40,25 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                     <ul className='topIcons'>
                         <li>
                             <div className="icon">
-                                <button title={editMode ? 'Accéder à la mode Consultation' : 'Accéder à la mode Edition'} onClick={() => handleClick({ item: "edit" })} style={{cursor:"pointer"}}>
+                                <Button variant="text"
+                                    style={{ color: "#F1B706", cursor:"pointer"}}
+                                    title={editMode ? 'Accéder à la mode Consultation' : 'Accéder à la mode Edition'} 
+                                    onClick={() => handleClick({ item: "edit" })} 
+                                >
                                     {editMode ? < VisibilityIcon style={{ color: '#F1B706' }} /> :  <EditIcon style={{ color: '#F1B706' }}/>}
                                     <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>{editMode ? 'Accès mode Consultation' : 'Accès mode Edition'}</span>
-                                </button>
+                                </Button>
                             </div>
                         </li>
                         <li>
                             <div className="icon">
-                                <button title='Accéder au formulaire pour ajouter un évènement' onClick={() => handleClick({ item: "addEvent" })} style={{cursor:"pointer"}}>
+                                <Button variant="text"
+                                        style={{ color: "#F1B706", cursor:"pointer"}}
+                                        title='Accéder au formulaire pour ajouter un évènement' 
+                                        onClick={() => handleClick({ item: "addEvent" })}>
                                     <AddCircleIcon style={{ color: '#F1B706' }} />
-                                    <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter un évènement</span>
-                                </button>
+                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter un évènement</span>
+                                </Button>
                             </div>
 
                         </li>
