@@ -273,7 +273,7 @@ const Event = () => {
 
         <h3>Lieu de l'évènement</h3>
         Choisissez un lieu existant avec la barre de recherche ou la carte.
-        Et clicker sur une localisation sans marqueur pour créer un nouveau lieu.
+        Et cliquer sur une localisation sans marqueur pour créer un nouveau lieu.
       
         <SearchBarLieux showChecklist={false} usedInForm={true} onResultClick={onResultClick}/>
                
