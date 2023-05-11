@@ -55,6 +55,8 @@ const Marker: NextPage<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
     if (!map) return;
 
     function onClick(lngLat: LngLat): void {
+      if (!coordinates.current) return;
+      
       coordinates.current.style.display = "block";
       coordinates.current.innerHTML = ` Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat}`;
 
