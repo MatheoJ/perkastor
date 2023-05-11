@@ -3,7 +3,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { CircularProgress, IconButton } from "@mui/material";
 import { SearchFilters, SearchResult } from 'types/types';
 import { bus } from "~/utils/bus";
-import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent} from '../../events/SelectSearchBarResultEvent';
+import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent, selectChainFromSearchBar } from '../../events/SelectSearchBarResultEvent';
 import {HistoricalPerson, FactPrisma} from "@prisma/client";
 
 import {FactProps} from 'types/types';
