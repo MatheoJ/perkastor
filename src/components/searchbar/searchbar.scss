@@ -138,3 +138,137 @@
 .searchBar__input::-ms-input-placeholder { /* Internet Explorer 10-11 */
   color: black;
 }
+
+
+.searchbarlieux {
+  position: relative;
+  width: 75%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px;
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+
+.searchBarlieux__form {
+  display: none;
+  width: 300px;
+}
+
+.searchBarlieux__input {
+  background-color: transparent;
+  border-radius: 15px;
+}
+
+.searchbarlieux.active .searchBarlieux__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 5px;
+  animation: fade-in 1s ease;
+}
+
+.searchbarlieux.active .searchResults{
+  position: relative;
+  width: 100%;
+  min-width: 300px;
+  margin-left: 40px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  animation: fade-in 1s ease;
+}
+
+.checklist-area {
+  display: none;
+}
+
+.searchbarlieux.active .checklist-area{
+  position: relative;
+  width: 100%;
+  min-width: 400px;
+  margin-left: 40px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  animation: fade-in 1s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.searchResultslieu {
+  display: flex;
+  position: relative; /* Add this line */
+}
+
+.loading{
+  margin-top: 2px;
+  margin-left: 5px;
+}
+
+.searchResultslieu-content {
+  width: 100%;
+  max-height: 130px;
+  background-color: transparent;
+  box-shadow: rgba(37, 0, 0, 0.35) 0px 5px 15px;
+  overflow: hidden;
+  overflow-y: auto;
+
+
+}
+
+.category {
+  margin-left: 10px;
+}
+
+
+.searchResultslieu .dataItem {
+  width: 100%;
+  margin-left: 5px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+
+  &:hover {
+    background-color: $primary-color;
+    color: white;
+  }
+}
+
+.dataItem__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.searchResultslieu-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.searchResultslieu-content::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+.searchResultslieu-content::-webkit-scrollbar-thumb:hover {
+  background-color: #aaa;
+}
+
+.searchBarlieux__input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: black;
+}
+
+.searchBarlieux__input::-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: black;
+}
