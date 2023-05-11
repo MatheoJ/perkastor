@@ -56,7 +56,7 @@ const Fact: NextPage<Props> = (props) => {
                 </div>
                 <div className='content-right'>
                     <div className="factImage">
-                        {<Image src={item.fact.bannerImg ? item.fact.bannerImg : "/images_default/perecastor.png"} alt="" width={300} height={200} />}
+                        {<Image src={item.fact.bannerImg ? item.fact.bannerImg : "/resources/404-error.png"} alt="" width={300} height={200} />}
                     </div>
                     <ul>
                         {item.fact.personsInvolved.map((person) => (

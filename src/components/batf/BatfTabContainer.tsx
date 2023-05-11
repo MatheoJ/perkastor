@@ -197,24 +197,24 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
         if (editMod) {
           if (itemSelected === null) {
             if(chains.length == 0){
-              return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdote historique créée"}/>;
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdotes historique créée"}/>;
             }
             return <ChainListContributions chains={chains} setItemSelected={setItemSelected} setChains={setChains} />;
           }
           if(itemSelected === null){
-            return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdote historique selectionnée"}/>;
+            return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdotes historique selectionnée"}/>;
           }
           return <FactChainContributions chain={itemSelected} setItemSelected={setItemSelected} setChangedChain={setChangedChain} />;
         }
         else {
           if (itemSelected === null) {
             if(chains.length == 0){
-              return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdote historique selectionnée"}/>;
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdotes historique selectionnée"}/>;
             }
             return <ChainList chains={chains} setItemSelected={setItemSelected} />;
           }
           if(itemSelected === null){
-            return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdote historique selectionnée"}/>;
+            return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdotes historique selectionnée"}/>;
           }
           return <Chain chain={itemSelected} setItemSelected={setItemSelected} />;
         }

@@ -7,6 +7,7 @@ import { ChainListProps } from '../../types/types';
 import { createDeflate } from 'zlib';
 import { NextPage } from 'next';
 import { Avatar } from '@mui/material';
+import ImageWithFallback from './ImageWithFallback';
 
 interface ChainListContributionsProps {
   chains: ChainListProps[];
@@ -32,13 +33,15 @@ const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains,
           onClick={() => setItemSelected(chain)}
         >
           <div className="chainTitle">
-            <img src={chain.image ? chain.image : "/images_default/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
+            <ImageWithFallback id='imageFactList' src={chain.image} alt="fact image" width={300} height={200} fallback='/resources/404-error.png' className='imageFactList' />
             <div className='chainTitleText'>
               <div className="left">
                 <div><p><span className='strong'>{chain.title}</span></p>
-                  <div className='author'>
-                    <Avatar alt={chain.author.name} src={chain.author.image} /><p>{chain.author.name}</p>
-                  </div>
+                  {chain.author ?
+                    <div className='author'>
+                      <Avatar alt={chain.author.name} src={chain.author.image} /><p>{chain.author.name}</p>
+                    </div> : null
+                  }
                 </div>
               </div>
               <div className='right'>
