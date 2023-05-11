@@ -5,27 +5,21 @@ type Props = {
   index: number;
   setSelectedTab: (index: number) => void;
   selectedTab: number;
-  className?: string;
 }
 
-export default class TabTitle extends React.Component<Props> {
-
-  constructor(props: Props){
-    super(props);
-
-  }
-
-  classAssigner(){
-    if (this.props.selectedTab == this.props.index){
+const TabTitle: React.FC<Props> = ({ title, index, setSelectedTab, selectedTab }) => {
+  const classAssigner = () => {
+    if (selectedTab === index){
       return 'batf-selectedtab';
     }
-
     return '';
   }
 
-  render() {
-    return (<li className={`batf-tab ${this.classAssigner()}`}>
-      <button onClick={()=>this.props.setSelectedTab(this.props.index)}>{this.props.title}</button>  
-    </li>)
-  }
+  return (
+    <li onClick={() => setSelectedTab(index)} className={`batf-tab ${classAssigner()}`}>
+      {title}
+    </li>
+  );
 }
+
+export default TabTitle;

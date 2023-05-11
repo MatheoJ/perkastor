@@ -7,22 +7,8 @@ import { getEarliestDate } from '~/lib/date-utils';
 
 
 const FactList: NextPage<FactListProps> = ({ facts }) => {
-  //const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
-  const [items, setItems] = useState(facts.slice(0, 10));
-
-  const fetchMoreData = () => {
-    setTimeout(() => {
-      setItems(items.concat(facts.slice(items.length, items.length + 10)));
-    }, 1500);
-  };
-  console.log(facts[0])
   const sortedFacts = facts.sort((a, b) => Date.parse(getEarliestDate(a.keyDates)) - Date.parse(getEarliestDate(b.keyDates)));
 
-  /*
-    useEffect(() => {
-      console.log('Visible facts:', visibleFacts);
-    }, [visibleFacts]);
-  */
   const settings = {
     dots: true,
     infinite: true,
@@ -40,15 +26,15 @@ const FactList: NextPage<FactListProps> = ({ facts }) => {
 
 
   return (
-    <div>
-      <Slider className='sliderFactList' {...settings} style={{ width: '300px' }}>
+    <>
+      <Slider className='sliderFactList' {...settings}>
         {sortedFacts.map((fact) => (
           <div className='sortedFact' key={fact.id} style={{ width: '100%' }}>
             <Fact fact={fact} />
           </div>
         ))}
       </Slider>
-    </div>
+    </>
   );
 };
 

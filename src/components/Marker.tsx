@@ -39,19 +39,12 @@ const Marker: NextPage<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=${detail}&polygon_geojson=1`
       );
 
-      console.log('https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=${zoom}&polygon_geojson=1');
-      
       if (response.data) {
-        console.log(response.data);
         const name = response.data.display_name ;
         const geojson = response.data.geojson;
-        console.log(name);
-        console.log(geojson);
-        
         return { name, geojson };
-      } else {
-        throw new Error('No response data');
       }
+      throw new Error('No response data');
     } catch (error) {
       console.error(error);
       return { name: 'Error fetching place info', geojson: null };
@@ -61,18 +54,12 @@ const Marker: NextPage<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
   useEffect(() => {
     if (!map) return;
 
-
     function onClick(lngLat: LngLat): void {
       coordinates.current.style.display = "block";
       coordinates.current.innerHTML = ` Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat}`;
 
       void getPlaceInfo(lngLat.lat, lngLat.lng, Math.round(map.getZoom())).then((placeInfo) => {
         coordinates.current.innerHTML = `Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat} <br /> ${placeInfo.name}`;
-        
-        console.log('placeName :');
-        console.log(placeInfo.name);
-        console.log('geojson :');
-        console.log(placeInfo.geojson);
         
         if (placeInfo.geojson) {
 

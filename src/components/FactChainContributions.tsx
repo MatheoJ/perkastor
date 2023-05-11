@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Fact from './Fact';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -7,41 +6,18 @@ import Add from '@material-ui/icons/Add';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Swal from 'sweetalert2';
 import { NextPage } from 'next';
+import { ChainListProps, FactProps } from 'types/types';
 
 interface FactChainContributionsProps {
-  facts: {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    title: string;
-    shortDesc?: string;
-    content: string;
-    keyDates: string[];
-    bannerImg?: string;
-    verified: boolean;
-    video: string[];
-    audio: string[];
-    author: {
-      id: string;
-      name: string;
-    };
-    tags: {
-      id: string;
-      name: string;
-    }[];
-    locations: {
-      id: string;
-      name: string;
-    }[];
-    personsInvolved: {
-      id: string;
-      name: string;
-    }[];
-  }[];
-  setFacts: React.Dispatch<React.SetStateAction<{}[]>>;
+  chain?: ChainListProps;
+  facts?: FactProps[];
+  setFacts?: React.Dispatch<React.SetStateAction<{}[]>>;
 }
 
-const FactChainContributions: NextPage<FactChainContributionsProps> = ({ facts, setFacts }) => {
+const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, facts, setFacts }) => {
+  if (chain) {
+    [facts, setFacts] = useState(chain[0].facts);
+  }
 
   const handleMoveFact = async (currentIndex: number, newIndex: number) => {
     await fetch(`api/chains&`)
