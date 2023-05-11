@@ -64,7 +64,7 @@ const MapCoordPicker: NextPage<MapCoordPickerProps> = ({ onMapClick, locSelected
     
   },[]);
 
-  return <div ref={mapContainer2} style={{ width: "40vw", height: "40vh" }} >
+  return <div className = "mapstyle" ref={mapContainer2} style={{ width: "800px", height: "500px" }} >
             {mapInstance2 && <DisplayLocation map={mapInstance2} locationSelected={locSelected} onLocationSelect={onLocationSelect} /> }
         </div>;
 };
