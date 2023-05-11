@@ -24,13 +24,14 @@ function getImageUrl(filename: string): string {
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
 
+    if (!historicalPerson) {
+        return null; 
+    }
+
     if(historicalPerson.image && historicalPerson.image.startsWith("https://commons.wikimedia.org/wiki/File:")) {
         historicalPerson.image=getImageUrl(historicalPerson.image)
     }
 
-    if (!historicalPerson) {
-        return null; 
-    }
     if(!((historicalPerson.birthDate) instanceof Date)){
         historicalPerson.birthDate = new Date(historicalPerson.birthDate)
     }
@@ -65,8 +66,9 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                                 historicalPerson.image
                             }
                             alt=""
-                            width={300}
+                            width={150}
                             height={200}
+                            layout="responsive"
                         />
                         </div>
                     )}
