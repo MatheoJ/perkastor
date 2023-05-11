@@ -96,7 +96,12 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
           if(!result.deathDate){
             result.deathDate = "aujourd'hui"
           }else{
-            var deathYear = result.deathDate.slice(0,4);
+            try{
+              var deathYear = result.deathDate.slice(0,4);
+            }
+            catch(e){
+              deathYear = "????"
+            }
           }
           resultTitle = `(${birthYear}-${deathYear}) - ${result.name}`
           break;
