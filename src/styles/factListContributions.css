@@ -6,20 +6,27 @@
     max-height: 100%;
 }
 
-.chainContributionsTitleText {
+.chainContributionsTitleText, .factChainContributionsTitleText {
     color: #344453;
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
 
-.chainContributionsTitleText .date-container {
+.chainContributionsTitleText {
+    margin-left: calc(10px + 1vw);
+}
+.chainContributionsTitleText .date-container, .factChainContributionsTitleText .date-container {
     justify-content: flex-start;
     height: auto;
     margin-bottom: 10px;
     margin-top: 10px;
     gap: 10px;
 }
-.chainContributionsTitleText .date-container li {
+.chainContributionsTitleText .date-container li, .factChainContributionsTitleText .date-container li {
     font-size: 0.7rem;
+}
+
+.returnBtn {
+    margin-right: 1em;
 }
