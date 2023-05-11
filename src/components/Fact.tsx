@@ -112,13 +112,14 @@ const Fact: NextPage<Props> = ({ fact }) => {
                                             {index > 0 ? (index === sortedDates.length - 1 ? ' et ' : ', ') : ''}
                                             {formattedDate !== 'N/A' ? formattedDate : ''}
                                         </span>
-                                        &nbsp;dans
-                                        <span key={fact.location.id} className={'mark'}>
-                                            {index === sortedDates.length - 1 ? ` ${getLocationText(fact.location.type, fact.location.name)}` : ''}
-                                        </span>
+
                                     </>
                                 );
                             })}
+                            &nbsp;dans&nbsp;
+                            <span key={fact.location.id} className={'mark'}>
+                                {getLocationText(fact.location.type, fact.location.name)}
+                            </span>
                         </h1>
                     </div>
                 }

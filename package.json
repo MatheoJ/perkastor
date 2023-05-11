@@ -47,6 +47,7 @@
     "react-hook-form": "^7.43.9",
     "react-multi-date-picker": "^4.0.0",
     "react-slick": "^0.29.0",
+    "react-spinners": "^0.13.8",
     "sass": "^1.62.1",
     "slick-carousel": "^1.8.1",
     "superjson": "1.12.2",

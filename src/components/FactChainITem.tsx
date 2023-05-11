@@ -14,6 +14,9 @@ const Fact: NextPage<Props> = (props) => {
     return (
         <div className="fact">
             <div className="factHead">
+                <div className="factItemImage">
+                    {<Image src={item.fact.bannerImg ? item.fact.bannerImg : "/images_default/perecastor.png"} alt="" width={300} height={200} />}
+                </div>
                 <div className="factHeadTop">
                     <h1>{item.title}</h1>
                 </div>
@@ -35,9 +38,6 @@ const Fact: NextPage<Props> = (props) => {
                     <p>{item.fact.content}</p>
                 </div>
                 <div className='content-right'>
-                    <div className="factImage">
-                        {<Image src={item.fact.bannerImg ? item.fact.bannerImg : "/images_default/perecastor.png"} alt="" width={300} height={200} />}
-                    </div>
                     <ul>
                         {item.fact.personsInvolved.map((person) => (
                             <li key={person.id}>{person.name}</li>
