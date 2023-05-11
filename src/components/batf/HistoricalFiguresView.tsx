@@ -75,7 +75,7 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                     </div>
                     <div className="factHeadBottomRight">
                     <div className="factImage">
-                            <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                            {/* <Image src={fact.bannerImg} alt="" width={300} height={200} /> */}
                         </div>
                     </div>
                 </div>
