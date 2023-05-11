@@ -25,9 +25,10 @@ const Fact: NextPage<Props> = ({ fact }) => {
         <div className="fact">
             <div className="factHead">
                 {fact.title ?
-                    <><div className="factHeadTop">
-                        <h1>{fact.title}</h1>
-                    </div>
+                    <>
+                        <div className="factHeadTop">
+                            <h1>{fact.title}</h1>
+                        </div>
                         <div className="factHeadBottom">
                             <div className="factHeadBottomLeft">
                                 <ul>
@@ -86,6 +87,7 @@ const Fact: NextPage<Props> = ({ fact }) => {
 
 
             </div>
+            <div className="divider-line" />
             <div className="factBody">
                 {fact.bannerImg && fact.personsInvolved && fact.personsInvolved.length ? ( //test : there are both images and personsInvolved
                     <>
@@ -142,60 +144,65 @@ const Fact: NextPage<Props> = ({ fact }) => {
                 )}
             </div>
             {(fact.video.length || fact.audio.length) ? (
-                <div className="factMedia">
-                    {fact.video.length ? (
-                        <div className="factVideo">
-                            <strong>Vidéo</strong>
-                            <ul>
-                                {fact.video.map((video) => (
-                                    <li key={video}></li>
-                                ))}
-                            </ul>
-                        </div>
-                    ) : null}
-                    {fact.audio.length ? (
-                        <div className="factAudio">
-                            <strong>Audio</strong>
-                            <ul>
-                                {fact.audio.map((audio) => (
-                                    <li key={audio}></li>
-                                ))}
-                            </ul>
-                        </div>
-                    ) : null}
-                </div>
+                <>
+                    <div className="divider-line" />
+                    <div className="factMedia">
+                        {fact.video.length ? (
+                            <div className="factVideo">
+                                <strong>Vidéo</strong>
+                                <ul>
+                                    {fact.video.map((video) => (
+                                        <li key={video}></li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ) : null}
+                        {fact.audio.length ? (
+                            <div className="factAudio">
+                                <strong>Audio</strong>
+                                <ul>
+                                    {fact.audio.map((audio) => (
+                                        <li key={audio}></li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ) : null}
+                    </div>
+                </>
             ) : null}
             {(fact.sources.length || fact.author) ? (
-                <div className="factSource">
-                    {fact.sources.length ? (
-                        <div className="factSources">
-                            <strong>Sources</strong>
-                            <ul>
-                                {fact.sources.map((source) => (
-                                    <li key={source}></li>
-                                ))}
-                            </ul>
-                        </div>
-                    ) : null}
-                    {fact.author ? (
-                        <div className="factAuthor">
-                            <strong>Auteur</strong>
-                            <ul>
-                                <li key={fact.author.id}>{fact.author.name}</li>
-                            </ul>
-                        </div>
-                    ) : null}
-                </div>
+                <>
+                    <div className="divider-line" />
+                    <div className="factSource">
+                        {fact.sources.length ? (
+                            <div className="factSources">
+                                <strong>Sources</strong>
+                                <ul>
+                                    {fact.sources.map((source) => (
+                                        <li key={source}></li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ) : null}
+                        {fact.author ? (
+                            <div className="factAuthor">
+                                <strong>Auteur</strong>
+                                <ul>
+                                    <li key={fact.author.id}>{fact.author.name}</li>
+                                </ul>
+                            </div>
+                        ) : null}
+                    </div>
+                </>
             ) : null}
             {fact.verified ? (
-                <div className="factVerified">
-                    <div className="verifiedIcon">
-                        <VerifiedIcon style={{ color: 'green' }} />
-                    </div>
-                    <div className="verifiedText">
-                        <p>Source vérifiée</p>
-                    </div>
-                </div>
+                <>
+                    <div className="divider-line" />
+                    <p className="factVerified">
+                        <span className="verifiedIcon"><VerifiedIcon style={{ color: 'green' }} /></span>
+                        <span className="verifiedText">Source vérifiée</span>
+                    </p>
+                </>
             ) : (
                 <div className="factVerified">
                     <div className="uncheckedIcon">

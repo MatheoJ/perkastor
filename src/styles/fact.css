@@ -1,16 +1,17 @@
 .fact {
     height: 90%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 15px 15px 7px 15px;
+    max-height: 350px;
+    color: black;
     border-radius: 5px;
     padding: 10px;
-    overflow-y: scroll;
     overflow-x: hidden;
     background-color: #ccc;
-    color: black;
     box-shadow: 5px 5px 5px 1px rgba(0, 0, 0, 0.66);
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: calc(0.5em + 1vh);
+    margin-bottom: calc(0.5em + 1vh);
 }
 
 .factHead {
@@ -58,16 +59,13 @@
     margin: 0px 5px 0px 5px;
 }
 
-
 .factBody {
-    border-top: 1px solid black;
     position: relative;
     text-align: justify;
     width: 100%;
     height: max-content;
     display: flex;
     gap: 20px;
-    margin-top: 20px;
 }
 
 .factMedia {
@@ -76,18 +74,17 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
-    border-top: 1px solid black;
 }
 
 .factVerified{
     position: relative;
     width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: row;
-    margin-top: 20px;
-    border-top: 1px solid black;
+}
+.verifiedText {
+    margin: 0;
+    padding: 0;
 }
 
 .content-left {

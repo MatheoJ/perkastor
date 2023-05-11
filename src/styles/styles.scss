@@ -79,3 +79,11 @@ p {
   // font size relative to view width
   font-size: calc(0.8rem + 0.5vw);
 }
+
+.divider-line {
+  width: 100%;
+  height: 1px;
+  background-color: #344453;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
