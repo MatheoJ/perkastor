@@ -126,7 +126,7 @@ const Fact: NextPage<Props> = ({ fact }) => {
                             <strong>Personnages historiques</strong>
                             <ul>
                                 {fact.personsInvolved.map((person) => (
-                                    <li onClick={() => { bus.publish(selectHistoricalFigureFromSearchBar(person.historicalPerson as HistoricalPerson)) }} style={{ cursor: "pointer", textDecoration: "underline" }} key={person.historicalPerson.id}>
+                                    <li onClick={() => { bus.publish(selectHistoricalFigureFromSearchBar(person.historicalPerson.id)) }} style={{ cursor: "pointer", textDecoration: "underline" }} key={person.historicalPerson.id}>
                                         {person.historicalPerson.name}
                                     </li>
                                 ))}

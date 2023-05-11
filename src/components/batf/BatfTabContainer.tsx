@@ -57,12 +57,14 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
     const unsubHistFigure = bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
         //const payload = await Promise.resolve(event.payload);
         setHistoricalFigure(null);
-        setHistoricalFigure(event.payload);
-    });
+        //setHistoricalFigure(event.payload);
+        setHistoricalFigureId(event.payload);
+
+      });
 
     const unsubEventFrom = bus.subscribe(selectEventFromSearchBar, event => {
         //const payload = await Promise.resolve(event.payload);
-        if(batfState == "minimized"){
+        if(batfState === "minimized"){
           setBatfState("normal");
         }
         setSelectedTab(0);
@@ -88,6 +90,13 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       }
     }
     setSelectedTab(0)
+  }
+  async function fetchHistoricalFigure() {
+    if (historicalFigureId != null) {
+      let response = await fetch(`/api/historical-figures?id=${historicalFigureId}`);
+      response = await response.json();
+      setHistoricalFigure(response[0]);
+    }
   }
 
   async function fetchUserFacts() {
@@ -132,14 +141,9 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
   }, [editMod]);
 
   useEffect(() => {
-    async function fetchData() {
-      if (historicalFigureId != null) {
-        let response = await fetch(`/api/historical-figures?id=${historicalFigureId}`);
-        response = await response.json();
-        setHistoricalFigure(response[0]);
-      }
-    }
-    fetchData();
+    console.log("oui");
+    fetchHistoricalFigure();
+    console.log("non")
   }, [historicalFigureId]);
 
   useEffect(() => {

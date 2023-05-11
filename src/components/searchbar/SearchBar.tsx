@@ -117,7 +117,7 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
         bus.publish(selectEventFromSearchBar(results[i] as Fact));
       break;
       case 'historicalPersons':
-        bus.publish(selectHistoricalFigureFromSearchBar(results[i] as HistoricalPerson));
+        bus.publish(selectHistoricalFigureFromSearchBar(results[i].id));
         break;
       case 'locations':
         bus.publish(selectLocationFromSearchBar(results[i] as Geometry));

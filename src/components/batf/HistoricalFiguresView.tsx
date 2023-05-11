@@ -23,7 +23,7 @@ function getImageUrl(filename: string): string {
 
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
-    console.log(historicalPerson);
+    console.log("hist", historicalPerson);
     if (!historicalPerson) {
         return null;
     }

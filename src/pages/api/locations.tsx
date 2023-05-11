@@ -33,7 +33,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const maxLatitude = parseFloat(Array.isArray(req.query.maxLatitude) ? req.query.maxLatitude[0] : req.query.maxLatitude) * scale;
   const minLongitude = parseFloat(Array.isArray(req.query.minLongitude) ? req.query.minLongitude[0] : req.query.minLongitude) / scale;
   const maxLongitude = parseFloat(Array.isArray(req.query.maxLongitude) ? req.query.maxLongitude[0] : req.query.maxLongitude) * scale;
-
+  console.log(req.query.hasFact)
 
 
   try {
@@ -56,6 +56,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           {
             type: typeOfLocation,
           },
+          {
+            hasFact : req.query.hasFact ? (req.query.hasFact as string === "true") : undefined
+          }
         ],
       },
     });
