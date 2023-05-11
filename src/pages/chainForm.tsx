@@ -109,9 +109,9 @@ const ChainForm = () => {
 
         <h3>Contenu de la chaîne</h3>
 
-        <p>Ajout d'événements déjà existants</p>
+        <p>Ajout d'anecdotes historiques déjà existantes</p>
         <SearchBar showChecklist={false} usedInForm={true}></SearchBar>
-        <h4>Ordonnancement des événements</h4>
+        <h4>Ordonnancement des anecdotes historiques</h4>
         <FactChainEdition facts={tempFacts} setTmpFacts={setTmpFacts}></FactChainEdition>
 
         <button type="submit">Envoyer 🚀</button>

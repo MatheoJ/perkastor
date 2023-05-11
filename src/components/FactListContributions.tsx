@@ -43,7 +43,7 @@ const FactChain: NextPage<FactChainProps> = ({ facts, setFacts }) => {
 
   const handleDeleteFact = (factIndex: number) => {
     Swal.fire({
-      title: 'Êtes-vous sûr de vouloir supprimer cet évènement ?',
+      title: 'Êtes-vous sûr de vouloir supprimer cette anecdote historique ?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Supprimer',
@@ -56,13 +56,13 @@ const FactChain: NextPage<FactChainProps> = ({ facts, setFacts }) => {
         });
 
         if (res.status >= 300) {
-          Swal.fire('Erreur', 'Une erreur est survenue lors de la suppression de l\'évènement', 'error');
+          Swal.fire('Erreur', 'Une erreur est survenue lors de la suppression de l\'anecdote historique', 'error');
           return;
         }
         const newFactList = [...facts];
         newFactList.splice(factIndex, 1);
         setFacts(newFactList);
-        Swal.fire('Évènement supprimé', '', 'success');
+        Swal.fire('Anecdote historique supprimée', '', 'success');
       }
     });
   };

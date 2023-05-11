@@ -54,10 +54,10 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                             <div className="icon">
                                 <Button variant="text"
                                         style={{ color: "#F1B706", cursor:"pointer"}}
-                                        title='Accéder au formulaire pour ajouter un évènement' 
+                                        title='Accéder au formulaire pour ajouter une anecdote historique' 
                                         onClick={() => handleClick({ item: "addEvent" })}>
                                     <AddCircleIcon style={{ color: '#F1B706' }} />
-                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter un évènement</span>
+                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter une anecdote historique</span>
                                 </Button>
                             </div>
 

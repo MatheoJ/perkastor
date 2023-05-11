@@ -173,7 +173,7 @@ const Event = () => {
       }else{
         console.log("Pas d'image");
         MySwal.fire({
-          title: "Evènement ajouté avec succès",
+          title: "Anecdote historique ajoutée avec succès",
           icon: "success",
           showCancelButton: false,
           confirmButtonText: "Ok",
@@ -183,7 +183,7 @@ const Event = () => {
       }
     }else{
       MySwal.fire({
-        title: "Erreur lors de l'ajout de l'évènement",
+        title: "Erreur lors de l'ajout de l'anecdote historique",
         icon: "error",
         showCancelButton: false,
         confirmButtonText: "Ok",
@@ -243,9 +243,9 @@ const Event = () => {
   return (
     <div className='body-event'>
     <div className="container">
-      <h1>Ajout d'un évènement</h1>
+      <h1>Ajout d'une anecdote historique</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="name">Nom de l'évènement*</label>
+        <label htmlFor="name">Nom de l'anecdote historique*</label>
         <input
           type="text"
           id="name"
@@ -253,7 +253,7 @@ const Event = () => {
         />
         {errors.name && <p className="error-message">Le nom est requis.</p>}
 
-        <label htmlFor="description">Description de l'évènement*</label>
+        <label htmlFor="description">Description de l'anecdote historique*</label>
         <textarea
           name="desc"
           cols={40}
@@ -268,10 +268,10 @@ const Event = () => {
           <p className="error-message">La description est requise.</p>
         )}
 
-        <h3>Image de l'évènement</h3>
+        <h3>Image de l'anecdote historique</h3>
         <CropperView toUpdate='fact' width={150} height={150} defaultFilename='fact.png' defaultFileType='png' alt={'Fait historique'} cropShape='rect' variant='square' uploadOnSubmit={false} ref={ref} imageSrc={imageSrc} setImageSrc={setImageSrc} />
 
-        <h3>Lieu de l'évènement</h3>
+        <h3>Lieu de l'anecdote historique</h3>
         Choisissez un lieu existant avec la barre de recherche ou la carte.
         Et cliquer sur une localisation sans marqueur pour créer un nouveau lieu.
       
@@ -331,7 +331,7 @@ const Event = () => {
           <p className="error-message">La latitude est requise.</p>
         )}
 
-        <h3>Dates de l'évènement</h3>
+        <h3>Dates de l'anecdote historique</h3>
         <Controller
           name="listOfDates"
           control={control}
