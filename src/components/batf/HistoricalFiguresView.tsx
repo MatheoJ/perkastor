@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { HistoricalPerson, Fact } from '@prisma/client';
 import { NextPage } from 'next';
 import crypto from 'crypto';
+import FactList from '../FactList';
 
 
 interface HistoricalFigureProps extends HistoricalPerson {
@@ -23,7 +24,6 @@ function getImageUrl(filename: string): string {
 
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
-    console.log(historicalPerson);
     if (!historicalPerson) {
         return null;
     }
@@ -36,16 +36,20 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
         historicalPerson.birthDate = new Date(historicalPerson.birthDate)
     }
     if (!((historicalPerson.deathDate) instanceof Date)) {
+        if(historicalPerson.deathDate == "1970-01-01T00:00:00.000+00:00"){
+            historicalPerson.deathDate = null;
+        }
         historicalPerson.deathDate = new Date(historicalPerson.deathDate)
     }
 
     return (
-        <div className="historicalFigure">
-            <div className="historicalFigureHead">
-                <div className="historicalFigureHeadTop">
-                    <h1>{historicalPerson.name}</h1>
+        <div className="fact">
+            <div className="factHead">
+                <div className="factHeadTop">
+                    <h1 className='mark'>{historicalPerson.name}</h1>
                 </div>
-                <div className="historicalFigureHeadBottom">
+                <div className="factHeadBottom">
+                    <div className="factHeadBottomLeft">
                     {
                         !isNaN(historicalPerson.birthDate.getTime()) &&
                         <h4>
@@ -68,6 +72,13 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                             })}
                         </h4>
                     }
+                    </div>
+                    
+                    {/*<div className="factHeadBottomRight">
+                    <div className="factImage">
+                            <Image src={historicalPerson.image} alt="" width={300} height={200} />
+                        </div>
+                </div>*/}
                 </div>
             </div>
             <div className="historicalFigureBody">
@@ -109,13 +120,13 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
     );
 };
 
-/*
-<ul>
-                                {historicalPerson.facts.map(elem => {
-                                    return (<li key={elem.id}>
-                                        {elem.shortDesc}
-                                    </li>)
-                                })}
-                            </ul>
-                            */
+    /*
+    <ul>
+    {historicalPerson.facts.map(elem => {
+        return (<li key={elem.id}>
+            {elem.shortDesc}
+        </li>)
+    })}
+    </ul>
+    */
 export default HistoricalFigureView;

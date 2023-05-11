@@ -35,7 +35,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const maxLongitude = parseFloat(Array.isArray(req.query.maxLongitude) ? req.query.maxLongitude[0] : req.query.maxLongitude) * scale;
 
 
-
   try {
     let prismaResult;
     prismaResult = await prisma.location.findMany({
@@ -56,6 +55,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           {
             type: typeOfLocation,
           },
+          {
+            hasFact : req.query.filter ? req.query.filter === "hasFact" ? true : req.query.filter === "noFact" ? false : undefined : undefined
+          }
         ],
       },
     });

@@ -75,7 +75,8 @@ h4 {
   margin-bottom: 20px;
 }
 
-p, li {
+p,
+li {
   // font size relative to view width
   font-size: 0.9rem;
   line-height: 1.6;
@@ -102,7 +103,7 @@ p, li {
   background-repeat: repeat;
   background-image: none;
   background-size: auto;
-  background-image: linear-gradient(120deg,rgba(0,153,255,0.4) 0,rgba(0,153,255,0.4) 100%);
+  background-image: linear-gradient(120deg, rgba(0, 153, 255, 0.4) 0, rgba(0, 153, 255, 0.4) 100%);
   background-repeat: no-repeat;
   background-size: 100% .3em;
   background-position: 0 90%;
@@ -115,16 +116,40 @@ p, li {
   // removes the left margin from ul elements
   margin: 0;
   padding: 0;
+
   li {
     list-style-type: none;
   }
 }
 
 .fact a {
-  color: rgba(0,153,255,1);
+  color: rgba(0, 153, 255, 1);
   text-decoration: none;
+}
+
+.date-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+
+  li {
+    background-color: hsl(209deg 10.48% 59.54%);
+    border-radius: 5px;
+    padding: 5px;
+    white-space: nowrap;
+  }
 }
 
 .text-bold {
   font-weight: 700;
+}
+
+.verifiedIcon,
+.uncheckedIcon {
+  margin-right: 1em;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #F1B706 !important;
 }

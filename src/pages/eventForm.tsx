@@ -14,6 +14,11 @@ import { Button } from '@mui/material';
 import { SearchFilters } from 'types/types';
 import  SearchBarLieux  from '~/components/searchbar/SearchBarLieux';
 
+<style jsx>{`
+  .button_submit {
+    cursor: pointer;
+  }
+`}</style>
 interface EventData {
   name: string;
   typeLieux: string;
@@ -66,7 +71,7 @@ const Event = () => {
   const onSubmit = async (data: EventData) => {
 
     var selectedFigureId : string[]= selectedFigures.map(elem => elem.id);
-
+    console.log(data);
 
 
 
@@ -81,7 +86,7 @@ const Event = () => {
     };
 
     dataEvent = {
-      title: data.name,
+      title: data.name, 
       shortDesc: "",
       content: data.description,
       location: location,
@@ -104,7 +109,6 @@ const Event = () => {
       const responseData = await response.json();
       // change image related to the fact whose id is responseData.id
         if (imageSrc) {
-
           console.log("Image insérée");
           const image = await ref.current?.triggerUpload(responseData.data.id);
 
@@ -177,6 +181,13 @@ const Event = () => {
           router.push("/mapWrapper");
         })
       }
+    }else{
+      MySwal.fire({
+        title: "Erreur lors de l'ajout de l'évènement",
+        icon: "error",
+        showCancelButton: false,
+        confirmButtonText: "Ok",
+      })
     }
   };
 
@@ -202,7 +213,6 @@ const Event = () => {
   async function handleSearch(e) {
     var filter : SearchFilters = {
       event: false,
-      anecdote: false,
       chain: false,
       historicalFigure: true,
       location: false,
@@ -244,11 +254,16 @@ const Event = () => {
         {errors.name && <p className="error-message">Le nom est requis.</p>}
 
         <label htmlFor="description">Description de l'évènement*</label>
-        <input
-          type="text"
+        <textarea
+          name="desc"
+          cols={40}
+          rows={5}
           id="description"
           {...register("description", { required: true })}
-        />
+          required
+        ></textarea>
+
+
         {errors.description && (
           <p className="error-message">La description est requise.</p>
         )}

@@ -75,6 +75,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                         fact: {
                                             include: {
                                                 location: true,
+                                                personsInvolved : {
+                                                    include: {
+                                                        historicalPerson: true
+                                                    }
+                                                }
                                             }
                                         }
                                     }

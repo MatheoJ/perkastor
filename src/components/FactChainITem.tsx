@@ -11,22 +11,42 @@ interface Props {
 
 const Fact: NextPage<Props> = (props) => {
     const { item } = props;
+
+    const formatDate = (dateStr: string): string => {
+        const date = new Date(dateStr);
+        if (date.getFullYear() === 1 || date.getFullYear() === 4) {
+            return 'N/A'
+        }
+        console.log(date.toDateString().split(' ')[1])
+        if(date.toDateString().split(' ')[1] === 'Jan' && date.toDateString().split(' ')[2] === '01' && date.getFullYear() === 1970) {
+            return 'N/A'
+        }
+        if(date.toDateString().split(' ')[1] === 'Jan' && date.toDateString().split(' ')[2] === '01') {
+            return date.getFullYear().toString();
+        }
+        return date.toLocaleDateString('fr-FR', {
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric',
+        });
+    }
+
     return (
         <div className="fact">
             <div className="factHead">
                 <div className="factHeadTop">
-                    <h1>{item.title}</h1>
+                    <h1 className="mark">{item.title}</h1>
                 </div>
                 <div className="factHeadBottom">
                     <div className="factHeadBottomLeft">
-                        <li key={item.fact.location.id}>{item.fact.location.name}</li>
+                        <li key={item.fact.location.id}><span className='text-bold'>{item.fact.location.name}</span></li>
                     </div>
                     <div className="factHeadBottomRight">
-                        <h2>
+                        <div className="date-container">
                             {item.fact.keyDates.map((keyDate) => (
-                                <li >{keyDate.toString().split("T")[0]}</li>
+                                <li >{formatDate(keyDate)}</li>
                             ))}
-                        </h2>
+                        </div>
                     </div>
                 </div>
             </div>

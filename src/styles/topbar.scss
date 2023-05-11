@@ -62,6 +62,9 @@
   font-size: 20px;
   color: rgb(252, 118, 118);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .topbar .connected {

@@ -53,7 +53,7 @@ const ChainList: NextPage<ChainListProps> = ({ chain, setItemSelected }) => {
         <i className="fa fa-arrow-left" aria-hidden="true"></i>
       </div>
       
-      <Slider className='sliderFactList' {...settings} style={{width: '300px'}}>
+      <Slider className='sliderFactList' {...settings}>
         {chain.items.map((item) => (
           <div className='sortedFact' key={item.id} style={{width: '100%'}}>
             <FactChainItem item={item} />

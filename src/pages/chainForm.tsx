@@ -2,44 +2,101 @@
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import MapCoordPicker from '~/components/MapCoordPicker';
-
+import SearchBar from '~/components/searchbar/SearchBar';
+import FactChainEdition from '~/components/FactChainEdition';
+import { selectFact } from '../events/ChainFormModalEvents';
+import { bus } from '../utils/bus';
+import { useState, useEffect } from 'react';
+import { FactProps } from 'types/types';
+import { useSession } from 'next-auth/react';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 interface ChainDto {
-  name: string;
-  coordinatesLat: number;
-  coordinatesLong: number;
+  title: string;
   description: string;
-  dateStart: Date;
-  dateEnd: Date;
-  access: boolean;
-  tags: string[];
-  historicalFigures: string[];
-  facts: string[];
-  contributions: string[];
-  searchEvent: string;
+  authorId: string;
+  factItems: {
+    title: string;
+    comment: string;
+    factId: string;
+  }[];
 }
 
 const ChainForm = () => {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<ChainDto>();
-
+  const [tempFacts, setTmpFacts] = useState([]);
   const router = useRouter();
+  const MySwal = withReactContent(Swal)
+  // need to be authorized to access this page
+  const { data: session, status, update } = useSession({
+    required: true
+  })
 
   const onSubmit = (data: ChainDto) => {
+    event.preventDefault()
     console.log(data);
-    router.push('/mapWrapper');
+
+    const chain = {
+      title: data.title,
+      description: data.description,
+      authorId: session.user.id,
+      factItems: tempFacts.map(fact => {
+        return {
+          title: "",
+          comment: "",
+          factId: fact.id
+        }
+      })
+    };
+
+    fetch('/api/chains', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(chain)
+    }).then(async (response) => {
+      if (response.status < 300) {
+        await Swal.fire({
+          title: 'Chaîne créée !',
+          icon: 'success',
+          confirmButtonText: 'Ok',
+        });
+        router.push('/mapWrapper');
+      } else {
+        await Swal.fire({
+          title: 'Erreur lors de la création de la chaîne',
+          icon: 'error',
+          confirmButtonText: 'Ok',
+        });
+      }
+    });
   };
+
+  useEffect(() => {
+    const unsub = bus.subscribe(selectFact, event => {
+      console.log("chain handle");
+      console.log(event);
+      const fact = event.payload;
+      setTmpFacts(previous => [...previous, fact]);
+    });
+    return () => {
+      unsub();
+    };
+  }, []);
 
   return (
     <div className="container" >
-      <h1>Constitution d&apo;sune chaîne</h1>
+      <h1>Constitution d'une chaîne</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="name">Nom de la chaîne</label>
         <input
           type="text"
           id="name"
           placeholder="La Révolution Française"
-          {...register('name', { required: true })}
+          {...register('title', { required: true })}
         />
-        {errors.name && <p className="error-message">Le nom est requis.</p>}
+        {errors.title && <p className="error-message">Le nom est requis.</p>}
 
         <label htmlFor="description">Description de la chaîne</label>
         <input
@@ -49,31 +106,18 @@ const ChainForm = () => {
           {...register('description', { required: true })}
         />
         {errors.description && <p className="error-message" >La description est requise.</p>}
-        
-        <label htmlFor="access">Visibilité publique</label>
-        <input
-          type="checkbox"
-          id="access"
-          value="Accès publique"
-          {...register('access')}
-        />
 
         <h3>Contenu de la chaîne</h3>
 
-        <p>Ajout d&apos;événements déjà existants</p>
-
-        <input
-          type="text"
-          id="search-event"
-          placeholder="Prise de la Bastille"
-          {...register('searchEvent', { required: false })}
-        />
-        {/*<FactList filter="search-event"></FactList>*/}
+        <p>Ajout d'événements déjà existants</p>
+        <SearchBar showChecklist={false} usedInForm={true}></SearchBar>
+        <h4>Ordonnancement des événements</h4>
+        <FactChainEdition facts={tempFacts} setTmpFacts={setTmpFacts}></FactChainEdition>
 
         <button type="submit">Envoyer 🚀</button>
-      </form>s
+      </form>
     </div>
   );
-};
+}
 
 export default ChainForm;
