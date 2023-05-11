@@ -180,12 +180,12 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       case 0:
         if (editMod) {
           if(facts.length == 0){
-            return <BatfNoMarkerSelected name={"Aucun événement crée"}/>;
+            return <BatfNoMarkerSelected name={"Aucune anecdote historique créée"}/>;
           }
           return <FactListContributions facts={facts} setFacts={setFacts}  />;
         }
         if(facts.length == 0){
-          return <BatfNoMarkerSelected  name={"Aucun événement selectionné"}/>;
+          return <BatfNoMarkerSelected  name={"Aucune anecdote historique selectionnée"}/>;
         }
         return <FactList facts={facts} lastSlide={lastSlide} setLastSlide={setLastSlide} />;
       case 1:
@@ -197,24 +197,24 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
         if (editMod) {
           if (itemSelected === null) {
             if(chains.length == 0){
-              return <BatfNoMarkerSelected name={"Aucune chaîne d'événement créée"}/>;
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdote historique créée"}/>;
             }
             return <ChainListContributions chains={chains} setItemSelected={setItemSelected} setChains={setChains} />;
           }
           if(itemSelected === null){
-            return <BatfNoMarkerSelected name={"Aucune chaîne d'événement selectionnée"}/>;
+            return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdote historique selectionnée"}/>;
           }
           return <FactChainContributions chain={itemSelected} setItemSelected={setItemSelected} setChangedChain={setChangedChain} />;
         }
         else {
           if (itemSelected === null) {
             if(chains.length == 0){
-              return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement selectionnée"}/>;
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdote historique selectionnée"}/>;
             }
             return <ChainList chains={chains} setItemSelected={setItemSelected} />;
           }
           if(itemSelected === null){
-            return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement selectionnée"}/>;
+            return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdote historique selectionnée"}/>;
           }
           return <Chain chain={itemSelected} setItemSelected={setItemSelected} />;
         }
@@ -235,7 +235,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       <div className="tabs-container">
         {editMod ? <h2 style={{ textAlign: "center" }}>Edition</h2> : <h2>Consultation</h2>}
         <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} isLoading={isLoading} setIsLoading={setIsLoading} key={editMod ? 'edit' : 'view'}>
-          <Tab className={"tab-content"} title="Événements">
+          <Tab className={"tab-content"} title="Anecdote historique">
             {selectedTab === 0 && selectedComponent()}
           </Tab>
           <Tab className={"tab-content"} title="Personnages Historiques">
