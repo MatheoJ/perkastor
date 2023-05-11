@@ -114,7 +114,6 @@ const Marker: NextPage<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
           display: "block",
         }}
       >
-        Déplacer le marqueur pour obtenir les coordonnées
       </pre>
     </div>
   );
