@@ -102,12 +102,13 @@
     flex-direction: column;
 
     h2 {
+        text-transform: uppercase;
         margin: 0;
         background-color: hsla(208, 20%, 18%, 0.8);
         padding: 0;
         text-align: center;
         width: 100%;
-        font-size: calc(1.5em + 0.5vw);
+        font-size: calc(0.8em + 0.5vw);
         line-height: 40px;
     }
 }

@@ -179,10 +179,10 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
   return (
     <>
       <div className={`batf-toolbar`}>
-        <Avatar sx={{ width: 24, height: 24, color: '#F1B706', backgroundColor: '#fff' }} onClick={onFullScreenClick}>
+        <Avatar sx={{ width: 24, height: 24, color: '#344453', backgroundColor: '#F1B706' }} onClick={onFullScreenClick}>
           <Fullscreen />
         </Avatar>
-        <Avatar sx={{ width: 24, height: 24, color: '#F1B706', backgroundColor: '#fff' }} onClick={onMinimizeClick}>
+        <Avatar sx={{ width: 24, height: 24, color: '#344453', backgroundColor: '#F1B706' }} onClick={onMinimizeClick}>
           <Remove />
         </Avatar>
       </div>
