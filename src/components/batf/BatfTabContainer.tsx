@@ -57,14 +57,12 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
     const unsubHistFigure = bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
         //const payload = await Promise.resolve(event.payload);
         setHistoricalFigure(null);
-        //setHistoricalFigure(event.payload);
-        setHistoricalFigureId(event.payload);
-
-      });
+        setHistoricalFigure(event.payload);
+    });
 
     const unsubEventFrom = bus.subscribe(selectEventFromSearchBar, event => {
         //const payload = await Promise.resolve(event.payload);
-        if(batfState === "minimized"){
+        if(batfState == "minimized"){
           setBatfState("normal");
         }
         setSelectedTab(0);
@@ -88,15 +86,12 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
         responseJson.data ? setFacts(responseJson.data) : setFacts([]);
         response2Json.data ? setChains(response2Json.data) : setChains([]);
       }
+      else {
+        setFacts([]);
+        setChains([]);
+      }
     }
     setSelectedTab(0)
-  }
-  async function fetchHistoricalFigure() {
-    if (historicalFigureId != null) {
-      let response = await fetch(`/api/historical-figures?id=${historicalFigureId}`);
-      response = await response.json();
-      setHistoricalFigure(response[0]);
-    }
   }
 
   async function fetchUserFacts() {
@@ -141,9 +136,14 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
   }, [editMod]);
 
   useEffect(() => {
-    console.log("oui");
-    fetchHistoricalFigure();
-    console.log("non")
+    async function fetchData() {
+      if (historicalFigureId != null) {
+        let response = await fetch(`/api/historical-figures?id=${historicalFigureId}`);
+        response = await response.json();
+        setHistoricalFigure(response[0]);
+      }
+    }
+    fetchData();
   }, [historicalFigureId]);
 
   useEffect(() => {
@@ -183,10 +183,10 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
   return (
     <>
       <div className={`batf-toolbar`}>
-        <Avatar sx={{ width: 24, height: 24, color: '#344453', backgroundColor: '#F1B706' }} onClick={onFullScreenClick}>
+        <Avatar sx={{ width: 24, height: 24, color: '#F1B706', backgroundColor: '#fff' }} onClick={onFullScreenClick}>
           <Fullscreen />
         </Avatar>
-        <Avatar sx={{ width: 24, height: 24, color: '#344453', backgroundColor: '#F1B706' }} onClick={onMinimizeClick}>
+        <Avatar sx={{ width: 24, height: 24, color: '#F1B706', backgroundColor: '#fff' }} onClick={onMinimizeClick}>
           <Remove />
         </Avatar>
       </div>
