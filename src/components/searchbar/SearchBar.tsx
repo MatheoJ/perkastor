@@ -144,15 +144,16 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
       case 'chains':
         bus.publish(selectChainFromSearchBar(results[i] as FactChain));
     }
-    else{
-      event.preventDefault();
+  }
+  else{
+    event.preventDefault();
 
-      setModalOpen(true);
-      setModalFact(results[i]);
+    setModalOpen(true);
+    setModalFact(results[i]);
 
-      console.log(modalFact);
-      console.log(modalOpen);
-    }
+    console.log(modalFact);
+    console.log(modalOpen);
+  }
   }
   
   return (
