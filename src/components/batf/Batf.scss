@@ -3,7 +3,8 @@
 
 .batf {
     position: fixed;
-    width: calc(100vw - $sidebar-left-offset);
+    width: 30vw;
+    min-width: 30em;
     right: 0;
     top: 50px;
     bottom: 0;
@@ -123,6 +124,9 @@
     gap: 10px;
     height: 40px;
     align-items: center;
+    > * {
+        cursor: pointer;
+    }
 }
 
 .batf-content {
