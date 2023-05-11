@@ -126,3 +126,12 @@
 .fact::-webkit-scrollbar-thumb:hover {
     background-color: #aaa;
 }
+
+.factImage {
+    margin-top: 20px;
+    background-size: cover;
+    background-position: center;
+    background-color: #344453;
+    /* border: 1px solid #344453; */
+    
+}
