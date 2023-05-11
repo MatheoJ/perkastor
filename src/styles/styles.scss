@@ -128,3 +128,11 @@ p, li {
 .text-bold {
   font-weight: 700;
 }
+
+.verifiedIcon, .uncheckedIcon {
+  margin-right: 1em;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #F1B706!important;
+}

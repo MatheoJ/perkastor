@@ -23,7 +23,6 @@ function getImageUrl(filename: string): string {
 
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
-    console.log("hist", historicalPerson);
     if (!historicalPerson) {
         return null;
     }
@@ -36,6 +35,9 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
         historicalPerson.birthDate = new Date(historicalPerson.birthDate)
     }
     if (!((historicalPerson.deathDate) instanceof Date)) {
+        if(historicalPerson.deathDate == "1970-01-01T00:00:00.000+00:00"){
+            historicalPerson.deathDate = null;
+        }
         historicalPerson.deathDate = new Date(historicalPerson.deathDate)
     }
 

@@ -249,7 +249,7 @@ const Fact: NextPage<Props> = ({ fact }) => {
                     <span className="uncheckedIcon">
                         <UnpublishedIcon style={{ color: 'red' }} />
                     </span>}
-                <span className="verifiedText">Source vérifiée</span>
+                <span className="verifiedText">{fact.verified ? 'Source vérifiée' : 'Source non vérifiée'}</span>
             </p>
         </div>
     );

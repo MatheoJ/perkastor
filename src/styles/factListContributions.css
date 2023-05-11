@@ -6,4 +6,5 @@
 .factListContributions {
     width: 93%;
     margin-top: 10%;
+    overflow-y: auto;
 }
