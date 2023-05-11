@@ -119,6 +119,7 @@ li {
 
   li {
     list-style-type: none;
+    white-space: nowrap;
   }
 }
 
@@ -132,6 +133,7 @@ li {
   align-items: center;
   justify-content: center;
   color: white;
+  flex-direction: row;
 
   li {
     background-color: hsl(209deg 10.48% 59.54%);
@@ -141,7 +143,7 @@ li {
   }
 }
 
-.text-bold {
+.text-bold, .strong, .bold {
   font-weight: 700;
 }
 
@@ -152,4 +154,14 @@ li {
 
 .slick-dots li.slick-active button:before {
   color: #F1B706 !important;
+}
+
+.sortedFigure {
+  height: 400px;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center!important;
+  justify-content: center!important;
 }

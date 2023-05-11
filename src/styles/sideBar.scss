@@ -1,4 +1,4 @@
-$sidebar-left-offset: 60px;
+$sidebar-left-offset: 70px;
 
 .sidebar button {
   border-color: transparent;
@@ -19,7 +19,7 @@ $sidebar-left-offset: 60px;
   width: $sidebar-left-offset;
   background-color: #344453;
   transition: all 0.3s ease;
-  z-index: 9999;
+  z-index: 1000;
 }
 
 .open {

@@ -4,46 +4,22 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Add from '@material-ui/icons/Add';
 import Swal from 'sweetalert2';
 import { NextPage } from 'next';
+import { ChainListProps, FactListProps, FactProps } from 'types/types';
+import { Avatar, Button } from '@mui/material';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import ImageWithFallback from './ImageWithFallback';
 
 interface FactChainProps {
-  facts: {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    title: string;
-    shortDesc?: string;
-    content: string;
-    from?: string;
-    until?: string;
-    bannerImg?: string;
-    verified: boolean;
-    video: string[];
-    audio: string[];
-    author: {
-      id: string;
-      name: string;
-    };
-    tags: {
-      id: string;
-      name: string;
-    }[];
-    locations: {
-      id: string;
-      name: string;
-    }[];
-    personsInvolved: {
-      id: string;
-      name: string;
-    }[];
-  }[];
-  setFacts: React.Dispatch<React.SetStateAction<{}[]>>;
+  facts: FactProps[];
+  setFacts: React.Dispatch<React.SetStateAction<{}>>;
 }
 
 const FactChain: NextPage<FactChainProps> = ({ facts, setFacts }) => {
 
   const handleDeleteFact = (factIndex: number) => {
     Swal.fire({
-      title: 'Êtes-vous sûr de vouloir supprimer cet évènement ?',
+      title: 'Êtes-vous sûr de vouloir supprimer cette anecdote historique ?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Supprimer',
@@ -56,40 +32,59 @@ const FactChain: NextPage<FactChainProps> = ({ facts, setFacts }) => {
         });
 
         if (res.status >= 300) {
-          Swal.fire('Erreur', 'Une erreur est survenue lors de la suppression de l\'évènement', 'error');
+          Swal.fire('Erreur', 'Une erreur est survenue lors de la suppression de l\'anecdote historique', 'error');
           return;
         }
         const newFactList = [...facts];
         newFactList.splice(factIndex, 1);
         setFacts(newFactList);
-        Swal.fire('Évènement supprimé', '', 'success');
+        Swal.fire('Anecdote historique supprimée', '', 'success');
       }
     });
   };
 
+  const formatDate = (date: any) => {
+    return (new Date(date)).toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    })
+  }
+
   return (
-    <div className="factListContributions">
+    <div className="chainListContributions">
       {facts.map((fact, index) => (
         <div
           key={fact.id}
-          className="factContainer"
+          className="chainContainer"
         >
-          <div className="factTitle">
-            <img src={fact.bannerImg ? fact.bannerImg : "/images_default/perecastor.png"} alt="fact image" id='imageFactList' className='imageFactList' />
+          <div className="chainTitle">
+            <ImageWithFallback id='imageFactList' src={fact.bannerImg} alt="fact image" width={300} height={200} fallback='/resources/404-error.png' className='imageFactList' />
 
-            <div className='factTitleText'> <p>{fact.title} <br /> {fact.from}</p> </div>
-          </div>
-          <div className='deleteBtn'>
-            <button className="factActionBtn" onClick={() => handleDeleteFact(index)}>
-              <DeleteIcon />
-            </button>
+            <div className='chainContributionsTitleText'>
+              <div className="left">
+                <p><span className='strong'>{fact.title}</span></p>
+                <ul className='no-margin date-container'>
+                    {fact.keyDates.map((date, index) => {
+                      return <li key={index}>{(new Date(date)).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}</li>;
+                    })}
+                </ul>
+              </div>
+              <div className="right flex-center">
+                <Avatar sx={{ width: 30, height: 30, color: '#fff', backgroundColor: '#CB7A7A' }} onClick={() => handleDeleteFact(index)} className='factActionBtn'>
+                  <DeleteIcon />
+                </Avatar>
+              </div>
+            </div>
           </div>
         </div>
       ))}
-      <div className="addFactBtn" onClick={() => window.location.href = "/eventForm"}>
-        <button className="factActionBtn">
-          <Add />
-        </button>
+      <div className='flex-center'>
+        <Link href="/eventForm">
+          <Avatar sx={{ width: 30, height: 30, color: '#fff', backgroundColor: '#40AC92' }} className='factActionBtn'>
+            <Add />
+          </Avatar>
+        </Link>
       </div>
     </div>
   );

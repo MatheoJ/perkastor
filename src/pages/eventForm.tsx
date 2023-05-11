@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Button } from '@mui/material';
 import { SearchFilters } from 'types/types';
-import  SearchBarLieux  from '~/components/searchbar/SearchBarLieux';
+import SearchBarLieux from '~/components/searchbar/SearchBarLieux';
 
 <style jsx>{`
   .button_submit {
@@ -70,7 +70,7 @@ const Event = () => {
 
   const onSubmit = async (data: EventData) => {
 
-    var selectedFigureId : string[]= selectedFigures.map(elem => elem.id);
+    var selectedFigureId: string[] = selectedFigures.map(elem => elem.id);
     console.log(data);
 
 
@@ -86,7 +86,7 @@ const Event = () => {
     };
 
     dataEvent = {
-      title: data.name, 
+      title: data.name,
       shortDesc: "",
       content: data.description,
       location: location,
@@ -108,72 +108,72 @@ const Event = () => {
     if (response.ok) {
       const responseData = await response.json();
       // change image related to the fact whose id is responseData.id
-        if (imageSrc) {
-          console.log("Image insérée");
-          const image = await ref.current?.triggerUpload(responseData.data.id);
+      if (imageSrc) {
+        console.log("Image insérée");
+        const image = await ref.current?.triggerUpload(responseData.data.id);
 
-          if (image) {
-            setUploading(false);
-            // display a sweet alert popup to inform the user of the success
-            MySwal.fire({
-              title: "Evènement ajouté avec succès",
-              icon: "success",
-              showCancelButton: false,
-              confirmButtonText: "Ok",
-            }).then(async () => {
-              router.push("/mapWrapper");
-            })
+        if (image) {
+          setUploading(false);
+          // display a sweet alert popup to inform the user of the success
+          MySwal.fire({
+            title: "Evènement ajouté avec succès",
+            icon: "success",
+            showCancelButton: false,
+            confirmButtonText: "Ok",
+          }).then(async () => {
+            router.push("/mapWrapper");
+          })
 
-          } else {
-            // display a sweet alert popup to inform the user of the error
-            // and ask him if he wants to retry to update the fact's image
-            // if he does, call the updateFactImage function again
-            // if he doesn't, redirect to his profile page
+        } else {
+          // display a sweet alert popup to inform the user of the error
+          // and ask him if he wants to retry to update the fact's image
+          // if he does, call the updateFactImage function again
+          // if he doesn't, redirect to his profile page
 
-            MySwal.fire({
-              title: "Erreur lors de l'ajout de l'image de l'évènement",
-              text: "Voulez-vous réessayer ?",
-              icon: "error",
-              showCancelButton: true,
-              confirmButtonText: "Réessayer",
-              cancelButtonText: "Annuler",
-            }).then(async () => {
-              const value = await MySwal.fire();
-              if (value) {
-                setUploading(true);
-                const retryUploadImage = await ref.current?.triggerUpload();
-                setUploading(false);
-                if (retryUploadImage) {
-                  // display a sweet alert popup to inform the user of the success
-                  MySwal.fire({
-                    title: "Evènement ajouté avec succès",
-                    icon: "success",
-                    showCancelButton: false,
-                    confirmButtonText: "Ok",
-                  }).then(async () => {
-                    router.push("/mapWrapper");
-                  })
-                } else {
-                  MySwal.fire({
-                    title: "L'image n'a pas pu être ajoutée à l'évènement",
-                    icon: "error",
-                    showCancelButton: false,
-                    confirmButtonText: "Ok",
-                  }).then(async () => {
-                    router.push("/mapWrapper");
-                  })
-                }
-                setUploading(false);
-                return;
+          MySwal.fire({
+            title: "Erreur lors de l'ajout de l'image de l'évènement",
+            text: "Voulez-vous réessayer ?",
+            icon: "error",
+            showCancelButton: true,
+            confirmButtonText: "Réessayer",
+            cancelButtonText: "Annuler",
+          }).then(async () => {
+            const value = await MySwal.fire();
+            if (value) {
+              setUploading(true);
+              const retryUploadImage = await ref.current?.triggerUpload();
+              setUploading(false);
+              if (retryUploadImage) {
+                // display a sweet alert popup to inform the user of the success
+                MySwal.fire({
+                  title: "Evènement ajouté avec succès",
+                  icon: "success",
+                  showCancelButton: false,
+                  confirmButtonText: "Ok",
+                }).then(async () => {
+                  router.push("/mapWrapper");
+                })
+              } else {
+                MySwal.fire({
+                  title: "L'image n'a pas pu être ajoutée à l'évènement",
+                  icon: "error",
+                  showCancelButton: false,
+                  confirmButtonText: "Ok",
+                }).then(async () => {
+                  router.push("/mapWrapper");
+                })
               }
-              router.push("/mapWrapper");
-            })
-          
-          };
-      }else{
+              setUploading(false);
+              return;
+            }
+            router.push("/mapWrapper");
+          })
+
+        };
+      } else {
         console.log("Pas d'image");
         MySwal.fire({
-          title: "Evènement ajouté avec succès",
+          title: "Anecdote historique ajoutée avec succès",
           icon: "success",
           showCancelButton: false,
           confirmButtonText: "Ok",
@@ -181,9 +181,9 @@ const Event = () => {
           router.push("/mapWrapper");
         })
       }
-    }else{
+    } else {
       MySwal.fire({
-        title: "Erreur lors de l'ajout de l'évènement",
+        title: "Erreur lors de l'ajout de l'anecdote historique",
         icon: "error",
         showCancelButton: false,
         confirmButtonText: "Ok",
@@ -211,7 +211,7 @@ const Event = () => {
   const [query, setQuery] = useState('');
 
   async function handleSearch(e) {
-    var filter : SearchFilters = {
+    var filter: SearchFilters = {
       event: false,
       chain: false,
       historicalFigure: true,
@@ -221,7 +221,7 @@ const Event = () => {
     // handle the search query
     e.preventDefault();
 
-    if(query !== ''){
+    if (query !== '') {
       var queryParams2 = new URLSearchParams({
         query: query,
         filtersParam: JSON.stringify(filter)
@@ -242,126 +242,125 @@ const Event = () => {
 
   return (
     <div className='body-event'>
-    <div className="container">
-      <h1>Ajout d'un évènement</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="name">Nom de l'évènement*</label>
-        <input
-          type="text"
-          id="name"
-          {...register("name", { required: true })}
-        />
-        {errors.name && <p className="error-message">Le nom est requis.</p>}
+      <div className="container">
+        <h1>Ajout d'une anecdote historique</h1>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <label htmlFor="name">Nom de l'anecdote historique*</label>
+          <input
+            type="text"
+            id="name"
+            {...register("name", { required: true })}
+          />
+          {errors.name && <p className="error-message">Le nom est requis.</p>}
 
-        <label htmlFor="description">Description de l'évènement*</label>
-        <textarea
-          name="desc"
-          cols={40}
-          rows={5}
-          id="description"
-          {...register("description", { required: true })}
-          required
-        ></textarea>
+          <label htmlFor="description">Description de l'anecdote historique*</label>
+          <textarea
+            name="desc"
+            cols={40}
+            rows={5}
+            id="description"
+            {...register("description", { required: true })}
+            required
+          ></textarea>
 
 
-        {errors.description && (
-          <p className="error-message">La description est requise.</p>
-        )}
-
-        <h3>Image de l'évènement</h3>
-        <CropperView toUpdate='fact' width={150} height={150} defaultFilename='fact.png' defaultFileType='png' alt={'Fait historique'} cropShape='rect' variant='square' uploadOnSubmit={false} ref={ref} imageSrc={imageSrc} setImageSrc={setImageSrc} />
-
-        <h3>Lieu de l'évènement</h3>
-        Choisissez un lieu existant avec la barre de recherche ou la carte.
-        Et cliquer sur une localisation sans marqueur pour créer un nouveau lieu.
-      
-        <SearchBarLieux showChecklist={false} usedInForm={true} onResultClick={onResultClick}/>
-               
-        <MapCoordPicker onMapClick={handleMapClick} locSelected={locationSelected} onLocationSelect={handlelLocationSelected} />
-        <label htmlFor="NomLieux">Nom du lieu*</label>
-        <input
-          type="text"
-          id="NomLieux"
-          {...register("NomLieux", { required: true })}
-          onChange={() => {
-            setValue("idLieux", "");
-          }}
-        />
-        {errors.name && <p className="error-message">Le nom est requis.</p>}
-
-        <label htmlFor="typeLieux">Type du lieu*</label>
-        <select
-          id="typeLieux"
-          {...register("typeLieux", { required: true })}
-          onChange={() => {
-            setValue("idLieux", "");
-          }}
-        >
-          <option value="">Select...</option>
-          <option value="rue">Rue, Place, etc</option>
-          <option value="ville">Ville</option>
-          <option value="departement">Department</option>
-          <option value="region">Region</option>
-        </select>
-        {errors.name && <p className="error-message">Le type est requis.</p>}
-
-        <label htmlFor="coordinatesLong">Longitude*</label>
-        <input
-          type="text"
-          id="coordinatesLong"
-          {...register("coordinatesLong", { required: true })}
-          onChange={() => {
-            setValue("idLieux", "");
-          }}
-        />
-        {errors.coordinatesLong && (
-          <p className="error-message">La longitude est requise.</p>
-        )}
-
-        <label htmlFor="coordinatesLat">Latitude*</label>
-        <input
-          type="text"
-          id="coordinatesLat"
-          {...register("coordinatesLat", { required: true })}
-          onChange={() => {
-            setValue("idLieux", "");
-          }}
-        />
-        {errors.coordinatesLat && (
-          <p className="error-message">La latitude est requise.</p>
-        )}
-
-        <h3>Dates de l'évènement</h3>
-        <Controller
-          name="listOfDates"
-          control={control}
-          render={({ field }) => (
-            <DatePicker
-              format="DD/MM/YYYY"
-              value={selectedDates}
-              onChange={(dates) => {
-                setSelectedDates(dates);
-                field.onChange(dates);
-              }}
-              plugins={[<DatePanel />]}
-            />
+          {errors.description && (
+            <p className="error-message">La description est requise.</p>
           )}
-        />
 
-      <div>
-        <h3>Associer un personnage historique </h3>
-        <input type="text" value={query} onChange={handleChange} />
-        <Button onClick={handleSearch}>Search</Button>
-      </div>
-              
-      <div title="Historical_People" className="idiv">
-        <HistoricalFigureList historicalPersonList={histFigToDisplay} selectedFigures={selectedFigures} setSelectedFigures={setSelectedFigures} />
-      </div>
-      
-        <Button className='button_submit' id='q1.button' type="submit" disabled={uploading}>Enregistrer</Button>
-      </form>
+          <h3>Image de l'anecdote historique</h3>
+          <CropperView toUpdate='fact' width={150} height={150} defaultFilename='fact.png' defaultFileType='png' alt={'Fait historique'} cropShape='rect' variant='square' uploadOnSubmit={false} ref={ref} imageSrc={imageSrc} setImageSrc={setImageSrc} />
 
-    </div>
+          <h3>Lieu de l'anecdote historique</h3>
+          Choisissez un lieu existant avec la barre de recherche ou la carte.
+          Et cliquer sur une localisation sans marqueur pour créer un nouveau lieu.
+
+          <SearchBarLieux showChecklist={false} usedInForm={true} onResultClick={onResultClick} />
+
+          <MapCoordPicker onMapClick={handleMapClick} locSelected={locationSelected} onLocationSelect={handlelLocationSelected} />
+          <label htmlFor="NomLieux">Nom du lieu*</label>
+          <input
+            type="text"
+            id="NomLieux"
+            {...register("NomLieux", { required: true })}
+            onChange={() => {
+              setValue("idLieux", "");
+            }}
+          />
+          {errors.name && <p className="error-message">Le nom est requis.</p>}
+
+          <label htmlFor="typeLieux">Type du lieu*</label>
+          <select
+            id="typeLieux"
+            {...register("typeLieux", { required: true })}
+            onChange={() => {
+              setValue("idLieux", "");
+            }}
+          >
+            <option value="">Select...</option>
+            <option value="rue">Rue, Place, etc</option>
+            <option value="ville">Ville</option>
+            <option value="departement">Department</option>
+            <option value="region">Region</option>
+          </select>
+          {errors.name && <p className="error-message">Le type est requis.</p>}
+
+          <label htmlFor="coordinatesLong">Longitude*</label>
+          <input
+            type="text"
+            id="coordinatesLong"
+            {...register("coordinatesLong", { required: true })}
+            onChange={() => {
+              setValue("idLieux", "");
+            }}
+          />
+          {errors.coordinatesLong && (
+            <p className="error-message">La longitude est requise.</p>
+          )}
+
+          <label htmlFor="coordinatesLat">Latitude*</label>
+          <input
+            type="text"
+            id="coordinatesLat"
+            {...register("coordinatesLat", { required: true })}
+            onChange={() => {
+              setValue("idLieux", "");
+            }}
+          />
+          {errors.coordinatesLat && (
+            <p className="error-message">La latitude est requise.</p>
+          )}
+
+          <h3>Dates de l'anecdote historique</h3>
+          <Controller
+            name="listOfDates"
+            control={control}
+            render={({ field }) => (
+              <DatePicker
+                format="DD/MM/YYYY"
+                value={selectedDates}
+                onChange={(dates) => {
+                  setSelectedDates(dates);
+                  field.onChange(dates);
+                }}
+                plugins={[<DatePanel />]}
+              />
+            )}
+          />
+
+          <div>
+            <h3>Associer un personnage historique </h3>
+            <input type="text" value={query} onChange={handleChange} />
+            <Button onClick={handleSearch}>Rechercher</Button>
+          </div>
+          <div title="Historical_People" className="idiv">
+            <HistoricalFigureList historicalPersonList={histFigToDisplay} selectedFigures={selectedFigures} setSelectedFigures={setSelectedFigures} />
+          </div>
+
+          <Button className='button_submit' id='q1.button' type="submit" disabled={uploading}>Enregistrer</Button>
+        </form>
+
+      </div>
     </div>
   );
 };

@@ -24,6 +24,7 @@ function getImageUrl(filename: string): string {
 
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
+    var errorDeathDate = false;
     if (!historicalPerson) {
         return null;
     }
@@ -36,75 +37,62 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
         historicalPerson.birthDate = new Date(historicalPerson.birthDate)
     }
     if (!((historicalPerson.deathDate) instanceof Date)) {
-        if(historicalPerson.deathDate == "1970-01-01T00:00:00.000+00:00"){
-            historicalPerson.deathDate = null;
-        }
         historicalPerson.deathDate = new Date(historicalPerson.deathDate)
     }
-
+    if (historicalPerson.deathDate.toDateString().split(' ')[1] === 'Jan' && historicalPerson.deathDate.toDateString().split(' ')[2] === '01' && historicalPerson.deathDate.getFullYear() === 1970) {
+        errorDeathDate = true;
+    }
     return (
         <div className="fact">
             <div className="factHead">
                 <div className="factHeadTop">
                     <h1 className='mark'>{historicalPerson.name}</h1>
                 </div>
-                <div className="factHeadBottom">
-                    <div className="factHeadBottomLeft">
-                    {
-                        !isNaN(historicalPerson.birthDate.getTime()) &&
-                        <h4>
-                            Né.e le {historicalPerson.birthDate.toLocaleDateString('fr-FR', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            })}
-                        </h4>
-                    }
-                    {
-                        !isNaN(historicalPerson.deathDate.getTime()) &&
-                        <h4>
-                            Mort.e le {historicalPerson.deathDate.toLocaleDateString('fr-FR', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            })}
-                        </h4>
-                    }
+                <div className="figureHeadBottom">
+                    <div className="figureHeadBottomLeft">
+                        {
+                            !isNaN(historicalPerson.birthDate.getTime()) &&
+                            <p>
+                                Né.e le {historicalPerson.birthDate.toLocaleDateString('fr-FR', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}
+                            </p>
+                        }
+                        {
+                            !errorDeathDate &&
+                            <p>
+                                Mort.e le {historicalPerson.deathDate.toLocaleDateString('fr-FR', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}
+                            </p>
+                        }
                     </div>
-                    
-                    {/*<div className="factHeadBottomRight">
-                    <div className="factImage">
-                            <Image src={historicalPerson.image} alt="" width={300} height={200} />
+
+                    {historicalPerson.image ?
+                        <div className="figureHeadBottomRight">
+                            <div className="figureImage">
+                                <Image src={historicalPerson.image} alt={`Image de ${historicalPerson.name}`} width={300} height={200} />
+                            </div>
                         </div>
-                </div>*/}
+                        : null}
                 </div>
             </div>
-            <div className="historicalFigureBody">
-                <div className='content-left'>
-                    <strong>Description</strong>
-                    {historicalPerson.shortDesc && <p>{historicalPerson.shortDesc.charAt(0).toUpperCase() + historicalPerson.shortDesc.slice(1)}</p>}
-                    {historicalPerson.content && <p>{historicalPerson.content.charAt(0).toUpperCase() + historicalPerson.content.slice(1)}</p>}
-                </div>
+            {
+                historicalPerson.shortDesc || historicalPerson.content ? (
+                    <div className="historicalFigureBody">
+                        <div className="divider-line" />
+                        <strong>Description</strong>
+                        {historicalPerson.shortDesc && <p>{historicalPerson.shortDesc.charAt(0).toUpperCase() + historicalPerson.shortDesc.slice(1)}</p>}
+                        {historicalPerson.content && <p>{historicalPerson.content.charAt(0).toUpperCase() + historicalPerson.content.slice(1)}</p>}
+                    </div>) : null
+            }
 
-                <div className='content-right'>
-
-                    {historicalPerson.image && (
-                        <div className="historicalFigureImage">
-                            <Image
-                                src={
-                                    historicalPerson.image
-                                }
-                                alt=""
-                                width={150}
-                                height={200}
-                                layout="responsive"
-                            />
-                        </div>
-                    )}
-                </div>
-            </div>
             {historicalPerson.facts ? (
                 <div className='historicalFigureBody'>
                     <div>
@@ -120,13 +108,13 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
     );
 };
 
-    /*
-    <ul>
-    {historicalPerson.facts.map(elem => {
-        return (<li key={elem.id}>
-            {elem.shortDesc}
-        </li>)
-    })}
-    </ul>
-    */
+/*
+<ul>
+{historicalPerson.facts.map(elem => {
+    return (<li key={elem.id}>
+        {elem.shortDesc}
+    </li>)
+})}
+</ul>
+*/
 export default HistoricalFigureView;

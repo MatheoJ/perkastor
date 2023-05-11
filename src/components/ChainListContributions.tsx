@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { ChainListProps } from '../../types/types';
 import { createDeflate } from 'zlib';
 import { NextPage } from 'next';
+import { Avatar, Link } from '@mui/material';
 
 interface ChainListContributionsProps {
   chains: ChainListProps[];
@@ -57,9 +58,9 @@ const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains,
           <div className="chainTitle" onClick={() => {
             setItemSelected(chain);
           }}>
-            <img src={chain.image ? chain.image : "/images_default/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
-            <div className='chainTitleText'>
-              <p>{chain.title}
+            <img src={chain.image ? chain.image : "/resources/404-error.png"} alt="chain image" id='imageChainList' className='imageFactList' />
+            <div className='chainContributionsTitleText'>
+              <p><span className='strong'>{chain.title}</span>
                 <br />
                 <div className="date-container">
                   <li>
@@ -70,16 +71,18 @@ const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains,
             </div>
           </div>
           <div className='deleteBtn'>
-            <button className="chainActionBtn" onClick={() => handleDeleteChain(index)}>
+            <Avatar sx={{ width: 30, height: 30, color: '#fff', backgroundColor: '#CB7A7A' }} onClick={() => handleDeleteChain(index)} className='chainActionBtn'>
               <DeleteIcon />
-            </button>
+            </Avatar>
           </div>
         </div>
       ))}
-      <div className="addChainBtn" onClick={() => window.location.href = "/chainForm"}>
-        <button className="chainActionBtn">
-          <Add />
-        </button>
+      <div className='flex-center'>
+        <Link href="/chainForm">
+          <Avatar sx={{ width: 30, height: 30, color: '#fff', backgroundColor: '#40AC92' }}>
+            <Add />
+          </Avatar>
+        </Link>
       </div>
     </div>
   );

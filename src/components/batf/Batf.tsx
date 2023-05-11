@@ -48,7 +48,7 @@ const Batf: NextPage<BatfProps> = ({ children }) => {
 
     return (
         <div className={`batf ${classAssigner()}`}>
-            <div className={`batf-handle ${state !== "minimized" && state !== "fullscreen" ? 'hidden' : 'visible'}`}>
+            <div className={`batf-handle ${state !== "minimized" ? 'hidden' : 'visible'}`}>
                 <button className="toggle batf-minimized-btn" onClick={show}>
                     <MenuIcon className="menu" style={{ color: "#F1B706", }} />
                 </button>

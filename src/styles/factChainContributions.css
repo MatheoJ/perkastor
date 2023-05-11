@@ -8,6 +8,18 @@
     border-radius: 4px;
     background-color: #ccc;
   }
+
+  .factChainContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-radius: 2px;
+    background-color: #fff;
+    height: 110px;
+    width: 90%;
+    margin-left: auto;
+  }
   
   .factTitle {
     display: flex;
@@ -22,6 +34,33 @@
     justify-content: center;
     z-index: 2;
     color: #344453;
+  }
+
+  .chainTitle {
+    position: relative;
+  }
+  .factActionsAbsolute {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: -2.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    z-index: 2;
+  }
+  .factActionsAbsolute > * {
+    cursor: pointer;
+  }
+
+  .factActionsAbsolute > * {
+    cursor: pointer;
+  }
+
+  .factActionBtn {
+    cursor: pointer;
   }
 
   .factActionBtn:hover {

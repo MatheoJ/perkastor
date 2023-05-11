@@ -56,10 +56,10 @@ const Marker: NextPage<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
 
     function onClick(lngLat: LngLat): void {
       coordinates.current.style.display = "block";
-      coordinates.current.innerHTML = ` Coordonées du clique : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat}`;
+      coordinates.current.innerHTML = ` Coordonnées du clic : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat}`;
 
       void getPlaceInfo(lngLat.lat, lngLat.lng, Math.round(map.getZoom())).then((placeInfo) => {
-        coordinates.current.innerHTML = `Coordonées du clique : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat} <br /> ${placeInfo.name}`;
+        coordinates.current.innerHTML = `Coordonnées du clic : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat} <br /> ${placeInfo.name}`;
         
         if (placeInfo.geojson) {
 
