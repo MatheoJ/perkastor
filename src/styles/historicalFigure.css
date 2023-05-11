@@ -18,7 +18,7 @@
     position: relative;
     width: 100%;
     display: flex;
-    flex-direction: space-between;
+    flex-direction: column;
     flex: 1;
     margin-bottom: 5px;
     border-bottom: 1px solid black;
@@ -38,23 +38,18 @@
     font-size: 15px;
 }
 
-.historicalFigureHeadBottom {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    margin: 5px;
-}
-
 .historicalFigureHeadTop {
     display: inline-block;
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.historicalFigureHeadRight {
+.historicalFigureHeadBottom {
     display: inline-block;
     flex: 1;
     display: flex;
-    justify-content: flex-end;
     flex-direction: column;
     align-items: center;
     justify-content: center;
