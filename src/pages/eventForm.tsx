@@ -31,61 +31,6 @@ interface EventData {
   idHistoricalFigure: string[];
 }
 
-const fact = {
-  id: "1",
-  isEvent: true,
-  createdAt: new Date(1990, 4, 7),
-  updatedAt: new Date(1990, 4, 7),
-  title: "Sample Fact Title",
-  shortDesc: "This is a short description of the fact.",
-  content: "This is the full content of the fact.",
-  keyDates: [new Date(1990, 4, 7)],
-  bannerImg: "",
-  verified: true,
-  video: [],
-  audio: [],
-  authorId: "oui",
-  locationsId: "",
-  sources: []
-}
-
-
-const histFig1 = {
-  id: "1",
-  name: "Pierre Paul Jacques",
-  birthDate: new Date(1990, 4, 7),
-  deathDate: new Date(1985, 4, 7),
-  image: "",
-  shortDesc: "C'est moi !",
-  content: "coucou",
-  facts: [fact]
-};
-
-const histFig2 = {
-  id: "2",
-  name: "Pierpoljak",
-  birthDate: new Date(1990, 4, 7),
-  deathDate: new Date(1985, 4, 7),
-  image: "",
-  shortDesc: "C'est moi !",
-  content: "coucou",
-  facts: [fact]
-};
-
-const histFig3 = {
-  id: "3",
-  name: "Test",
-  birthDate: new Date(1990, 4, 7),
-  deathDate: new Date(1985, 4, 7),
-  image: "",
-  shortDesc: "C'est moi !",
-  content: "coucou",
-  facts: [fact]
-};
-
-var histFigList = [histFig1, histFig2, histFig3]
-
-
 const Event = () => {
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
@@ -103,9 +48,11 @@ const Event = () => {
     watch,
     control,
   } = useForm<EventData>();
+
   const [locationSelected, setLocationSelected] = useState("");
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [histFigToDisplay, setHistFigToDisplay] = useState<any[]>([]);
+  const [selectedFigures, setSelectedFigures] = useState([]);
   const ref = useRef<any>();
 
   const handlelLocationSelected = (locSelected: any) => {
@@ -116,10 +63,12 @@ const Event = () => {
     setValue("typeLieux", locSelected.properties.type);
     setValue("idLieux", locSelected.properties.id);
 
-    console.log(watch("listOfDates"));
   };
 
   const onSubmit = async (data: EventData) => {
+
+    var selectedFigureId : string[]= selectedFigures.map(elem => elem.id);
+
 
     var dataEvent;
     var location = {
@@ -136,8 +85,9 @@ const Event = () => {
       content: data.description,
       location: location,
       keyDates: data.listOfDates,
-      idHistoricalFigure: data.idHistoricalFigure
+      idHistoricalFigure: selectedFigureId
     };
+
 
     setUploading(true);
     const response = await fetch('/api/facts', {
@@ -212,7 +162,7 @@ const Event = () => {
           router.push("/mapWrapper");
         })
       };
-    }
+    } 
   }
 
   const handleMapClick = (longitude: number, latitude: number) => {
@@ -244,12 +194,9 @@ const Event = () => {
     const response2 = await fetch(`/api/search?${queryParams2}`, {
       method: "GET",
     });
-/* 
-    histFigList = await response2.json.data.historicalPersons
-    console.log(histFigList) */
+    
     var histfig = await response2.json();
     setHistFigToDisplay(histfig.data.historicalPersons); 
-    console.log(histFigToDisplay);
   }
 
   function handleChange(event) {
@@ -358,13 +305,13 @@ const Event = () => {
         />
 
       <div>
+        <h3>Associer un personnage historique </h3>
         <input type="text" value={query} onChange={handleChange} />
         <button onClick={handleSearch}>Search</button>
       </div>
 
-      <h3>Résultats de la recherche des Personnages Historiques associés</h3>
       <div title="Historical_People" className="idiv">
-        <HistoricalFigureList historicalPersonList={histFigToDisplay}/>
+        <HistoricalFigureList historicalPersonList={histFigToDisplay} selectedFigures={selectedFigures} setSelectedFigures={setSelectedFigures}/>
       </div>
         <Button className='button_submit' id='q1.button' type="submit" disabled={uploading}>Enregistrer</Button>
       </form>
