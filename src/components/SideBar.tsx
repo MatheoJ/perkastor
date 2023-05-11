@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button } from '@mui/material';
+import LinkIcon from '@mui/icons-material/Link';
 
 function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setInsertMode }:
     { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({ item }: { item: String }) => void, insertMode: boolean, setInsertMode: ({ insertMode }: { insertMode: boolean }) => void }) {
@@ -30,6 +31,9 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
         }
         if (item == "addEvent") {
             window.location.href = "/eventForm";
+        }
+        else if (item == "addChain") {
+            window.location.href = "/chainForm";
         }
     }
 
@@ -58,6 +62,17 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                                         onClick={() => handleClick({ item: "addEvent" })}>
                                     <AddCircleIcon style={{ color: '#F1B706' }} />
                                     <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter une anecdote historique</span>
+                                </Button>
+                            </div>
+                        </li>
+                        <li>
+                            <div className="icon">
+                                <Button variant="text"
+                                        style={{ color: "#F1B706", cursor:"pointer"}}
+                                        title='Accéder au formulaire pour ajouter une chaîne d&apos;anecdotes historiques' 
+                                        onClick={() => handleClick({ item: "addEvent" })}>
+                                    <LinkIcon style={{ color: '#F1B706' }} />
+                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter une chaine d'événements</span>
                                 </Button>
                             </div>
 
