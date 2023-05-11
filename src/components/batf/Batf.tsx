@@ -3,6 +3,7 @@ import BatfTabContainer from "./BatfTabContainer";
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
 import { NextPage } from "next";
+import MenuIcon from '@mui/icons-material/Menu';
 
 interface BatfProps {
     children: React.ReactNode
@@ -64,23 +65,16 @@ const Batf: NextPage<BatfProps> = ({ children }) => {
     );
     /*
     return (
-            <div className={`batf ${classAssigner()}`}>
-            {
-                (() => {
-                    if (state !== "minimized") {
-                        //selectedTab={selectedTab} setSelectedTab={setSelectedTab}
-                        return <>
-                            <BatfTabContainer onFullScreenClick={maximize} onMinimizeClick={hide}></BatfTabContainer>
-                        </>;
-                    }
-                    else {
-                        return <button className="toggle batf-minimized-btn" onClick={show}>
-                            <i className="fa fa-bars"></i>
-                        </button>;
-                    }
-                })()
-            }
-            {children}
+        <div className={`batf ${classAssigner()}`}>
+            <div className={`batf-handle ${state !== "minimized" && state !== "fullscreen" ? 'hidden' : 'visible'}`}>
+                <button className="toggle batf-minimized-btn" onClick={show}>
+                    <MenuIcon className="menu" style={{ color: "#F1B706", }} />
+                </button>
+            </div>
+            <div className={'batf-body'}>
+                <BatfTabContainer onFullScreenClick={maximize} onMinimizeClick={hide} batfState={state} setBatfState={setState} />
+                {children}
+            </div>
         </div>
     );
     */

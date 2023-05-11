@@ -31,10 +31,7 @@ export type SearchResult = {
 }
 
 export interface PersonProps extends HistoricalPerson {
-    historicalPerson: {
-        id: string;
-        name: string;
-    }
+    facts: FactProps[];
 }
 export interface FactProps extends Fact {
     author: {
@@ -48,6 +45,7 @@ export interface FactProps extends Fact {
     location: {
         id: string;
         name: string;
+        type: string;
     };
     personsInvolved: PersonProps[];
     keyDates : Date[];

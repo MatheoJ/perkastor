@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { HistoricalPerson, Fact } from '@prisma/client';
 import { NextPage } from 'next';
+import crypto from 'crypto';
+
 
 interface HistoricalFigureProps extends HistoricalPerson {
     facts: Fact[]
@@ -11,16 +13,13 @@ interface Props {
     historicalPerson: HistoricalFigureProps
 }
 
-import crypto from 'crypto';
-import FactList from '../FactList';
-
-function get_image_url(filename: string): string {
+function getImageUrl(filename: string): string {
+    filename = filename.replace("https://commons.wikimedia.org/wiki/File:", "");
     filename = filename.replace(' ', '_');
-    let m = crypto.createHash('md5');
-    m.update(filename);
-    let md5hash = m.digest('hex');
-    return `https://upload.wikimedia.org/wikipedia/commons/${md5hash[0]}/${md5hash.substring(0, 2)}/${filename}`;
+    const md5hash = crypto.createHash('md5').update(filename).digest('hex');
+    return `https://upload.wikimedia.org/wikipedia/commons/${md5hash[0]}/${md5hash.slice(0, 2)}/${filename}`;
 }
+
 
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
@@ -28,6 +27,11 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
     if (!historicalPerson) {
         return null;
     }
+
+    if (historicalPerson.image && historicalPerson.image.startsWith("https://commons.wikimedia.org/wiki/File:")) {
+        historicalPerson.image = getImageUrl(historicalPerson.image)
+    }
+
     if (!((historicalPerson.birthDate) instanceof Date)) {
         historicalPerson.birthDate = new Date(historicalPerson.birthDate)
     }
@@ -42,10 +46,28 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                     <h1>{historicalPerson.name}</h1>
                 </div>
                 <div className="historicalFigureHeadBottom">
-                    <div className="historicalFigureHeadBottomLeft">
-                    </div>
-                    <div className="historicalFigureHeadBottomRight">
-                    </div>
+                    {
+                        !isNaN(historicalPerson.birthDate.getTime()) &&
+                        <h4>
+                            Né.e le {historicalPerson.birthDate.toLocaleDateString('fr-FR', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })}
+                        </h4>
+                    }
+                    {
+                        !isNaN(historicalPerson.deathDate.getTime()) &&
+                        <h4>
+                            Mort.e le {historicalPerson.deathDate.toLocaleDateString('fr-FR', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })}
+                        </h4>
+                    }
                 </div>
             </div>
             <div className="historicalFigureBody">
@@ -54,26 +76,20 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                     <p>{historicalPerson.content}</p>
                 </div>
                 <div className='content-right'>
-                    {historicalPerson.image ? (
-                        <div className="historicalFigureImage">
-                            <Image src={historicalPerson.image ? get_image_url(historicalPerson.image.split("File:")[1]) : "image_default/einstein.jpg"} alt="" width={300} height={200} />
-                        </div>
-                    ) : null}
-                    <div>
-                        {
-                            !isNaN(historicalPerson.birthDate.getTime()) &&
-                            <p>
-                                Né.e le : {historicalPerson.birthDate.getDate()} - {historicalPerson.birthDate.getMonth() + 1} - {historicalPerson.birthDate.getFullYear()}
-                            </p>
-                        }
-                        {
-                            !isNaN(historicalPerson.deathDate.getTime()) &&
-                            <p>
-                                Décédé.e le : {historicalPerson.deathDate.getDate()} - {historicalPerson.deathDate.getMonth() + 1} - {historicalPerson.deathDate.getFullYear()}
-                            </p>
-                        }
-                    </div>
 
+                    {historicalPerson.image && (
+                        <div className="historicalFigureImage">
+                            <Image
+                                src={
+                                    historicalPerson.image
+                                }
+                                alt=""
+                                width={150}
+                                height={200}
+                                layout="responsive"
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
             {historicalPerson.facts ? (
