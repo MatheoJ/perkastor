@@ -1,6 +1,7 @@
 /* pages/event.module.css */
-body {
+.body-event {
   background-color: #566f88;
+  width: 100%;
 }
 
 .container {
