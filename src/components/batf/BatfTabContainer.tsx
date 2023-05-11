@@ -86,6 +86,10 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
         responseJson.data ? setFacts(responseJson.data) : setFacts([]);
         response2Json.data ? setChains(response2Json.data) : setChains([]);
       }
+      else {
+        setFacts([]);
+        setChains([]);
+      }
     }
     setSelectedTab(0)
   }

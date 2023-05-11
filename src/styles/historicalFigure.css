@@ -9,7 +9,7 @@
     padding: 10px;
     overflow-y: scroll;
     overflow-x: hidden;
-    background-color: #ccc;
+    background-color: #fff;
     margin-bottom: 20px;
     box-shadow: 5px 5px 5px 1px rgba(0, 0, 0, 0.66);
 }
@@ -22,7 +22,7 @@
     flex: 1;
     margin-bottom: 5px;
     border-bottom: 1px solid black;
-    color: #344453;
+    color: black;
     font-weight: bold;
 }
 
@@ -54,7 +54,7 @@
     align-items: center;
     justify-content: center;
     margin: 0px 5px 0px 5px;
-    color: #344453; 
+    color: black; 
     line-height: 0;
 }
 
@@ -65,7 +65,7 @@
     display: flex;
     gap: 20px;
     margin-top: 20px;
-    color: #344453; 
+    color: black; 
 }
 
 .historicalFigureBodyBottom {
@@ -75,7 +75,7 @@
     display: flex;
     gap: 20px;
     margin-top: 20px;
-    color: #344453; 
+    color: black; 
 }
 
 .content-left {
@@ -110,7 +110,7 @@
 }
 
 .historicalFigure::-webkit-scrollbar-thumb {
-    background-color: #ccc;
+    background-color: #fff;
     border-radius: 5px;
 }
 

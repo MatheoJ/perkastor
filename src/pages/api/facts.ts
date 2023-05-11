@@ -328,6 +328,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 }        
                         
                     });
+                    await prisma.location.update({
+                        where: {
+                            id: location.id
+                        },
+                        data: {
+                            hasFact: true
+                        }
+                    })
                     
                     if (!location) {
                         createLocation = true;
@@ -344,6 +352,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             type: req.body.location.type,
                             geometry: "Point",
                             area: req.body.location.area,
+                            hasFact: true
                         }
                     }
                 } else {
@@ -479,7 +488,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         personsInvolved: req.body.personsInvolved || [],
                         author: req.body.author,
                         location: locPayload,
-                        sources: req.body.sources || []
+                        sources: req.body.sources || [],
                     },
                 });
 
@@ -589,6 +598,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         },
                     });
                     if(prismaResult){
+                        const fact = await prisma.fact.findFirst({
+                            where: {
+                                locationId: foundFact.locationId    
+                            }
+                        });
+                        if(!fact){
+                            await prisma.location.update({
+                                where: {
+                                    id: foundFact.locationId
+                                },
+                                data: {
+                                    hasFact: false
+                                }
+                            })
+                        }
                         res.status(200).json({ statusCode: 200, data: prismaResult });
                     }else{
                         res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être supprimé.` });

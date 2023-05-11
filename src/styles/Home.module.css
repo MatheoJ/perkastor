@@ -50,6 +50,7 @@
   bottom: 0;
   z-index: -1;
 }
+
 .image {
   position: absolute;
   top: 0;
@@ -78,7 +79,14 @@
   font-family: 'Ibarra Real Nova';
   text-align: right;
   padding-right: 2em;
-  height: 55px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.imageInfo p {
+  font-size: 14px;
 }
 
 .imageInfo a {
