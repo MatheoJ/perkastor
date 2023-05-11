@@ -4,17 +4,18 @@ import { Fact, HistoricalPerson } from '@prisma/client';
 import Slider from 'react-slick';
 
 interface HistoricalFigureListProps {
-  historicalPersonList: HistoricalPerson []
+  historicalPersonList: HistoricalPerson [];
+  selectedFigures : any[];
+  setSelectedFigures : (selectedFigures : any) => void;  
 }
 
-const HistoricalFigureList: NextPage<HistoricalFigureListProps> = ( props) => {
-  const { historicalPersonList } = props;
+const HistoricalFigureList: React.FC<HistoricalFigureListProps> = ( {historicalPersonList, selectedFigures, setSelectedFigures}) => {
+  
 
   
   const [visibleFigures, setVisibleFigures] = useState<number[]>([]);
   const [items, setItems] = useState(historicalPersonList.slice(0, 10));
 
-  const [selectedFigures, setSelectedFigures] = useState([]);
 
   const handleFigureClick = (figure) => {
     if (selectedFigures.includes(figure)) {

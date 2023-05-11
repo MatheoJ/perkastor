@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { ExtendedSession } from 'types/types';
 import { authOptions } from './auth/[...nextauth]';
 import { prisma } from '../../lib/db'
+import ObjectID from 'bson-objectid';
 //const { hasSome } = require('prisma-multi-tenant');
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
@@ -371,9 +372,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 } else {
                     req.body.author = session.user.id;
                 }
-                // Create a new fact
-                prismaResult = await prisma.fact.create({
-                    data: {
+
+
+                try{
+                    const id = ObjectID().toHexString();               
+                    var personsInvolved = req.body.idHistoricalFigure.map((person: any) => ({
+                    historicalPerson: {
+                        connect: {
+                        id: person,
+                        },
+                    },
+                    }));
+
+                    const fact: any = {
+                        id: id,
                         title: req.body.title,
                         shortDesc: req.body.shortDesc,
                         content: req.body.content,
@@ -383,17 +395,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         bannerImg: req.body.bannerImg,
                         video: req.body.video || [],
                         audio: req.body.audio || [],
-                        personsInvolved: undefined,
+                        personsInvolved: {
+                            create: personsInvolved,
+                        },
                         author: {
                             connect:{
                                 id: session.user.id,
                             }
                         },
-
                         location: locPayload,
                         sources: req.body.sources || []
-                    },
-                });
+                    };
+                    
+                    prismaResult = await prisma.fact.create({
+                        data: fact,
+                    });
+                }
+                catch(e){
+                    console.log(e);
+                }
+
                 if (prismaResult) {
                     res.status(201).json({ statusCode: 201, data: prismaResult });
                 } else {

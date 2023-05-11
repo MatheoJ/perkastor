@@ -67,7 +67,7 @@ const Batf: NextPage<BatfProps> = ({ children }) => {
                     if (state !== "minimized") {
                         //selectedTab={selectedTab} setSelectedTab={setSelectedTab}
                         return <>
-                            <BatfTabContainer onFullScreenClick={maximize} onMinimizeClick={hide}></BatfTabContainer>
+                            <BatfTabContainer onFullScreenClick={maximize} onMinimizeClick={hide} batfState={state} setBatfState={setState}></BatfTabContainer>
                         </>;
                     }
                     else {

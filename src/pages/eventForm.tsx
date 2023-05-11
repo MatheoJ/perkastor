@@ -44,9 +44,11 @@ const Event = () => {
     watch,
     control,
   } = useForm<EventData>();
+
   const [locationSelected, setLocationSelected] = useState("");
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [histFigToDisplay, setHistFigToDisplay] = useState<any[]>([]);
+  const [selectedFigures, setSelectedFigures] = useState([]);
   const [imageSrc, setImageSrc] = useState<File | null>(null);
   const ref = useRef<any>();
 
@@ -58,10 +60,12 @@ const Event = () => {
     setValue("typeLieux", locSelected.properties.type);
     setValue("idLieux", locSelected.properties.id);
 
-    console.log(watch("listOfDates"));
   };
 
   const onSubmit = async (data: EventData) => {
+
+    var selectedFigureId : string[]= selectedFigures.map(elem => elem.id);
+
 
     var dataEvent;
     var location = {
@@ -79,8 +83,9 @@ const Event = () => {
       content: data.description,
       location: location,
       keyDates: data.listOfDates,
-      idHistoricalFigure: data.idHistoricalFigure
+      idHistoricalFigure: selectedFigureId
     };
+
 
     setUploading(true);
     const response = await fetch('/api/facts', {
@@ -170,7 +175,7 @@ const Event = () => {
         })
       }
     }
-  }
+  };
 
   const handleMapClick = (longitude: number, latitude: number) => {
     setValue("coordinatesLong", longitude);
@@ -203,13 +208,10 @@ const Event = () => {
       const response2 = await fetch(`/api/search?${queryParams2}`, {
         method: "GET",
       });
-  /* 
-      histFigList = await response2.json.data.historicalPersons
-      console.log(histFigList) */
+
       var histfig = await response2.json();
       setHistFigToDisplay(histfig.data.historicalPersons);
-      console.log(histFigToDisplay);    
-    }    
+    }
   }
 
   function handleChange(event) {
@@ -296,10 +298,6 @@ const Event = () => {
           <p className="error-message">La latitude est requise.</p>
         )}
 
-        <label htmlFor="idLieux">Id du Lieu</label>
-        <input type="text" id="idLieux" {...register("idLieux")} readOnly />
-
-
         <h3>Dates de l'évènement</h3>
         <Controller
           name="listOfDates"
@@ -318,19 +316,21 @@ const Event = () => {
         />
 
       <div>
+        <h3>Associer un personnage historique </h3>
         <input type="text" value={query} onChange={handleChange} />
         <Button onClick={handleSearch}>Search</Button>
       </div>
-
-      <h3>Résultats de la recherche des Personnages Historiques associés</h3>
+              
       <div title="Historical_People" className="idiv">
-        <HistoricalFigureList historicalPersonList={histFigToDisplay}/>
+        <HistoricalFigureList historicalPersonList={histFigToDisplay} selectedFigures={selectedFigures} setSelectedFigures={setSelectedFigures}/>
       </div>
+      
         <Button className='button_submit' id='q1.button' type="submit" disabled={uploading}>Enregistrer</Button>
       </form>
 
     </div>
   );
 };
+
 
 export default Event;
