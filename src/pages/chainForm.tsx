@@ -1,8 +1,13 @@
 // pages/event.tsx
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 import MapCoordPicker from '~/components/MapCoordPicker';
 import SearchBar from '~/components/searchbar/SearchBar';
-import FactListContributions from '~/components/FactListContributions';
+import FactChainEdition from '~/components/FactChainEdition';
+import {selectFact} from '../events/ChainFormModalEvents';
+import {bus} from '../utils/bus';
+import { useState, useEffect } from 'react';
+import { FactProps } from 'types/types';
 
 interface ChainDto {
   name: string;
@@ -11,21 +16,43 @@ interface ChainDto {
   description: string;
   dateStart: Date;
   dateEnd: Date;
+  access: boolean;
+  tags: string[];
+  historicalFigures: string[];
+  facts: string[];
+  contributions: string[];
+  searchEvent: string;
 }
 
 const ChainForm = () => {
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<EventData>();
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<ChainDto>();
+  const [tempFacts, addTmpFacts] = useState<FactProps[]>([]);
+  const router = useRouter();
 
-  const onSubmit = (data: EventData) => {
+  const onSubmit = (data: ChainDto) => {
+    event.preventDefault()
+
     console.log(data);
 
-    window.location.href = "/mapWrapper";
+    router.push('/mapWrapper');
   };
+
+  useEffect(() => {
+    bus.subscribe(selectFact, event => {
+      console.log("chain handle");
+      console.log(event);
+
+      const fact = event.payload;
+
+      addTmpFacts([...tempFacts, fact]);
+      //setModalOpen(false);
+    });
+  });
 
   return (
     <div className="container" >
       <h1>Constitution d&apo;sune chaîne</h1>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="name">Nom de la chaîne</label>
         <input
           type="text"
@@ -56,18 +83,14 @@ const ChainForm = () => {
 
         <p>Ajout d&apos;événements déjà existants</p>
 
-        <input
-          type="text"
-          id="search-event"
-          placeholder="Prise de la Bastille"
-          {...register('search-event', { required: false })}
-        />
-        
-        <SearchBar showChecklist={false}></SearchBar>
-        {/*<FactList filter="search-event"></FactList>*/}
+        <SearchBar showChecklist={false} usedInForm={true}></SearchBar>
+
+        <h4>Ordonnancement des événements</h4>
+
+        <FactChainEdition facts={tempFacts}></FactChainEdition>
 
         <button type="submit">Envoyer 🚀</button>
-      </form>s
+      </form>
     </div>
   );
 };
