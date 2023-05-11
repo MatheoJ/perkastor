@@ -35,7 +35,7 @@ const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains,
             <img src={chain.image ? chain.image : "/images_default/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
             <div className='chainTitleText'>
               <div className="left">
-                <div><p>{chain.title}</p>
+                <div><p><span className='strong'>{chain.title}</span></p>
                   <div className='author'>
                     <Avatar alt={chain.author.name} src={chain.author.image} /><p>{chain.author.name}</p>
                   </div>

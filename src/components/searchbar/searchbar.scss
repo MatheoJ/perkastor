@@ -2,10 +2,10 @@
 
 .searchbar {
   position: absolute;
-  top: 50px;
+  top: 60px;
   left: calc(50% - 60px);
   //width: 25%;
-  z-index: 9999;
+  z-index: 9998;
   //display: flex;
   //flex-direction: row;
   padding: 0 10px;
@@ -25,7 +25,11 @@
 .searching-area {
   display: flex;
   align-items: center;
-  height: 50px;
+  height: 35px;
+  background-color: white;
+  border-radius: 5px 5px 0 0;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .searchBar__form {
@@ -35,7 +39,12 @@
 
 .searchBar__input {
   background-color: white;
+  border: none;
   //border-radius: 15px;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .searchbar.active .searchBar__form {
@@ -50,11 +59,11 @@
   position: relative;
   width: 100%;
   min-width: 200px;
-  margin-left: 40px;
+  //margin-left: 40px;
   display: flex;
   flex-direction: column;
   border-radius: 5px;
-  animation: fade-in 1s ease;
+  animation: fade-in 0.3s ease;
 }
 
 .checklist-area {
@@ -93,13 +102,16 @@
 }
 
 .searchResults-content {
-  width: 90%;
+  //width: 90%;
   max-height: 200px;
-  background-color: transparent;
-  box-shadow: rgba(37, 0, 0, 0.35) 0px 5px 15px;
+  background-color: white;
+  //box-shadow: rgba(37, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: 0 4px 3px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   overflow-y: auto;
+  border-radius: 0 0 5px 5px;
 
+  font-size: 12px;
 }
 
 .category {
@@ -114,6 +126,7 @@
   display: flex;
   align-items: center;
   border-bottom: 1px solid #ccc;
+  cursor: pointer;
 
   &:hover {
     background-color: $primary-color;
@@ -183,7 +196,7 @@
   position: relative;
   width: 100%;
   min-width: 300px;
-  margin-left: 40px;
+  //margin-left: 40px;
   display: flex;
   flex-direction: column;
   border-radius: 5px;

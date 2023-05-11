@@ -2,7 +2,7 @@
     height: 90%;
     max-height: 450px;
     color: black;
-    border-radius: 5px;
+    border-radius: 2px;
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: calc(2em + 1vw);
@@ -15,6 +15,7 @@
     margin-right: auto;
     margin-top: calc(0.5em + 1vh);
     margin-bottom: calc(0.5em + 1vh);
+    text-align: left;
 }
 
 .factHead {
@@ -142,18 +143,10 @@
 .padding-m {
     padding: 30px;
 }
-.factImage img {
+.factImage img, .figureImage img, .factItemImage img {
     height: auto;
     width: auto;
     max-height: 100%;
     max-width: 100px;
     margin-left: auto;
 }
-.factItemImage img {
-    height: auto;
-    width: auto;
-    max-height: 100%;
-    max-width: 100%;
-    margin-left: auto;
-}
-

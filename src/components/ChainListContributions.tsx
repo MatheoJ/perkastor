@@ -59,7 +59,7 @@ const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains,
           }}>
             <img src={chain.image ? chain.image : "/images_default/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
             <div className='chainTitleText'>
-              <p>{chain.title}
+              <p><span className='strong'>{chain.title}</span>
                 <br />
                 <div className="date-container">
                   <li>

@@ -180,7 +180,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       case 0:
         if (editMod) {
           if(facts.length == 0){
-            return <BatfNoMarkerSelected name={"Aucune anecdote historique selectionnée"}/>;
+            return <BatfNoMarkerSelected name={"Aucune anecdote historique créée"}/>;
           }
           return <FactListContributions facts={facts} setFacts={setFacts}  />;
         }
@@ -197,7 +197,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
         if (editMod) {
           if (itemSelected === null) {
             if(chains.length == 0){
-              return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdote historique selectionnée"}/>;
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdote historique créée"}/>;
             }
             return <ChainListContributions chains={chains} setItemSelected={setItemSelected} setChains={setChains} />;
           }
@@ -238,10 +238,10 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
           <Tab className={"tab-content"} title="Anecdote historique">
             {selectedTab === 0 && selectedComponent()}
           </Tab>
-          <Tab className={"tab-content"} title="Personnage Historique">
+          <Tab className={"tab-content"} title="Personnages Historiques">
             {selectedTab === 1 && selectedComponent()}
           </Tab>
-          <Tab className={"tab-content"} title="Chaines">
+          <Tab className={"tab-content"} title="Chaînes">
             {selectedTab === 2 && selectedComponent()}
           </Tab>
         </Tabs>

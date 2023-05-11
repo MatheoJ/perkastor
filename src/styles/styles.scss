@@ -119,6 +119,7 @@ li {
 
   li {
     list-style-type: none;
+    white-space: nowrap;
   }
 }
 
@@ -141,7 +142,7 @@ li {
   }
 }
 
-.text-bold {
+.text-bold, .strong, .bold {
   font-weight: 700;
 }
 
@@ -152,4 +153,8 @@ li {
 
 .slick-dots li.slick-active button:before {
   color: #F1B706 !important;
+}
+
+.sortedFigure {
+  height: 400px;
 }
