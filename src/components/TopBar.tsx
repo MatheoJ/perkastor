@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
 import { AccountCircle, VerifiedUserOutlined } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
+import MapIcon from '@mui/icons-material/Map';
+import { Button } from '@mui/material';
 
 function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
     const { data: session, status, update } = useSession({
@@ -33,30 +35,49 @@ function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
         <div className="topbar">
             <div className="topbar-container">
                 <div className="leftrow">
-                    <MenuIcon className="menu" onClick={toggleSidebar} style={{ color: "#F1B706", }}/>
+                    <MenuIcon className="menu" onClick={toggleSidebar} style={{ color: "#F1B706", }} />
                     <Link href='/'>
                         <div className="title">
-                            <h1>PERKASTOR</h1>
-                            <div className="logo" style={{ backgroundColor: "transparent" }}>
+                            <Button
+                                variant="text"
+                                style={{ color: "#F1B706" }}
+                            >
+                                <h1>PERKASTOR</h1>
+                            </Button>
+
+                            {/* <div className="logo" style={{ backgroundColor: "transparent" }}>
                                 <Image src={logo} alt="logo" width={40} height={40}/>
-                            </div>
+                            </div> */}
                         </div>
+                    </Link>
+                    <Link href='/mapWrapper'>
+                        <Button className="mapButton"
+                            variant="text"
+                            style={{ color: "#F1B706" }}
+                            startIcon={<MapIcon style={{ color: "#F1B706", }} />}>
+                            Carte
+                        </Button>
                     </Link>
                 </div>
                 <nav>
                     {status === "authenticated" ? (
                         <>
-                            <button className="secondary-text" onClick={() => signOut()}>Déconnexion</button>
+                            <Button className="mapButton"
+                                onClick={() => signOut()}
+                                variant="text"
+                                style={{ color: "#F1B706" }}>
+                                Déconnexion
+                            </Button>
                             <Link href='/profile'>
                                 <li className="connected">
-                                    <AccountCircle style={{ color: "#F1B706", }}/>
+                                    <AccountCircle style={{ color: "#F1B706", }} />
                                 </li>
                             </Link>
                         </>
                     ) : (
                         <Link href='/auth'>
                             <li className="connection">
-                                <AccountCircle style={{ color: "#F1B706", }}/>
+                                <AccountCircle style={{ color: "#F1B706", }} />
                             </li>
                         </Link>
                     )}

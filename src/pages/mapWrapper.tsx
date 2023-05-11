@@ -9,8 +9,7 @@ import { api } from "~/utils/api";
 import { Search } from "@mui/icons-material";
 
 export default function mapWrapperPage() {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
+  
   const [selectedItem, setSelectedItem] = useState<string>(""); // Keep track of the selected item in the sidebar
   const [insertMode, setInsertMode] = useState<boolean>(false); // Keep track of the insert mode / view mode
   const [sidebarIsOpen, setSidebarIsOpen] = useState<boolean>(false);

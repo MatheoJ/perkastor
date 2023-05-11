@@ -10,7 +10,7 @@ interface MapCoordPickerProps {
   onLocationSelect : (locSelected : any) => void;  
 }
 
-const MapCoordPicker: React.FC<MapCoordPickerProps> = ({ onMapClick, locSelected, onLocationSelect }) => {
+const MapCoordPicker: NextPage<MapCoordPickerProps> = ({ onMapClick, locSelected, onLocationSelect }) => {
   const mapContainer2 = useRef<HTMLDivElement>(null);
   const [mapInstance2, setMapInstance2] = useState<maplibregl.Map>(null);
   const image = useRef<maplibregl.Marker>(null);

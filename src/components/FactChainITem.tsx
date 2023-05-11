@@ -3,12 +3,13 @@ import Image from 'next/image';
 import { FactChainItem as FactChainItemType } from '@prisma/client'
 import { Fact as FactType } from '@prisma/client'
 import { FactChainItemProps } from '../../types/types'
+import { NextPage } from 'next';
 
 interface Props {
     item: FactChainItemProps;
 }
 
-const Fact: React.FC<Props> = (props) => {
+const Fact: NextPage<Props> = (props) => {
     const { item } = props;
     return (
         <div className="fact">
@@ -22,7 +23,9 @@ const Fact: React.FC<Props> = (props) => {
                     </div>
                     <div className="factHeadBottomRight">
                         <h2>
-                            {item.fact.from}
+                            {item.fact.keyDates.map((keyDate) => (
+                                <li >{keyDate.toString().split("T")[0]}</li>
+                            ))}
                         </h2>
                     </div>
                 </div>
@@ -33,7 +36,7 @@ const Fact: React.FC<Props> = (props) => {
                 </div>
                 <div className='content-right'>
                     <div className="factImage">
-                        {/*<Image src={fact.bannerImg} alt="" width={300} height={200} />*/}
+                        {<Image src={item.fact.bannerImg ? item.fact.bannerImg : "/images_default/perecastor.png"} alt="" width={300} height={200} />}
                     </div>
                     <ul>
                         {item.fact.personsInvolved.map((person) => (

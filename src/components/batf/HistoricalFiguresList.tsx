@@ -63,23 +63,33 @@ const HistoricalFigureList: React.FC<HistoricalFigureListProps> = ( {historicalP
     arrows: true,
   };
 
-  return (
-    <div>
-      <Slider className='sliderFigureList' {...settings}>
-        {historicalPersonList.map((figure) => (
-          <div 
-            className={`sortedFigure ${selectedFigures.includes(figure) ? 'selected' : ''}`} 
-            key={figure.id}
-            onClick={() => handleFigureClick(figure)}
-            >
-            <div className='figureClickable'>
-              <HistoricalFigureView historicalPerson={figure} />
+  if (historicalPersonList.length === 1) {
+    return (
+      <div className='sortedFigure'>
+        <div className='figureClickable'>
+          <HistoricalFigureView historicalPerson={historicalPersonList[0]} />
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <Slider className='sliderFigureList' {...settings}>
+          {historicalPersonList.map((figure) => (
+            <div 
+              className={`sortedFigure ${selectedFigures.includes(figure) ? 'selected' : ''}`} 
+              key={figure.id}
+              onClick={() => handleFigureClick(figure)}
+              >
+              <div className='figureClickable'>
+                <HistoricalFigureView historicalPerson={figure} />
+              </div>
             </div>
-          </div>
-        ))}
-      </Slider>
-    </div>
-  );
+          ))}
+        </Slider>
+      </div>
+    );
+  }
 };
 
 export default HistoricalFigureList;

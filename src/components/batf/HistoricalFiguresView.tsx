@@ -71,8 +71,18 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                         </div>
                     )}
                     <div>
-                        <p>Né.e le : {historicalPerson.birthDate.getDay()} - {historicalPerson.birthDate.getMonth()} - {historicalPerson.birthDate.getFullYear()}</p>
-                        <p>Décédé.e le : {historicalPerson.deathDate.getDay()} - {historicalPerson.deathDate.getMonth()} - {historicalPerson.deathDate.getFullYear()}</p>
+                        {
+                            !isNaN(historicalPerson.birthDate.getTime()) &&
+                            <p>
+                                Né.e le : {historicalPerson.birthDate.getDate()} - {historicalPerson.birthDate.getMonth() + 1} - {historicalPerson.birthDate.getFullYear()}
+                            </p>
+                        }
+                        {
+                            !isNaN(historicalPerson.deathDate.getTime()) &&
+                            <p>
+                                Décédé.e le : {historicalPerson.deathDate.getDate()} - {historicalPerson.deathDate.getMonth() + 1} - {historicalPerson.deathDate.getFullYear()}
+                            </p>
+                        }
                     </div>
                 </div>
             </div>

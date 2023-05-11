@@ -4,7 +4,6 @@ import { SessionProvider } from "next-auth/react";
 
 import { api } from "~/utils/api";
 
-import "~/styles/globals.css";
 import "~/styles/eventForm.css";
 import "~/styles/colors.scss";
 import "~/styles/text-styles.scss";
@@ -19,9 +18,10 @@ import "~/styles/fact.css";
 import "~/styles/historicalFigure.css";
 import "~/components/batf/Batf.scss";
 import "~/styles/mapStyle.scss";
-import "~/components/searchbar/searchbar.css"; 
+import "~/components/searchbar/searchbar.scss"; 
 import "~/styles/factListContributions.css";
 import "~/components/searchbar/filterschecklist.css";
+import "~/styles/chainListContributions.css";
 
 import Layout from "../components/layout/layout";
 import 'slick-carousel/slick/slick.css';

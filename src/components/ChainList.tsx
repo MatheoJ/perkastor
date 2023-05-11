@@ -1,55 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import FactChainItem from './FactChainItem';
-import Slider from 'react-slick';
-import { FactChainItem as FactChainItemType } from '@prisma/client';
-import { FactChain } from '@prisma/client';
-import { FactChainItemProps } from '../../types/types';
+import React, { useState } from 'react';
+import Fact from './Fact';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Add from '@material-ui/icons/Add';
+import Swal from 'sweetalert2';
+import { ChainListProps } from '../../types/types';
+import { createDeflate } from 'zlib';
+import { NextPage } from 'next';
 
-interface ChainListProps {
-  facts: FactChainItemProps[];
+interface ChainListContributionsProps {
+  chains: ChainListProps[];
+  setItemSelected: React.Dispatch<React.SetStateAction<{}>>;
 }
 
-const ChainList: React.FC<ChainListProps> = ({ facts }) => {
-  console.log('Facts:', facts);
-  const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
-  const [items, setItems] = useState(facts.slice(0, 10));
-
-  const fetchMoreData = () => {
-    setTimeout(() => {
-      setItems(items.concat(facts.slice(items.length, items.length + 10)));
-    }, 1500);
-  };
-
-  useEffect(() => {
-    console.log('Visible facts:', visibleFacts);
-  }, [visibleFacts]);
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    horizontal: true,
-    horizontalSwiping: true,
-    swipeToSlide: true,
-    arrows: false,
-    variableWidth: false,
-    outerWidth: 100,
-    autoplay: true,
-  };
-
+const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains, setItemSelected}) => {
   return (
-    <div>
-      <Slider className='sliderFactList' {...settings} style={{width: '300px'}}>
-        {facts.map((fact) => (
-          <div className='sortedFact' key={fact.id} style={{width: '100%'}}>
-            <FactChainItem item={fact} />
+    <div className="chainListContributions">
+      {chains.map((chain, index) => (
+        <div
+          key={chain.id}
+          className="chainContainer"
+          onClick={() => setItemSelected(chain)}
+        >
+          <div className="chainTitle">
+            <img src={chain.image ? chain.image : "/images_default/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
+            <div className='chainTitleText'> <p>{chain.title} <br /> {chain.createdAt.toString().split("T")[0]}</p> </div>
           </div>
-        ))}
-      </Slider>
-    </div>
+        </div>
+      ))}
+      </div>
   );
 };
-
-export default ChainList;
+export default ChainListContributions;

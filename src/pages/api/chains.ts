@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { method } = req;
 
     const { userId, chainId, locationId } = req.query;
-    console.log(req.query)
+
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
     try {
         switch (method) {
@@ -24,7 +24,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 include: {
                                     fact: {
                                         include: {
-                                            location: true
+                                            location: true,
+                                            personsInvolved: true,
                                         }
                                     }
                                 }
@@ -47,7 +48,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 include: {
                                     fact: {
                                         include: {
-                                            location: true
+                                            location: true,
+                                            personsInvolved: true,
                                         }
                                     }
                                 }
@@ -65,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     } else {
                         res.status(404).json({ message: `Chaine non trouvée pour l'utilisateur ${userId}` });
                     }
-                } else if (locationId) {
+                } else if (locationId && locationId !== "null") {
                     const prismaResult = await prisma.factChain.findMany({
                         where: {
                             items: {
@@ -82,7 +84,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 include: {
                                     fact: {
                                         include: {
-                                            location: true
+                                            location: true,
+                                            personsInvolved: true,
                                         }
                                     }
                                 }
@@ -104,7 +107,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                     include: {
                                         fact: {
                                             include: {
-                                                location: true
+                                                location: true,
+                                                personsInvolved: true,
                                             }
                                         }
                                     }
@@ -120,13 +124,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 break;
             case 'POST':
                 // Create data in your database
-                const { title, description, factItems, authorId } = req.body;
+                console.log(req.body);
+                const { title, description, factItems, authorId } =req.body;
+                console.log(req.body);
                 var factChainId = ObjectID().toHexString();
+                
                 const newFactChain = await prisma.factChain.create({
                     data: {
                         id: factChainId,
                         title: title,
-                        authorId: session.user.id || authorId,
+                        author : {
+                            connect : {
+                                id : authorId || session.user.id
+                            }
+                        },
                         description: description,
                     },
                 });
@@ -240,7 +251,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             case 'DELETE':
                 // Create data in your database
                 const { id } = req.query;
-                console.log(id);
+                
                 const deletedFactChain = await prisma.factChain.delete({
                     where: { id: id as string },
                 });
@@ -251,7 +262,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
                 break;
             default:
-                res.setHeader('Allow', ['GET', 'POST', 'PATCH', 'DELETE']);
                 res.status(405).end(`Method ${method} Not Allowed`);
         }
     }

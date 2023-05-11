@@ -2,18 +2,17 @@ import { HistoricalPerson, PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { ExtendedSession } from 'types/types';
-import { connectToDatabase } from '../../lib/db';
 import { authOptions } from './auth/[...nextauth]';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    console.log(req);
+
     const { method } = req;
 
     const { id } = req.query; // historical person id
     const { name } = req.query; // historical person name
     const { date } = req.query; // historical person date comprise between birth date and death date
     const { birthDate, deathDate } = req.query; // historical person dates
-    console.log(req.query)
+
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
 
     try {
@@ -192,12 +191,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     // Set the time to noon in UTC
                     fDeathDate.setHours(12, 0, 0, 0);
                     var fDeathDate = new Date(fDeathDate.toISOString().split('T')[0]);
-                    console.log(fDeathDate);
+
                     var fBirthDate = new Date(Array.isArray(birthDate) ? birthDate[0] : birthDate);
                     // Set the time to noon in UTC
                     fBirthDate.setHours(12, 0, 0, 0);
                     var fBirthDate = new Date(fBirthDate.toISOString().split('T')[0]);
-                    console.log(fBirthDate);
+                    
                     prismaResult = await client.historicalPerson.findMany({
                         where: {
                             birthDate: fBirthDate,
@@ -248,7 +247,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
                 break;
             default:
-                res.setHeader("Allow", ["GET"]);
                 res.status(405).end(`Method ${method} Not Allowed`);
                 return;
         }

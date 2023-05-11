@@ -1,7 +1,3 @@
-/* export default function MapPage() {
-    return <div>About us</div>
-} */
-
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import Marker from './Marker';
@@ -11,6 +7,11 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import Batf from './batf/Batf';
 import Button from './buttons/Button';
 import DisplayLocation from './DisplayLocation';
+import { bus } from '../utils/bus';
+import { selectMapEvent } from '../events/map/SelectMapEvent';
+import { selectLocationFromSearchBar } from '~/events/SelectSearchBarResultEvent';
+import { LngLatLike } from 'maplibre-gl';
+import { NextPage } from "next";
 
 const MapTilerApiKey = process.env.MAPTILER_API_KEY;
 
@@ -19,7 +20,7 @@ interface MapPageProps {
   onLocationSelect : (locSelected : any) => void;  
 }
 
-const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect }) => {
+const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
   const [idSelected, setIdSelected] = useState('');
@@ -33,21 +34,20 @@ const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect })
 
     const map = new maplibregl.Map({
       container: mapContainer.current,
-      style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=KeNNPlHwOHbhaGFsVoos',
+      style: `https://api.maptiler.com/maps/basic-v2/style.json?key=KeNNPlHwOHbhaGFsVoos`,
       center: [2.3, 43.5],
       zoom: 4,
     });
 
+    map.on('click', function(e) {
+      var features = map.queryRenderedFeatures(e.point, { layers: ['unclustered-point_loc'] });
+      if (!features.length) {
+        bus.publish(selectMapEvent(null));
+      }
+    });
+
     map.on('load', () => {
         setMapInstance(map);
-        map.addSource('earthquakes', {
-            type: 'geojson',
-            // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
-            // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
-            data: 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson',
-            cluster: false
-        });
-
     });
 
     map.loadImage(
@@ -57,6 +57,34 @@ const MapPage: React.FC<MapPageProps> = ({ locationSelected, onLocationSelect })
         map.addImage('pin_event', image);
       }
     );
+    
+    bus.subscribe(selectLocationFromSearchBar, event => {
+      const handlePayload = async () => {
+        const payload = await Promise.resolve(event.payload);
+        // @ts-ignore
+        const endPoints: LngLatLike = [payload.longitude, payload.latitude]; // DO NOT MODIFY THIS LINE
+
+        console.log(endPoints);
+
+        map?.flyTo({
+          center: endPoints,
+          zoom: 15,
+          bearing: 0,
+          speed: 1.5, // make the flying slow
+          curve: 1, // change the speed at which it zooms out
+          // This can be any easing function: it takes a number between
+          // 0 and 1 and returns another number between 0 and 1.
+          easing: function (t) {
+            return t;
+          },
+          // this animation is considered essential with respect to prefers-reduced-motion
+          essential: true
+        });
+      };
+      handlePayload().catch(error => {
+        console.error("Error handling payload:", error);
+      });
+    });
 
     return () => {
       map.remove();

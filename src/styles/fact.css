@@ -9,6 +9,7 @@
     overflow-y: scroll;
     overflow-x: hidden;
     background-color: #EADFC3;
+    color: black;
 }
 
 .factHead {
@@ -17,7 +18,6 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 5px;
-    border-bottom: 1px solid black;
 }
 
 .factHead h1 {
@@ -37,24 +37,61 @@
     display: flex;
     justify-content: space-between;
     margin: 5px;
+    flex: 1;
 }
 
+.factHeadBottomRight ul{
+    display: inline-block;
+    height: max-content ;
+}
+.factHeadBottomRight h2{
+    display: inline-block;
+    height: max-content ;
+}
+
+
 .factBody {
+    border-top: 1px solid black;
     position: relative;
+    text-align: justify;
     width: 100%;
-    height: 80%;
+    height: max-content;
     display: flex;
     gap: 20px;
     margin-top: 20px;
 }
 
-.content-left {
+.factMedia {
     position: relative;
-    width: 60%;
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
+    margin-top: 20px;
+    border-top: 1px solid black;
+}
+
+.factVerified{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    border-top: 1px solid black;
+}
+
+.content-left {
+    position: relative;
+    width: 60%;
+    height: max-content;
+    display: inline-block;
     text-align: justify;
+}
+
+.content-left p {
+    display: inline-block;
+    height: max-content;
 }
 
 .content-right {
@@ -63,6 +100,12 @@
     height: 100%;
     display: flex;      
     flex-direction: column;
+}
+
+.fact-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .fact::-webkit-scrollbar {

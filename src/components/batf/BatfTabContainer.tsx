@@ -1,156 +1,197 @@
 import React, { useState, useEffect } from "react";
 import Tabs from "./Tabs";
 import Tab from "./Tab";
-import FactChainContributions from "../FactChainContributions";
 import FactListContributions from "../FactListContributions";
 import ChainListContributions from "../ChainListContributions";
-import FactChainItem from "../FactChainItem";
+import FactList from "../FactList";
+import HistoricalFiguresView from "./HistoricalFiguresView";
 import ChainList from "../ChainList";
-
+import Chain from "../Chain";
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
-import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
-import FactList from "../FactList";
-import { Fact, Chain, HistoricalPerson } from "@prisma/client";
 import { useSession } from 'next-auth/react';
-import HistoricalFigureView from "./HistoricalFiguresView";
 import { contributionClickEvent } from "~/events/ContributionClickEvent";
-import { set } from "react-hook-form";
+import { selectHistoricalFigureFromSearchBar, selectEventFromSearchBar } from '../../events/SelectSearchBarResultEvent';
+import FactChainContributions from "../FactChainContributions";
+import { Avatar } from "@mui/material";
+import { Fullscreen, Remove } from "@mui/icons-material";
+// selectedTab, setSelectedTab
+const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfState}) => {
+  const [markerSelected, setMarkerSelected] = useState(false);
+  const [facts, setFacts] = useState([]);
+  const [editMod, setEditMod] = useState(false);
+  const [chains, setChains] = useState([]);
+  const [historicalFigure, setHistoricalFigure] = useState(null);
+  const [historicalFigureId, setHistoricalFigureId] = useState(null);
+  const [locationId, setLocationId] = useState<String>(null);
+  const { data: session, status, update } = useSession({ required: false });
+  const [itemSelected, setItemSelected] = useState(null);
+  const [selectedTab, setSelectedTab] = useState(0);
 
-const TabContainer = ({ onMinimizeClick, onFullScreenClick, selectedTab = 0 }) => {
-    const [markerSelected, setMarkerSelected] = useState(false);
-    const [facts, setFacts] = useState([]);
-    const [editMod, setEditMod] = useState(false);
-    const [chains, setChains] = useState([]);
-    const [historicalFigure, setHistoricalFigure] = useState(null);
-    const [historicalFigureId, setHistoricalFigureId] = useState(null);
-    const [locationId, setLocationId] = useState(null);
-    const {data : session, status, update} = useSession({required: false});
-    const handleMapChange = bus.subscribe(selectMapEvent, event => {
+  let lastTimeMapChanged = 0;
+  bus.subscribe(selectMapEvent, event => {
+    let now = new Date().getTime();
+    if (now - lastTimeMapChanged < 1000) {
+      if (event.payload == null) {
+        setMarkerSelected(false);
+        setFacts([]);
+        setChains([]);
+      } else {
         const geoInfos = event.payload;
         setMarkerSelected(true);
         setLocationId(geoInfos.properties.id);
-    });
-    const handleEditModChange = bus.subscribe(contributionClickEvent, event => {
-        const newEditMod = !editMod;
-        setEditMod(newEditMod)
-    });
-    const handleHistoricalFigureChange = bus.subscribe("historicalFigure", async event => {
-      const historicalFigureId = event.payload;
-      setHistoricalFigure(historicalFigureId);
-    });
-
-    useEffect(() => {
-      if(!markerSelected){
-        setFacts([]);
-        setChains([]);
-        setHistoricalFigure(null);
       }
-    }, [markerSelected]);
-    useEffect(() => {
-      async function fetchData() {
-        if(!editMod){
-          let response = await fetch(`/api/facts?locationId=${locationId}`);
-          response = await response.json();
-          console.log("response facts", response)
-          let response2 = await fetch(`/api/chains?locationId=${locationId}`);
-          response2 = await response2.json();
-          console.log("response chains", response2)
-          response.data ? setFacts(response.data) : setFacts([]);
-          response2.data ? setChains(response2.data) : setChains([]);
-        }
+    } else {
+      lastTimeMapChanged = now;
+    }
+  });
+  bus.subscribe(contributionClickEvent, event => {
+    const newEditMod = !editMod;
+    setEditMod(newEditMod)
+  });
+  bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
+      //const payload = await Promise.resolve(event.payload);
+      setHistoricalFigure(event.payload);
+  });
+
+  bus.subscribe(selectEventFromSearchBar, event => {
+      //const payload = await Promise.resolve(event.payload);
+      if(batfState == "minimized"){
+        setBatfState("normal");
       }
-      fetchData();
-    }, [locationId]);
+      setSelectedTab(0);
+      setFacts([event.payload]);
+  });
 
-    useEffect(() => {
-      async function fetchData() {
-        if(!editMod){
-            setFacts([]);
-            setChains([]);
-            setHistoricalFigure(null);
-        }
-        else{
-          console.log("session", session)
-          let userId = session?.user?.id;
-          if(userId != null){
-            let response = await fetch(`/api/facts?userId=${userId}`);
-            response = await response.json();
-            console.log("response facts2", response)
-            let response2 = await fetch(`/api/chains?userId=${userId}`);
-            response2 = await response2.json();
-            console.log("response chains2", response2)
-            response.data ? setFacts(response.data) : setFacts([]);
-            response2.data ? setChains(response2.data) : setChains([]);
-          }
-        }
+  async function fetchLocationData() {
+    if (!editMod) {
+      if (locationId) {
+        const promises = [fetch(`/api/facts?locationId=${locationId}`), fetch(`/api/chains?locationId=${locationId}`)];
+        const [response, response2] = await Promise.all(promises);
+        const jsonPromises = [response.json(), response2.json()];
+        const [responseJson, response2Json] = await Promise.all(jsonPromises);
+        responseJson.data ? setFacts(responseJson.data) : setFacts([]);
+        response2Json.data ? setChains(response2Json.data) : setChains([]);
       }
-      fetchData();
-    }, [editMod]);
-
-    useEffect(() => {
-        async function fetchData() {
-            if (historicalFigureId != null) {
-                let response = await fetch(`/api/historical-figures?id=${historicalFigureId}`);
-                response = await response.json();
-                setHistoricalFigure(response[0]);
-            }
-        }
-        fetchData();
-    }, [historicalFigureId]);
-
-
-  
-      const selectedComponent = (component) => {
-          switch (component) {
-              case "Évenements":
-                if (editMod){
-                  return <FactListContributions facts={facts}/>;
-                }
-                else{
-                  return <FactList facts={facts}/>;
-                }
-              case "Personnage Historique":                    
-                  return <HistoricalFigureView historicalPerson={historicalFigure}/>;
-              
-              case "Chaines":
-                if(editMod){
-                  return <ChainListContributions chains={chains}/>;
-                }
-                else{
-                  return <ChainListContributions chains={chains}/>;
-                 // return <ChainList chains={chains}/>;
-                }
-          }
+      else {
+        console.error("No locationId")
       }
-  
-      return (
-          <>
-              <div className={`batf-toolbar`}>
-              {editMod? <div style={{textAlign:"center"}}>Edition</div> : <div>Consultation</div>}
-                  <button className="toggle" onClick={onFullScreenClick}>
-                      <i className="fa fa-expand" style={{color:'#F1B706'}}></i>
-                  </button>
-                  <button className="toggle" onClick={onMinimizeClick}>
-                      <i className="fa fa-minus" style={{color:'#F1B706'}}></i>
-                  </button>
-              </div>
-              
-              <Tabs>
-              
-                  <Tab title="Événements">
-                      {selectedComponent("Évenements")}
-                  </Tab>
-                  <Tab title="Personnage Historique">
-                      {selectedComponent("Personnage Historique")}
-                  </Tab>
-                  <Tab title="Chaines">
-                      {selectedComponent("Chaines")}
-                  </Tab>
-              </Tabs>
-          </>
-      );
+    }
+    setSelectedTab(0)
   }
-  
-  export default TabContainer;
-  
+
+  async function fetchUserFacts() {
+    if (!editMod) {
+      setFacts([]);
+      setChains([]);
+      setItemSelected(null);
+      setHistoricalFigure(null);
+    }
+    else {
+      let userId = session?.user?.id;
+      if (userId != null) {
+        const promises = [fetch(`/api/facts?userId=${userId}`), fetch(`/api/chains?userId=${userId}`)];
+        const [response, response2] = await Promise.all(promises);
+        const jsonPromises = [response.json(), response2.json()];
+        const [responseJson, response2Json] = await Promise.all(jsonPromises);
+        responseJson.data ? setFacts(responseJson.data) : setFacts([]);
+        response2Json.data ? setChains(response2Json.data) : setChains([]);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (historicalFigure != null) {
+      if(batfState == "minimized"){
+         setBatfState("normal")
+      }
+      setSelectedTab(1);
+    }
+  }, [historicalFigure]);
+
+  useEffect(() => {
+    if (!markerSelected) {
+      setFacts([]);
+      setChains([]);
+      setItemSelected(null);
+      setHistoricalFigure(null);
+    }
+  }, [markerSelected]);
+
+  useEffect(() => {
+    fetchLocationData();
+  }, [locationId]);
+
+  useEffect(() => {
+    fetchUserFacts();
+  }, [editMod]);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (historicalFigureId != null) {
+        let response = await fetch(`/api/historical-figures?id=${historicalFigureId}`);
+        response = await response.json();
+        setHistoricalFigure(response[0]);
+      }
+    }
+    fetchData();
+  }, [historicalFigureId]);
+
+  const selectedComponent = () => {
+    switch (selectedTab) {
+      case 0:
+        if (editMod) {
+          return <FactListContributions facts={facts} setFacts={setFacts} />;
+        }
+        return <FactList facts={facts} />;
+      case 1:
+        return <HistoricalFiguresView historicalPerson={historicalFigure} />;
+      case 2:
+        if (editMod) {
+
+          if (itemSelected === null) {
+            return <ChainListContributions chains={chains} />;
+          }
+          return <FactChainContributions chain={itemSelected} />;
+        }
+        else {
+          if (itemSelected === null) {
+            return <ChainList chains={chains} setItemSelected={setItemSelected} />;
+          }
+          return <Chain chain={itemSelected} setItemSelected={setItemSelected} />;
+        }
+    }
+  }
+
+  return (
+    <>
+      <div className={`batf-toolbar`}>
+        <Avatar sx={{ width: 24, height: 24, color: '#F1B706', backgroundColor: '#fff' }} onClick={onFullScreenClick}>
+          <Fullscreen />
+        </Avatar>
+        <Avatar sx={{ width: 24, height: 24, color: '#F1B706', backgroundColor: '#fff' }} onClick={onMinimizeClick}>
+          <Remove />
+        </Avatar>
+      </div>
+
+      <div className="tabs-container">
+        {editMod ? <h2 style={{ textAlign: "center" }}>Edition</h2> : <h2>Consultation</h2>}
+        <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} key={editMod ? 'edit' : 'view'}>
+          <Tab className={"tab-content"} title="Événements">
+            {selectedComponent()}
+          </Tab>
+          <Tab className={"tab-content"} title="Personnage Historique">
+            {selectedComponent()}
+          </Tab>
+          <Tab className={"tab-content"} title="Chaines">
+            {selectedComponent()}
+          </Tab>
+
+        </Tabs>
+      </div>
+    </>
+  );
+};
+
+export default TabContainer;
+

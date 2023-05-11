@@ -13,7 +13,7 @@ export type ExtendedSession = {
 }
 export type SearchFilters = {
     event: boolean,
-    anecdote: boolean,
+    //anecdote: boolean,
     chain: boolean,
     historicalFigure: boolean,
     location: boolean,
@@ -23,13 +23,19 @@ export type SearchResult = {
     slice(arg0: number, arg1: number): unknown
     length: number
     events: Fact[],
-    anecdotes: Fact[],
+    //anecdotes: Fact[],
     chains: FactChain[],
     users: User[],
     locations: Location[],
     historicalPersons: HistoricalPerson[]
 }
 
+export interface PersonProps extends HistoricalPerson {
+    historicalPerson: {
+        id: string;
+        name: string;
+    }
+}
 export interface FactProps extends Fact {
     author: {
         id: string;
@@ -43,12 +49,13 @@ export interface FactProps extends Fact {
         id: string;
         name: string;
     };
-    personsInvolved: {
-        id: string;
-        name: string;
-    }[];
+    personsInvolved: PersonProps[];
     keyDates : Date[];
 }
+
+export interface FactListProps {
+    facts: FactProps[];
+  }
 
 export interface FactChainItemProps extends FactChainItem {
     factChain: {
@@ -56,4 +63,12 @@ export interface FactChainItemProps extends FactChainItem {
         name: string;
     };
     fact: FactProps;
+}
+
+export interface ChainListProps extends FactChain {
+    author: {
+      id: string;
+      name: string;
+  };
+  items: FactChainItemProps[];
 }

@@ -142,7 +142,7 @@ model Location {
     type            String // "ville", "pays", "region", "departement", "commune", "lieu-dit", "autre
     name            String // "Paris", "France", "Ile-de-France", "Seine"
     facts           Fact[] @relation("FactLocation")
-
+    hasFact        Boolean @default(false) @map("has_fact")
     // location is unique based on its coordinates and name
     @@unique([latitude, longitude, name])
     @@map("locations")

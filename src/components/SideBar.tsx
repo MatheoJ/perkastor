@@ -38,7 +38,7 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                         </li>
                         <li>
                             <div className="icon">
-                                <button onClick={() => handleClick({ item: "addEvent" })}>
+                                <button title='Accéder au formulaire pour ajouter un évènement' onClick={() => handleClick({ item: "addEvent" })}>
                                     <AddCircleIcon style={{ color: '#F1B706' }} />
                                     <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter un évènement</span>
                                 </button>

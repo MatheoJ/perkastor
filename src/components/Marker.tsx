@@ -7,13 +7,14 @@ import { selectMapEvent } from "../events/map/SelectMapEvent";
 import { bus } from "../utils/bus";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import { NextPage } from "next";
 
 interface MarkerProps {
   map: maplibregl.Map;
   lngLat?: [number, number];
 }
 
-const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
+const Marker: NextPage<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
   const coordinates = React.useRef<HTMLPreElement | null>(null);
 
   const getPlaceInfo = async (latitude, longitude, zoom) => {
@@ -38,19 +39,12 @@ const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=${detail}&polygon_geojson=1`
       );
 
-      console.log('https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=${zoom}&polygon_geojson=1');
-      
       if (response.data) {
-        console.log(response.data);
         const name = response.data.display_name ;
         const geojson = response.data.geojson;
-        console.log(name);
-        console.log(geojson);
-        
         return { name, geojson };
-      } else {
-        throw new Error('No response data');
       }
+      throw new Error('No response data');
     } catch (error) {
       console.error(error);
       return { name: 'Error fetching place info', geojson: null };
@@ -60,33 +54,12 @@ const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
   useEffect(() => {
     if (!map) return;
 
-    const markerElement = document.createElement("div");
-    markerElement.className = "marker";
-
-    const marker = new maplibregl.Marker({ draggable: true })
-      .setLngLat([0, 0])
-      .addTo(map);
-
-    function onDragEnd() {
-      const lngLat = marker.getLngLat();
-      coordinates.current.style.display = "block";      
-      coordinates.current.innerHTML = ` Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat}`;
-      void getPlaceInfo(lngLat.lat, lngLat.lng, Math.round(map.getZoom())).then((placeName) => {
-        coordinates.current.innerHTML = `Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat} <br /> ${placeName}`;
-      });
-    }
-
     function onClick(lngLat: LngLat): void {
       coordinates.current.style.display = "block";
       coordinates.current.innerHTML = ` Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat}`;
 
       void getPlaceInfo(lngLat.lat, lngLat.lng, Math.round(map.getZoom())).then((placeInfo) => {
         coordinates.current.innerHTML = `Coordonées du marker : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat} <br /> ${placeInfo.name}`;
-        
-        console.log('placeName :');
-        console.log(placeInfo.name);
-        console.log('geojson :');
-        console.log(placeInfo.geojson);
         
         if (placeInfo.geojson) {
 
@@ -113,14 +86,12 @@ const Marker: React.FC<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
       });
     }
 
-    //marker.on("dragend", onDragEnd);
-
     map.on("click", function(e) {
       onClick(e.lngLat);
       });
 
     return () => {
-      marker.remove();
+      map.off("click", onClick);
     };
   }, [map]);
 

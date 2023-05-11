@@ -1,3 +1,4 @@
+import { NextPage } from 'next';
 import Link from 'next/link'
 import React from "react";
 
@@ -6,7 +7,7 @@ interface Props {
   href: string;
 }
 
-const CustomLink: React.FC<Props> = ({
+const CustomLink: NextPage<Props> = ({
     children,
     href,
   }) => {
