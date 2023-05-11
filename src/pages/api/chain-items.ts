@@ -8,7 +8,7 @@ import { prisma } from '../../lib/db'
 //const { hasSome } = require('prisma-multi-tenant');
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
-    const { chainItemId, newTitle, newComment, chainItemToAdd, chainItemToRemove, chainItemIdsToSwap } = req.query;
+    const { chainItemId, newTitle, newComment, chainItemToAdd, chainItemIdsToSwap, newPosition } = req.query;
     const session: ExtendedSession = await getServerSession(req, res, authOptions);
     try {
         switch (method) {
@@ -21,49 +21,57 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
+                        return;
                     } else {
                         res.status(404).json({ message: "Chaine non trouvée pour l'id " + chainItemId });
+                        return;
                     }
                 } else {
                     prismaResult = await prisma.factChain.findMany();
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
+                        return;
                     } else {
                         res.status(404).json({ message: "Chaine non trouvée" });
+                        return;
                     }
                 }
                 break;
             case 'PATCH':
                 {
                     // Update FactChain with provided fields
-                    const updatedFactChainItem = await prisma.factChainItem.update({
-                        where: { id: chainItemId as string },
-                        data: {
-                            ...(newTitle && { title: newTitle as string }),
-                            ...(newComment && { comment: newComment as string }),
-                        },
-                    });
+                    var updatedFactChainItem;
+                    if(newTitle || newComment || newPosition){
+                        updatedFactChainItem = await prisma.factChainItem.update({
+                            where: { id: chainItemId as string },
+                            data: {
+                                ...(newTitle && { title: newTitle as string }),
+                                ...(newComment && { comment: newComment as string }),
+                                ...(newPosition && { position: newPosition as number })
+                            },
+                        });
+                    }
                     if (chainItemIdsToSwap) {
-                        const chainItemIdsToSwapArray = chainItemIdsToSwap as string[];
+                        const chainItemIdsToSwapArray = chainItemIdsToSwap.replace("[", "").replace("]", "").replace(/"/g, "").split(",");
+                        console.log(chainItemIdsToSwapArray);
                         const chainItem1 = await prisma.factChainItem.findUnique({
                             where: { id: chainItemIdsToSwapArray[0] },
                         });
                         const chainItem2 = await prisma.factChainItem.findUnique({
                             where: { id: chainItemIdsToSwapArray[1] },
                         });
-                        if (chainItem1 && chainItem2) {
+                        if (chainItem1 && chainItem2 && chainItem1.factChainId === chainItem2.factChainId) {
                             const position1 = chainItem1.position;
                             const position2 = chainItem2.position;
                             await prisma.factChainItem.update({
-                                where: { id: chainItemIdsToSwapArray[0] },
+                                where: { id: chainItemIdsToSwapArray[0]},
                                 data: { position: position2 },
                             });
                             await prisma.factChainItem.update({
-                                where: { id: chainItemIdsToSwapArray[1] },
+                                where: { id: chainItemIdsToSwapArray[1]},
                                 data: { position: position1 },
                             });
                         }
-                        // return new chain
                         const newChain = await prisma.factChain.findUnique({
                             where: { id: chainItem1.factChainId },
                             include: {
@@ -74,15 +82,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 },
                             },
                         });
+                        console.log("nouvelle chaine : ", newChain);
                         if (newChain) {
                             res.status(200).json({ data: newChain });
+                            return;
                         }
                     } else {
                         // return updated FactChainItem
                         if (updatedFactChainItem) {
                             res.status(200).json({ data: updatedFactChainItem });
+                            return;
                         } else {
                             res.status(500).json({ message: "Erreur serveur lors de la mise à jour partielle de la chaîne de faits" });
+                            return;
                         }
                     }
                     break;
@@ -109,14 +121,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                         if (newFactChainItem) {
                             res.status(200).json({ data: newFactChainItem });
+                            return;
                         } else {
                             res.status(500).json({ message: "Erreur serveur lors de la mise à jour partielle de la chaîne de faits et de l'ajout d'un élément" });
+                            return;
                         }
                     } else {
                         res.status(500).json({ message: "Certaines données obligatoires sont manquantes" });
+                        return;
                     }
                 } else {
                     res.status(500).json({ message: "Aucune donnée à ajouter" });
+                    return;
                 }
                 break;
             case 'DELETE':
@@ -161,16 +177,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                         if (newChain) {   
                             res.status(201).json({ data: newChain });
+                            return;
                         }  
                     }else {
                         res.status(500).json({ message: "Erreur serveur sur la suppression d'une chaîne de faits" });
+                        return;
                     }
                 } else {
                     res.status(500).json({ message: "Aucune donnée à supprimer" });
+                    return;
                 }
                 break;
             default:
                 res.status(405).end(`Method ${method} Not Allowed`);
+                return;
         }
         // close the database connection
         await prisma.$disconnect();
@@ -178,5 +198,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     catch (error) {
         console.log(error);
         res.status(500).json({ message: error });
+        return;
     }
 }

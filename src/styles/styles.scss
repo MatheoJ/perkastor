@@ -75,7 +75,64 @@ h4 {
   margin-bottom: 20px;
 }
 
-p {
+p, li {
   // font size relative to view width
-  font-size: calc(0.8rem + 0.5vw);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.divider-line {
+  width: 100%;
+  height: 1px;
+  background-color: #344453;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.display-2 {
+  letter-spacing: -.02em;
+}
+
+.mark {
+  color: inherit;
+  padding: 0;
+  background: none;
+  background-position-x: 0%;
+  background-position-y: 0%;
+  background-repeat: repeat;
+  background-image: none;
+  background-size: auto;
+  background-image: linear-gradient(120deg,rgba(0,153,255,0.4) 0,rgba(0,153,255,0.4) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% .3em;
+  background-position: 0 90%;
+  position: relative;
+  -webkit-animation-delay: 1s;
+  animation-delay: 1s;
+}
+
+.no-margin {
+  // removes the left margin from ul elements
+  margin: 0;
+  padding: 0;
+  li {
+    list-style-type: none;
+  }
+}
+
+.fact a {
+  color: rgba(0,153,255,1);
+  text-decoration: none;
+}
+
+.text-bold {
+  font-weight: 700;
+}
+
+.verifiedIcon, .uncheckedIcon {
+  margin-right: 1em;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #F1B706!important;
 }

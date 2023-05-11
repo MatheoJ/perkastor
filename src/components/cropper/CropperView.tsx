@@ -23,9 +23,11 @@ interface Props {
     toUpdateId?: string,
     ref?: any,
     image?: string,
+    imageSrc?: File | null,
+    setImageSrc?: Dispatch<SetStateAction<File | null>>,
 }
 
-const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, defaultFileType, alt, width, height, cropShape, variant, uploadOnSubmit, toUpdate, toUpdateId, image }, ref) => {
+const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, defaultFileType, alt, width, height, cropShape, variant, uploadOnSubmit, toUpdate, toUpdateId, image, imageSrc, setImageSrc }, ref) => {
     useImperativeHandle(ref, () => ({
         async triggerUpload(toUpdateIdOverride: string) {
             return await handleUpload(
@@ -49,7 +51,6 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
     const profileImageRef = useRef<HTMLInputElement>(null)
     const [visible, setVisible] = useState<boolean>(true)
     const [avatarUrl, setAvatarUrl] = useState<string | null>(image)
-    const [imageSrc, setImageSrc] = useState<File | null>(null)
     const [imageUrl, setImageUrl] = useState<string | null>(image)
     const [crop, setCrop] = useState<Point>({ x: 0, y: 0 })
     const [cropAreaPixels, setCropAreaPixels] = useState({ width: 0, height: 0, x: 0, y: 0 })

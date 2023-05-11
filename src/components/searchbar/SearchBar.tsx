@@ -86,9 +86,17 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
           break;
   
         case 'historicalPersons':
-          var birthYear = result.birthDate.slice(0,4);
-          var deathYear = result.deathDate.slice(0,4);
-  
+          var birthYear
+          try{
+            birthYear = result.birthDate.slice(0,4);
+          }catch(e){
+            birthYear = "????"
+          }
+          if(!result.deathDate){
+            result.deathDate = "aujourd'hui"
+          }else{
+            var deathYear = result.deathDate.slice(0,4);
+          }
           resultTitle = `(${birthYear}-${deathYear}) - ${result.name}`
           break;
   
@@ -130,13 +138,11 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
         case 'events':
           bus.publish(selectEventFromSearchBar(results[i] as FactPrisma));
         break;
-        case 'historicalPersons':
-          bus.publish(selectHistoricalFigureFromSearchBar(results[i] as HistoricalPerson));
-          break;
-        case 'locations':
-          bus.publish(selectLocationFromSearchBar(results[i] as Geometry));
-          break;
-      }
+      case 'locations':
+        bus.publish(selectLocationFromSearchBar(results[i] as Geometry));
+        break;
+      case 'chains':
+        bus.publish(selectChainFromSearchBar(results[i] as FactChain));
     }
     else{
       event.preventDefault();
@@ -149,7 +155,6 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
     }
   }
   
-
   return (
     <div className={`searchbar active ${usedInForm ? 'searchbar-form' : ''}`}>
       <div className="searching-area">

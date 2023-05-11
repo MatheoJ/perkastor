@@ -11,12 +11,16 @@ import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
 import { useSession } from 'next-auth/react';
 import { contributionClickEvent } from "~/events/ContributionClickEvent";
-import { selectHistoricalFigureFromSearchBar, selectEventFromSearchBar } from '../../events/SelectSearchBarResultEvent';
+import { selectHistoricalFigureFromSearchBar, selectEventFromSearchBar, selectChainFromSearchBar } from '../../events/SelectSearchBarResultEvent';
 import FactChainContributions from "../FactChainContributions";
 import { Avatar } from "@mui/material";
 import { Fullscreen, Remove } from "@mui/icons-material";
+import { set } from "zod";
+import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
+
 // selectedTab, setSelectedTab
-const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfState}) => {
+const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfState }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [markerSelected, setMarkerSelected] = useState(false);
   const [facts, setFacts] = useState([]);
   const [editMod, setEditMod] = useState(false);
@@ -27,43 +31,66 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
   const { data: session, status, update } = useSession({ required: false });
   const [itemSelected, setItemSelected] = useState(null);
   const [selectedTab, setSelectedTab] = useState(0);
-
+  const [lastSlide, setLastSlide] = useState(0);
+  const [changedChain, setChangedChain] = useState(null);
   let lastTimeMapChanged = 0;
-  bus.subscribe(selectMapEvent, event => {
-    let now = new Date().getTime();
-    if (now - lastTimeMapChanged < 1000) {
-      if (event.payload == null) {
-        setMarkerSelected(false);
-        setFacts([]);
-        setChains([]);
-      } else {
-        const geoInfos = event.payload;
-        setMarkerSelected(true);
-        setLocationId(geoInfos.properties.id);
-      }
-    } else {
-      lastTimeMapChanged = now;
-    }
-  });
-  bus.subscribe(contributionClickEvent, event => {
-    const newEditMod = !editMod;
-    setEditMod(newEditMod)
-  });
-  bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
-      //const payload = await Promise.resolve(event.payload);
-      setHistoricalFigure(event.payload);
-  });
 
-  bus.subscribe(selectEventFromSearchBar, event => {
+
+  useEffect(() => {
+    const unsubMap = bus.subscribe(selectMapEvent, event => {
+      let now = new Date().getTime();
+      if (now - lastTimeMapChanged < 1000) {
+        if (event.payload == null) {
+          setMarkerSelected(false);
+          setFacts([]);
+          setChains([]);
+        } else {
+          const geoInfos = event.payload;
+          setMarkerSelected(true);
+          setLocationId(geoInfos.properties.id);
+        }
+      } else {
+        lastTimeMapChanged = now;
+      }
+    });
+
+    const unsubClick = bus.subscribe(contributionClickEvent, event => {
+      setBatfState(previous => previous == "minimized" ? "normal" : previous);
+      setEditMod(previous => !previous);
+    });
+    const unsubHistFigure = bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
       //const payload = await Promise.resolve(event.payload);
-      if(batfState == "minimized"){
+      setHistoricalFigure(null);
+      setHistoricalFigure(event.payload);
+    });
+
+    const unsubEventFrom = bus.subscribe(selectEventFromSearchBar, event => {
+      //const payload = await Promise.resolve(event.payload);
+      if (batfState == "minimized") {
         setBatfState("normal");
       }
       setSelectedTab(0);
       setFacts([event.payload]);
-  });
+    });
+    const unsubChain = bus.subscribe(selectChainFromSearchBar, event => {
+      if(batfState == "minimized"){
+        setBatfState("normal");
+      }
+      setSelectedTab(2);
+      setItemSelected(event.payload);
+    });
+
+    return () => {
+      unsubClick();
+      unsubMap();
+      unsubHistFigure();
+      unsubEventFrom();
+      unsubChain();
+    };
+  }, []);
 
   async function fetchLocationData() {
+    setIsLoading(true);
     if (!editMod) {
       if (locationId) {
         const promises = [fetch(`/api/facts?locationId=${locationId}`), fetch(`/api/chains?locationId=${locationId}`)];
@@ -74,20 +101,17 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
         response2Json.data ? setChains(response2Json.data) : setChains([]);
       }
       else {
-        console.error("No locationId")
+        setFacts([]);
+        setChains([]);
       }
     }
     setSelectedTab(0)
+    setIsLoading(false);
   }
 
   async function fetchUserFacts() {
-    if (!editMod) {
-      setFacts([]);
-      setChains([]);
-      setItemSelected(null);
-      setHistoricalFigure(null);
-    }
-    else {
+    if (editMod) {
+      setIsLoading(true);
       let userId = session?.user?.id;
       if (userId != null) {
         const promises = [fetch(`/api/facts?userId=${userId}`), fetch(`/api/chains?userId=${userId}`)];
@@ -97,13 +121,18 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
         responseJson.data ? setFacts(responseJson.data) : setFacts([]);
         response2Json.data ? setChains(response2Json.data) : setChains([]);
       }
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
+    console.log('loading: ' + isLoading);
+  }, [isLoading]);
+
+  useEffect(() => {
     if (historicalFigure != null) {
-      if(batfState == "minimized"){
-         setBatfState("normal")
+      if (batfState == "minimized") {
+        setBatfState("normal")
       }
       setSelectedTab(1);
     }
@@ -137,26 +166,55 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
     fetchData();
   }, [historicalFigureId]);
 
+  useEffect(() => {
+    // change the chain array at the index of the changed chain
+    if (changedChain != null) {
+      let newChains = [...chains];
+      newChains[chains.findIndex(chain => chain.id === changedChain.id)] = changedChain;
+      setChains(newChains);
+    }
+  }, [changedChain]);
+
   const selectedComponent = () => {
     switch (selectedTab) {
       case 0:
         if (editMod) {
-          return <FactListContributions facts={facts} setFacts={setFacts} />;
+          if(facts.length == 0){
+            return <BatfNoMarkerSelected name={"Aucun évènement trouvé"}/>;
+          }
+          return <FactListContributions facts={facts} setFacts={setFacts}  />;
         }
-        return <FactList facts={facts} />;
+        if(facts.length == 0){
+          return <BatfNoMarkerSelected  name={"Aucun évènement trouvé"}/>;
+        }
+        return <FactList facts={facts} lastSlide={lastSlide} setLastSlide={setLastSlide} />;
       case 1:
+        if(historicalFigure === null){
+          return <BatfNoMarkerSelected  name={"Aucun personnage historique selectionné"}/>;
+        }
         return <HistoricalFiguresView historicalPerson={historicalFigure} />;
       case 2:
         if (editMod) {
-
           if (itemSelected === null) {
-            return <ChainListContributions chains={chains} />;
+            if(chains.length == 0){
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
+            }
+            return <ChainListContributions chains={chains} setItemSelected={setItemSelected} setChains={setChains} />;
           }
-          return <FactChainContributions chain={itemSelected} />;
+          if(itemSelected === null){
+            return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
+          }
+          return <FactChainContributions chain={itemSelected} setItemSelected={setItemSelected} setChangedChain={setChangedChain} />;
         }
         else {
           if (itemSelected === null) {
+            if(chains.length == 0){
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
+            }
             return <ChainList chains={chains} setItemSelected={setItemSelected} />;
+          }
+          if(itemSelected === null){
+            return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
           }
           return <Chain chain={itemSelected} setItemSelected={setItemSelected} />;
         }
@@ -166,27 +224,26 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
   return (
     <>
       <div className={`batf-toolbar`}>
-        <Avatar sx={{ width: 24, height: 24, color: '#F1B706', backgroundColor: '#fff' }} onClick={onFullScreenClick}>
+        <Avatar sx={{ width: 24, height: 24, color: '#344453', backgroundColor: '#F1B706' }} onClick={onFullScreenClick}>
           <Fullscreen />
         </Avatar>
-        <Avatar sx={{ width: 24, height: 24, color: '#F1B706', backgroundColor: '#fff' }} onClick={onMinimizeClick}>
+        <Avatar sx={{ width: 24, height: 24, color: '#344453', backgroundColor: '#F1B706' }} onClick={onMinimizeClick}>
           <Remove />
         </Avatar>
       </div>
 
       <div className="tabs-container">
         {editMod ? <h2 style={{ textAlign: "center" }}>Edition</h2> : <h2>Consultation</h2>}
-        <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} key={editMod ? 'edit' : 'view'}>
+        <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} isLoading={isLoading} setIsLoading={setIsLoading} key={editMod ? 'edit' : 'view'}>
           <Tab className={"tab-content"} title="Événements">
-            {selectedComponent()}
+            {selectedTab === 0 && selectedComponent()}
           </Tab>
           <Tab className={"tab-content"} title="Personnage Historique">
-            {selectedComponent()}
+            {selectedTab === 1 && selectedComponent()}
           </Tab>
           <Tab className={"tab-content"} title="Chaines">
-            {selectedComponent()}
+            {selectedTab === 2 && selectedComponent()}
           </Tab>
-
         </Tabs>
       </div>
     </>

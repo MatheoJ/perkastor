@@ -58,7 +58,7 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
       }
     );
     
-    bus.subscribe(selectLocationFromSearchBar, event => {
+    const unsub = bus.subscribe(selectLocationFromSearchBar, event => {
       const handlePayload = async () => {
         const payload = await Promise.resolve(event.payload);
         // @ts-ignore
@@ -88,6 +88,7 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
 
     return () => {
       map.remove();
+      unsub();
     };
   }, []);
 
@@ -96,8 +97,7 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
   return (
       <div ref={mapContainer} className={'map-container'}>
         {mapInstance && <Marker map={mapInstance} />}
-        {mapInstance && <FlyTo map={mapInstance} />}
-        {mapInstance && <DisplayLocation map={mapInstance} locationSelected={locationSelected} onLocationSelect={handleSelectLocation}  />}
+        {mapInstance && <DisplayLocation map={mapInstance} locationSelected={locationSelected} onLocationSelect={handleSelectLocation} filter={"hasFact"} />}
     </div>
   );
 }

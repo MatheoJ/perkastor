@@ -75,7 +75,7 @@ const FactChain: NextPage<FactChainProps> = ({ facts, setFacts }) => {
           className="factContainer"
         >
           <div className="factTitle">
-            <img src={fact.bannerImg ? fact.bannerImg : "/images_home/perecastor.png"} alt="fact image" id='imageFactList' className='imageFactList' />
+            <img src={fact.bannerImg ? fact.bannerImg : "/images_default/perecastor.png"} alt="fact image" id='imageFactList' className='imageFactList' />
 
             <div className='factTitleText'> <p>{fact.title} <br /> {fact.from}</p> </div>
           </div>

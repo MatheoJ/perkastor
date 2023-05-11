@@ -16,6 +16,8 @@
     color: white;
 
     z-index: 9999;
+    transition: all 0.3s ease;
+    transform: translateX(0);
 }
 
 .inner-batf {
@@ -26,28 +28,70 @@
     flex-direction: row;
 }
 
-.batf-fullscreen{
+.batf-fullscreen {
     @extend .batf;
 
     width: calc(100% - $sidebar-left-offset);
 }
 
-.batf-minimized{
-    @extend .batf;
+// Fade in animation
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
 
+    75% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+// Fade out animation
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+        height: 4em;
+        margin-top: 1em;
+    }
+
+    100% {
+        opacity: 0;
+        height: 4em;
+        margin-top: 1em;
+    }
+}
+
+.batf-handle {
     width: 2em;
+    transform: translateX(-2em);
     height: 4em;
     border-radius: 10px 0 0 10px;
     bottom: 0;
+    margin-top: 1em;
+    display: flex;
+    background-color: $primary-color;
+
+    &.hidden {
+        opacity: 0;
+        height: 0;
+        margin-top: 0em;
+    }
+
+    &.visible {
+        animation: fade-in 0.5s ease;
+        opacity: 1;
+    }
 }
 
-.batf-minimized-btn{
-    top: 20%;
-    left: 15%;
-    position: absolute;
+.batf-minimized {
+
+    transform: translateX(100%);
 }
 
-.batf-minimized-btn > i{
+.batf-minimized-btn>i {
     color: $secondary-color;
 }
 
@@ -58,17 +102,18 @@
     flex-direction: column;
 
     h2 {
+        text-transform: uppercase;
         margin: 0;
         background-color: hsla(208, 20%, 18%, 0.8);
         padding: 0;
         text-align: center;
         width: 100%;
-        font-size: calc(1.5em + 0.5vw);
+        font-size: calc(0.8em + 0.5vw);
         line-height: 40px;
     }
 }
 
-.batf-toolbar{
+.batf-toolbar {
     position: absolute;
     top: 0;
     left: 0;
@@ -81,43 +126,49 @@
 }
 
 .batf-content {
-    height: 100%;
+    height: 90%;
 }
 
-.tabs-row{
+.tabs-row {
     padding-left: 0;
     margin: 0;
     display: flex;
     width: 100%;
 
 
-    .batf-tab{
+    .batf-tab {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 100%;
         text-align: center;
         background-color: $primary-color;
-    
+
         color: white;
         padding: 10px;
-    
-        &:hover{
+
+        &:hover {
             opacity: 0.8;
         }
     }
-    
-    .batf-selectedtab{
+
+    .batf-selectedtab {
         @extend .batf-tab;
-        
+
         background-color: $secondary-color;
-    
-        color: $text-color;
     }
 }
 
-.tab-content{
+.tab-content {
     display: flex;
     flex-direction: column;
+    height: 75vh;
+}
+
+.loadingTabs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     height: 100%;
 }

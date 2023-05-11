@@ -9,7 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MapIcon from '@mui/icons-material/Map';
 import { Button } from '@mui/material';
 
-function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
+function TopBar() {
     const { data: session, status, update } = useSession({
         required: false
     })
@@ -35,7 +35,6 @@ function TopBar({ toggleSidebar }: { toggleSidebar: () => void }) {
         <div className="topbar">
             <div className="topbar-container">
                 <div className="leftrow">
-                    <MenuIcon className="menu" onClick={toggleSidebar} style={{ color: "#F1B706", }} />
                     <Link href='/'>
                         <div className="title">
                             <Button

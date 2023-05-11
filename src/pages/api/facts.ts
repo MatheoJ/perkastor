@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { ExtendedSession } from 'types/types';
 import { authOptions } from './auth/[...nextauth]';
 import { prisma } from '../../lib/db'
+import ObjectID from 'bson-objectid';
 //const { hasSome } = require('prisma-multi-tenant');
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
@@ -32,8 +33,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Le fait historique d'id ${fid} n\'existe pas.` });
+                        return;
                     }
                 } else if (userId) {
                     prismaResult = await prisma.user.findUnique({
@@ -56,8 +59,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     let result = [];
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult.facts });
+                        return;
                     } else {
                         res.status(422).json({ message: `L'utilisateur d'id ${userId} n\'existe pas.` });
+                        return;
                     }
                 } else if (description) {
                     prismaResult = await prisma.fact.findMany({
@@ -79,8 +84,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Aucun fait historique ne contient la description ${description}.` });
+                        return;
                     }
                 } else if (startDate && !endDate || endDate && !startDate) {
                     let date = startDate || endDate;
@@ -118,8 +125,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Aucun fait historique ne contient la date ${date}.` });
+                        return;
                     }
                 } else if (startDate && endDate) {
                     let dateStart = startDate;
@@ -157,8 +166,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Aucun fait historique ne contient la date ${dateStart} et ${dateEnd}.` });
+                        return;
                     }
                 } else if (histPersonName) {
                     prismaResult = await prisma.historicalPerson.findMany({
@@ -195,8 +206,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: result });
+                        return;
                     } else {
                         res.status(422).json({ message: `Aucun personnage historique ne contient le nom ${histPersonName}.` });
+                        return;
                     }
                 } else if (histPersonId) {
                     prismaResult = await prisma.historicalPerson.findMany({
@@ -230,8 +243,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             ));
                         });
                         res.status(200).json({ statusCode: 200, data: result });
+                        return;
                     } else {
                         res.status(422).json({ message: `Le personnage historique d'id ${histPersonId} n\'existe pas.` });
+                        return;
                     }
 
                 } else if (locationId || locationName || (latitude && longitude)){
@@ -269,25 +284,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: result });
+                        return;
                     }
                     else {
                         res.status(422).json({ message: `Aucun lieu ne contient l'id ${locationId}, le nom ${locationName} ou les coordonnées ${latitude}, ${longitude}.` });
+                        return;
                     }
                               
                 }  else {
                     prismaResult = await prisma.fact.findMany({take: 50});
                     res.status(200).json({ statusCode: 200, data: prismaResult });
+                    return;
                 }
                 break;
             case "POST":
 
                 if (!session) {
                     res.status(401).json({ message: 'Non authentifié !' });
+                    
                     return;
                 }
 
                 if (!req.body.location) {
                     res.status(422).json({ message: `Le lieu n\'est pas renseigné.` });
+                    return;
                 }
 
 
@@ -327,6 +347,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 }        
                         
                     });
+                    await prisma.location.update({
+                        where: {
+                            id: location.id
+                        },
+                        data: {
+                            hasFact: true
+                        }
+                    })
                     
                     if (!location) {
                         createLocation = true;
@@ -343,6 +371,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             type: req.body.location.type,
                             geometry: "Point",
                             area: req.body.location.area,
+                            hasFact: true
                         }
                     }
                 } else {
@@ -371,9 +400,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 } else {
                     req.body.author = session.user.id;
                 }
-                // Create a new fact
-                prismaResult = await prisma.fact.create({
-                    data: {
+
+
+                try{
+                    const id = ObjectID().toHexString();               
+                    var personsInvolved = req.body.idHistoricalFigure.map((person: any) => ({
+                    historicalPerson: {
+                        connect: {
+                        id: person,
+                        },
+                    },
+                    }));
+
+                    const fact: any = {
+                        id: id,
                         title: req.body.title,
                         shortDesc: req.body.shortDesc,
                         content: req.body.content,
@@ -383,32 +423,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         bannerImg: req.body.bannerImg,
                         video: req.body.video || [],
                         audio: req.body.audio || [],
-                        personsInvolved: undefined,
+                        personsInvolved: {
+                            create: personsInvolved,
+                        },
                         author: {
                             connect:{
                                 id: session.user.id,
                             }
                         },
-
                         location: locPayload,
                         sources: req.body.sources || []
-                    },
-                });
+                    };
+                    
+                    prismaResult = await prisma.fact.create({
+                        data: fact,
+                    });
+                }
+                catch(e){
+                    console.log(e);
+                }
+
                 if (prismaResult) {
                     res.status(201).json({ statusCode: 201, data: prismaResult });
+                    return;
                 } else {
                     res.status(422).json({ message: `Le fait historique n\'a pas pu être créé.` });
+                    return;
                 }
                 break;
             case "PUT": // used for partial modification of a resource
 
                 if (!session) {
                     res.status(401).json({ message: 'Non authentifié !' });
+                    
                     return;
                 }
 
                 if (!fid) {
                     res.status(422).json({ message: `L'id du fait historique n\'est pas renseigné.` });
+                    return;
                 }
                 // Check if the foundFact exists
                 var foundFact = await prisma.fact.findUnique({
@@ -458,14 +511,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         personsInvolved: req.body.personsInvolved || [],
                         author: req.body.author,
                         location: locPayload,
-                        sources: req.body.sources || []
+                        sources: req.body.sources || [],
                     },
                 });
 
                 if (prismaResult) {
                     res.status(200).json({ statusCode: 200, data: prismaResult });
+                    return;
                 } else {
                     res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être mis à jour.` });
+                    return;
                 }
                 break;
             case "PATCH":
@@ -477,6 +532,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (!fid) {
                     res.status(422).json({ message: `L'id du fait historique n\'est pas renseigné.` });
+                    return;
                 }
                 // Check if the foundFact exists
                 foundFact = await prisma.fact.findUnique({
@@ -534,8 +590,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (res) {
                     res.status(200).json({ statusCode: 200, data: prismaResult });
+                    return;
                 } else {
                     res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être mis à jour.` });
+                    return;
                 }
 
                 break;
@@ -548,6 +606,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (!fid) {
                     res.status(422).json({ message: `L'id du fait historique n\'est pas renseigné.` });
+                    return;
                 }
                 // Check if the foundFactexists
                 foundFact= await prisma.fact.findUnique({
@@ -568,9 +627,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         },
                     });
                     if(prismaResult){
+                        const fact = await prisma.fact.findFirst({
+                            where: {
+                                locationId: foundFact.locationId    
+                            }
+                        });
+                        if(!fact){
+                            await prisma.location.update({
+                                where: {
+                                    id: foundFact.locationId
+                                },
+                                data: {
+                                    hasFact: false
+                                }
+                            })
+                        }
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     }else{
                         res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être supprimé.` });
+                        return;
                     }
                 } else {
                     res.status(401).json({ message: 'Non autorisé !' });
@@ -582,9 +658,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 res.status(405).end(`Method ${method} Not Allowed`);
                 return;
         }
-        res.status(200).json(prismaResult);
     } catch (error) {
         console.log(error);
         res.status(500).json({ statusCode: 500, message: JSON.stringify(error) });
+        return;
     }
 }

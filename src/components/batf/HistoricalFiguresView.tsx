@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { HistoricalPerson, Fact } from '@prisma/client';
 import { NextPage } from 'next';
+import crypto from 'crypto';
+import FactList from '../FactList';
+
 
 interface HistoricalFigureProps extends HistoricalPerson {
     facts: Fact[]
@@ -11,68 +14,94 @@ interface Props {
     historicalPerson: HistoricalFigureProps
 }
 
-import crypto from 'crypto';
-
-function get_image_url(filename: string): string {
+function getImageUrl(filename: string): string {
+    filename = filename.replace("https://commons.wikimedia.org/wiki/File:", "");
     filename = filename.replace(' ', '_');
-    let m = crypto.createHash('md5');
-    m.update(filename);
-    let md5hash = m.digest('hex');
-    return `https://upload.wikimedia.org/wikipedia/commons/${md5hash[0]}/${md5hash.substring(0, 2)}/${filename}`;
+    const md5hash = crypto.createHash('md5').update(filename).digest('hex');
+    return `https://upload.wikimedia.org/wikipedia/commons/${md5hash[0]}/${md5hash.slice(0, 2)}/${filename}`;
 }
+
 
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
-
     if (!historicalPerson) {
         return null;
     }
+
+    if (historicalPerson.image && historicalPerson.image.startsWith("https://commons.wikimedia.org/wiki/File:")) {
+        historicalPerson.image = getImageUrl(historicalPerson.image)
+    }
+
     if (!((historicalPerson.birthDate) instanceof Date)) {
         historicalPerson.birthDate = new Date(historicalPerson.birthDate)
     }
     if (!((historicalPerson.deathDate) instanceof Date)) {
+        if(historicalPerson.deathDate == "1970-01-01T00:00:00.000+00:00"){
+            historicalPerson.deathDate = null;
+        }
         historicalPerson.deathDate = new Date(historicalPerson.deathDate)
     }
 
     return (
-        <div className="historicalFigure">
-            <div className="historicalFigureHead">
-                <div className="historicalFigureHeadTop">
-                    <h1>{historicalPerson.name}</h1>
+        <div className="fact">
+            <div className="factHead">
+                <div className="factHeadTop">
+                    <h1 className='mark'>{historicalPerson.name}</h1>
                 </div>
-                <div className="historicalFigureHeadBottom">
-                    <div className="historicalFigureHeadBottomLeft">
+                <div className="factHeadBottom">
+                    <div className="factHeadBottomLeft">
+                    {
+                        !isNaN(historicalPerson.birthDate.getTime()) &&
+                        <h4>
+                            Né.e le {historicalPerson.birthDate.toLocaleDateString('fr-FR', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })}
+                        </h4>
+                    }
+                    {
+                        !isNaN(historicalPerson.deathDate.getTime()) &&
+                        <h4>
+                            Mort.e le {historicalPerson.deathDate.toLocaleDateString('fr-FR', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })}
+                        </h4>
+                    }
                     </div>
-                    <div className="historicalFigureHeadBottomRight">
+                    <div className="factHeadBottomRight">
+                    <div className="factImage">
+                            <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                        </div>
                     </div>
                 </div>
             </div>
             <div className="historicalFigureBody">
                 <div className='content-left'>
-                    <p>{historicalPerson.shortDesc}</p>
-                    <p>{historicalPerson.content}</p>
+                    <strong>Description</strong>
+                    {historicalPerson.shortDesc && <p>{historicalPerson.shortDesc.charAt(0).toUpperCase() + historicalPerson.shortDesc.slice(1)}</p>}
+                    {historicalPerson.content && <p>{historicalPerson.content.charAt(0).toUpperCase() + historicalPerson.content.slice(1)}</p>}
                 </div>
-                <div className='content-right'>
-                    {historicalPerson.image ? (
-                        <div className="historicalFigureImage">
-                            <Image src={historicalPerson.image ? get_image_url(historicalPerson.image.split("File:")[1]) : "image_default/einstein.jpg"} alt="" width={300} height={200} />
-                        </div>
-                    ) : null}
-                    <div>
-                        {
-                            !isNaN(historicalPerson.birthDate.getTime()) &&
-                            <p>
-                                Né.e le : {historicalPerson.birthDate.getDate()} - {historicalPerson.birthDate.getMonth() + 1} - {historicalPerson.birthDate.getFullYear()}
-                            </p>
-                        }
-                        {
-                            !isNaN(historicalPerson.deathDate.getTime()) &&
-                            <p>
-                                Décédé.e le : {historicalPerson.deathDate.getDate()} - {historicalPerson.deathDate.getMonth() + 1} - {historicalPerson.deathDate.getFullYear()}
-                            </p>
-                        }
-                    </div>
 
+                <div className='content-right'>
+
+                    {historicalPerson.image && (
+                        <div className="historicalFigureImage">
+                            <Image
+                                src={
+                                    historicalPerson.image
+                                }
+                                alt=""
+                                width={150}
+                                height={200}
+                                layout="responsive"
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
             {historicalPerson.facts ? (
@@ -80,13 +109,7 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                     <div>
                         Anecdotes et Événements associés :
                         <div className="content">
-                            <ul>
-                                {historicalPerson.facts.map(elem => {
-                                    return (<li key={elem.id}>
-                                        {elem.shortDesc}
-                                    </li>)
-                                })}
-                            </ul>
+                            <FactList facts={historicalPerson.facts} />
                         </div>
                     </div>
                 </div>
@@ -96,5 +119,13 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
     );
 };
 
-
+/*
+<ul>
+                                {historicalPerson.facts.map(elem => {
+                                    return (<li key={elem.id}>
+                                        {elem.shortDesc}
+                                    </li>)
+                                })}
+                            </ul>
+                            */
 export default HistoricalFigureView;

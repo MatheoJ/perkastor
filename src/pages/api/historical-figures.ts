@@ -31,8 +31,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Le personnage historique d'id ${id} n\'existe pas.` });
+                        return;
                     }
                 } else if (name && !date && !birthDate && !deathDate) {
                     prismaResult = await client.historicalPerson.findMany({
@@ -44,8 +46,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Le personnage historique de nom ${name} n\'existe pas.` });
+                        return;
                     }
                 } else if (name && date) {
                     var dateToCompare = new Date(Array.isArray(date) ? date[0] : date);
@@ -75,8 +79,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     }else{
                         res.status(422).json({ message: `Le personnage historique de nom ${name} ayant vécu cette année là ${date} n\'existe pas.` });
+                        return;
                     }
                 } else if (name && birthDate && !deathDate) {
                     var fBirthDate = new Date(Array.isArray(birthDate) ? birthDate[0] : birthDate);
@@ -99,8 +105,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Le personnage historique de nom ${name} de date de naissance ${fBirthDate} n\'existe pas.` });
+                        return;
                     }
                 } else if (name && !birthDate && deathDate) {
                     var fDeathDate = new Date(Array.isArray(deathDate) ? deathDate[0] : deathDate);
@@ -123,8 +131,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Le personnage historique de nom ${name} de date de mort ${fDeathDate} n\'existe pas.` });
+                        return;
                     }
                 }
                 else if (name && birthDate && deathDate) {
@@ -156,8 +166,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Le personnage historique de nom ${name} de date de naissance ${birthDate} et de date de mort ${deathDate} n\'existe pas.` });
+                        return;
                     }
                 } else if (date && !name && !birthDate && !deathDate) {
                     var dateToCompare = new Date(Array.isArray(date) ? date[0] : date);
@@ -183,8 +195,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Le personnage historique de ayant vécu cette année là ${date} n\'existe pas.` });
+                        return;
                     }
                 } else if (birthDate && deathDate && !date) {     
                     var fDeathDate = new Date(Array.isArray(deathDate) ? deathDate[0] : deathDate);
@@ -205,8 +219,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Le personnage historique de date de naissance ${birthDate} et de date de mort ${deathDate} n\'existe pas.` });
+                        return;
                     }
                 } else if (birthDate && !deathDate && !date){
                     var fBirthDate = new Date(Array.isArray(birthDate) ? birthDate[0] : birthDate);
@@ -221,8 +237,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Le personnage historique de date de naissance ${birthDate} n\'existe pas.` });
+                        return;
                     }
                 } else if (deathDate && !birthDate && !date){
                     var fDeathDate = new Date(Array.isArray(deathDate) ? deathDate[0] : deathDate);
@@ -237,21 +255,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
+                        return;
                     } else {
                         res.status(422).json({ message: `Le personnage historique de date de mort ${deathDate} n\'existe pas.` });
+                        return;
                     }
                 }
                   else {
                     prismaResult = await client.historicalPerson.findMany();
                     res.status(200).json({ statusCode: 200, data: prismaResult });
+                    return;
                 }
                 break;
             default:
                 res.status(405).end(`Method ${method} Not Allowed`);
                 return;
         }
-        res.status(200).json(prismaResult);
     } catch (error) {
         res.status(500).json({ statusCode: 500, message: JSON.stringify(error) });
+        return;
     }
 }
