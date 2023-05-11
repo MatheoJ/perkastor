@@ -9,6 +9,7 @@ import { FactProps } from 'types/types';
 import { selectHistoricalFigureFromSearchBar } from '~/events/SelectSearchBarResultEvent';
 import { bus } from "../utils/bus";
 import { classNames } from 'react-easy-crop/helpers';
+import ImageWithFallback from './ImageWithFallback';
 
 interface Props {
     fact: FactProps;
@@ -42,10 +43,10 @@ const Fact: NextPage<Props> = ({ fact }) => {
             return 'N/A'
         }
         console.log(date.toDateString().split(' ')[1])
-        if(date.toDateString().split(' ')[1] === 'Jan' && date.toDateString().split(' ')[2] === '01' && date.getFullYear() === 1970) {
+        if (date.toDateString().split(' ')[1] === 'Jan' && date.toDateString().split(' ')[2] === '01' && date.getFullYear() === 1970) {
             return 'N/A'
         }
-        if(date.toDateString().split(' ')[1] === 'Jan' && date.toDateString().split(' ')[2] === '01') {
+        if (date.toDateString().split(' ')[1] === 'Jan' && date.toDateString().split(' ')[2] === '01') {
             return date.getFullYear().toString();
         }
         return date.toLocaleDateString('fr-FR', {
@@ -83,20 +84,20 @@ const Fact: NextPage<Props> = ({ fact }) => {
                                         </div>
                                         <div className="factHeadBottomRight">
                                             <div className="factImage">
-                                                <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                                                <ImageWithFallback src={fact.bannerImg} alt="" width={300} height={200} fallback='/resources/404-error.png' />
                                             </div>
                                         </div>
                                     </> :
                                     <>
                                         <div className="factHeadBottomLeft">
                                             <p className='no-margin'>
-                                                Lieu:
+                                                <span className="text-bold">Lieu:</span>
                                                 <br />
                                                 <span key={fact.location.id}>{fact.location.name}</span>
                                             </p>
                                         </div>
                                         <div className="factHeadBottomRight">
-                                            <p className='no-margin'>Date{sortedDates.length > 1 ? 's' : ''}:</p>
+                                            <p className='no-margin'><span className="text-bold">Date{sortedDates.length > 1 ? 's' : ''}:</span></p>
                                             <ul className='no-margin'>
                                                 {sortedDates.map((date) => {
                                                     return <li key={date.getTime()}>{date.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</li>;
@@ -146,7 +147,7 @@ const Fact: NextPage<Props> = ({ fact }) => {
                                 fact.title ?
                                     null :
                                     <div className="factImage">
-                                        <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                                        <ImageWithFallback src={fact.bannerImg} alt="" width={300} height={200} fallback='/resources/404-error.png' />
                                     </div>
                             }
                             <ul>
@@ -156,19 +157,25 @@ const Fact: NextPage<Props> = ({ fact }) => {
                     </>
                 ) : fact.bannerImg ? (//test : there is an image and no personsInvolved
                     <>
-                        <div className="content-left">
-                            <strong>Description</strong>
-                            <p>{fact.content}</p>
-                        </div>
-                        <div className='content-right'>
-                            {
-                                fact.title ?
-                                    null :
-                                    <div className="factImage">
-                                        <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                        {
+                            fact.title ?
+                                <div className='column'>
+                                    <strong>Description</strong>
+                                    <p>{fact.content}</p>
+                                </div> :
+                                <>
+                                    <div className="content-left">
+                                        <strong>Description</strong>
+                                        <p>{fact.content}</p>
                                     </div>
-                            }
-                        </div>
+                                    <div className='content-right'>
+                                        <div className="factImage">
+                                            <ImageWithFallback src={fact.bannerImg} alt="" width={300} height={200} fallback='/resources/404-error.png' />
+                                        </div>
+                                    </div>
+                                </>
+                        }
+
                     </>
                 ) : fact.personsInvolved && fact.personsInvolved.length ? ( //test : there are personsInvolved and no image 
                     <>

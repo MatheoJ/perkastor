@@ -180,12 +180,12 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       case 0:
         if (editMod) {
           if(facts.length == 0){
-            return <BatfNoMarkerSelected name={"Aucun évènement selectionné"}/>;
+            return <BatfNoMarkerSelected name={"Aucun événement crée"}/>;
           }
           return <FactListContributions facts={facts} setFacts={setFacts}  />;
         }
         if(facts.length == 0){
-          return <BatfNoMarkerSelected  name={"Aucun évènement selectionné"}/>;
+          return <BatfNoMarkerSelected  name={"Aucun événement selectionné"}/>;
         }
         return <FactList facts={facts} lastSlide={lastSlide} setLastSlide={setLastSlide} />;
       case 1:
@@ -197,12 +197,12 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
         if (editMod) {
           if (itemSelected === null) {
             if(chains.length == 0){
-              return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement selectionnée"}/>;
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'événement créée"}/>;
             }
             return <ChainListContributions chains={chains} setItemSelected={setItemSelected} setChains={setChains} />;
           }
           if(itemSelected === null){
-            return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement selectionnée"}/>;
+            return <BatfNoMarkerSelected name={"Aucune chaîne d'événement selectionnée"}/>;
           }
           return <FactChainContributions chain={itemSelected} setItemSelected={setItemSelected} setChangedChain={setChangedChain} />;
         }
@@ -238,10 +238,10 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
           <Tab className={"tab-content"} title="Événements">
             {selectedTab === 0 && selectedComponent()}
           </Tab>
-          <Tab className={"tab-content"} title="Personnage Historique">
+          <Tab className={"tab-content"} title="Personnages Historiques">
             {selectedTab === 1 && selectedComponent()}
           </Tab>
-          <Tab className={"tab-content"} title="Chaines">
+          <Tab className={"tab-content"} title="Chaînes">
             {selectedTab === 2 && selectedComponent()}
           </Tab>
         </Tabs>

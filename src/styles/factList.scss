@@ -65,8 +65,8 @@ $slick-arrow-color: black !default;
 }
 
 .imageFactList {
-    height: 100px;
-    width: 100px;
-    background-size: cover;
-    background-position: center;
+    height: auto;
+    width: auto;
+    max-width: 100%;
+    max-height: 100%;
 }
