@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import { CircularProgress, IconButton } from "@mui/material";
 import { SearchFilters, SearchResult } from 'types/types';
@@ -14,6 +14,8 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { ref, handleClick } = useFocus();
+
   const [filters, setFilters] = useState<SearchFilters>({
     event: true,
     historicalFigure: true,
@@ -34,6 +36,8 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
     const results = await fetch(`/api/search?query=${searchTerm}&filtersParam=${JSON.stringify(filters)}`);
     const resultat = await results.json();
 
+    console.log("résultat api");
+    console.log(results);
     setSearchResults(resultat.data);
     setIsLoading(false);
   };
@@ -42,8 +46,8 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
     return results.map((result, index) => {
       let resultTitle = '';
       switch (category) {
+        //case 'anecdotes':
         case 'events':
-        case 'anecdotes':
           if (result.title.length < 1) {
             const date = result.keyDates[0].slice(0,4);
             let content: string = result.content;
@@ -65,11 +69,8 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
   
         case 'historicalPersons':
           var birthYear = result.birthDate.slice(0,4);
-          if(!result.deathDate){
-            result.deathDate = "aujourd'hui"
-          }else{
-            var deathYear = result.deathDate.slice(0,4);
-          }
+          var deathYear = result.deathDate.slice(0,4);
+  
           resultTitle = `(${birthYear}-${deathYear}) - ${result.name}`
           break;
   
@@ -84,7 +85,7 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
   
       return (
         <div key={result.id} className="dataItem">
-          <button className="dataItem__name" onClick={() => handleClickOnResult(results, category, index)}>{resultTitle}</button>
+          <button className="dataItem__name" onClick={() => handleClickOnResult(results, category, index)} category={category}>{resultTitle}</button>
         </div>
       )
     })
@@ -94,8 +95,8 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
     switch (category) {
       case 'events':
         return 'Évènements';
-      case 'anecdotes':
-        return 'Anecdotes';
+      /*case 'anecdotes':
+        return 'Anecdotes';*/
       case 'locations':
         return 'Lieux';
       case 'historicalPersons':
@@ -113,7 +114,7 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
         bus.publish(selectEventFromSearchBar(results[i] as Fact));
       break;
       case 'historicalPersons':
-        bus.publish(selectHistoricalFigureFromSearchBar(results[i] as HistoricalPerson));
+        //bus.publish(selectHistoricalFigureFromSearchBar(results[i] as HistoricalPerson));
         break;
       case 'locations':
         bus.publish(selectLocationFromSearchBar(results[i] as Geometry));
@@ -138,6 +139,8 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
               setSearchTerm(e.target.value);
               setSearchResults([]);
             }}
+            ref={ref}
+            onClick={handleClick} 
           />
 
         </form>
@@ -173,5 +176,26 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
     </div >
   );
 }
+
+
+export const useFocus = () => {
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+  }, []);
+
+  const handleClick = () => {
+    if (ref.current) {
+      ref.current.focus();
+
+      ref.current.style 
+    }
+  };
+
+  return { ref, handleClick };
+};
 
 export default SearchBar;

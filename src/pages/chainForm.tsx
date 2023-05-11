@@ -1,7 +1,8 @@
 // pages/event.tsx
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/router';
 import MapCoordPicker from '~/components/MapCoordPicker';
+import SearchBar from '~/components/searchbar/SearchBar';
+import FactListContributions from '~/components/FactListContributions';
 
 interface ChainDto {
   name: string;
@@ -10,28 +11,21 @@ interface ChainDto {
   description: string;
   dateStart: Date;
   dateEnd: Date;
-  access: boolean;
-  tags: string[];
-  historicalFigures: string[];
-  facts: string[];
-  contributions: string[];
-  searchEvent: string;
 }
 
 const ChainForm = () => {
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<ChainDto>();
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<EventData>();
 
-  const router = useRouter();
-
-  const onSubmit = (data: ChainDto) => {
+  const onSubmit = (data: EventData) => {
     console.log(data);
-    router.push('/mapWrapper');
+
+    window.location.href = "/mapWrapper";
   };
 
   return (
     <div className="container" >
       <h1>Constitution d&apo;sune chaîne</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form>
         <label htmlFor="name">Nom de la chaîne</label>
         <input
           type="text"
@@ -66,8 +60,10 @@ const ChainForm = () => {
           type="text"
           id="search-event"
           placeholder="Prise de la Bastille"
-          {...register('searchEvent', { required: false })}
+          {...register('search-event', { required: false })}
         />
+        
+        <SearchBar showChecklist={false}></SearchBar>
         {/*<FactList filter="search-event"></FactList>*/}
 
         <button type="submit">Envoyer 🚀</button>
