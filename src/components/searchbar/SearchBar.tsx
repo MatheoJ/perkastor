@@ -1,38 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import { CircularProgress, IconButton } from "@mui/material";
 import { SearchFilters, SearchResult } from 'types/types';
 import { bus } from "~/utils/bus";
-import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent, selectChainFromSearchBar} from '../../events/SelectSearchBarResultEvent';
-import { Fact, FactChain, HistoricalPerson } from "@prisma/client";
+import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent} from '../../events/SelectSearchBarResultEvent';
+import {HistoricalPerson, FactPrisma} from "@prisma/client";
+
+import {FactProps} from 'types/types';
+
+import Fact from "../Fact";
+
+
 import {Geometry} from "geojson";
 import FiltersChecklist from "./FiltersChecklist";
+import { NextPage } from "next";
 
-function SearchBar({ showChecklist }: { showChecklist: boolean }) {
+import SearchBarModalResult from "./SearchBarModalResult";
+
+interface Props{
+  showChecklist: boolean;
+  usedInForm: boolean;
+}
+
+const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { ref, handleClick } = useFocus();
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [modalFact, setModalFact] = useState<FactPrisma>(null);
+
   const [filters, setFilters] = useState<SearchFilters>({
     event: true,
-    historicalFigure: true,
-    location: true,
-    chain: true,
-    user: true,
+    historicalFigure: !usedInForm,
+    location: !usedInForm,
+    chain: !usedInForm,
+    user: !usedInForm,
   });
 
   const toggleSearchBar = () => {
     setShowSearchBar(!showSearchBar);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    //e.preventDefault();
+    console.log("test");
     setIsLoading(true);
-
+    
     // passer les parametres sélectionnés comme filtre puis ajouter &filtersParam=${JSON.stringify({})} a la fin de l'url
     const results = await fetch(`/api/search?query=${searchTerm}&filtersParam=${JSON.stringify(filters)}`);
     const resultat = await results.json();
 
+    console.log("résultat api");
+    console.log(results);
     setSearchResults(resultat.data);
     setIsLoading(false);
   };
@@ -41,8 +64,8 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
     return results.map((result, index) => {
       let resultTitle = '';
       switch (category) {
+        //case 'anecdotes':
         case 'events':
-        case 'anecdotes':
           if (result.title.length < 1) {
             const date = result.keyDates[0].slice(0,4);
             let content: string = result.content;
@@ -88,7 +111,7 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
   
       return (
         <div key={result.id} className="dataItem">
-          <button className="dataItem__name" onClick={() => handleClickOnResult(results, category, index)}>{resultTitle}</button>
+          <button className="dataItem__name" onClick={(event) => handleClickOnResult(event, results, category, index)} category={category}>{resultTitle}</button>
         </div>
       )
     })
@@ -98,8 +121,6 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
     switch (category) {
       case 'events':
         return 'Évènements';
-      case 'anecdotes':
-        return 'Anecdotes';
       case 'locations':
         return 'Lieux';
       case 'historicalPersons':
@@ -111,13 +132,11 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
     }
   }
 
-  function handleClickOnResult(results: any, category:string, i: number){
-    switch (category) {
-      case 'events':
-        bus.publish(selectEventFromSearchBar(results[i] as Fact));
-      break;
-      case 'historicalPersons':
-        bus.publish(selectHistoricalFigureFromSearchBar(results[i] as HistoricalPerson));
+  function handleClickOnResult(event, results: any, category:string, i: number){
+    if (!usedInForm){
+      switch (category) {
+        case 'events':
+          bus.publish(selectEventFromSearchBar(results[i] as FactPrisma));
         break;
       case 'locations':
         bus.publish(selectLocationFromSearchBar(results[i] as Geometry));
@@ -126,14 +145,21 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
         bus.publish(selectChainFromSearchBar(results[i] as FactChain));
     }
   }
+  else{
+    event.preventDefault();
+
+    setModalOpen(true);
+    setModalFact(results[i]);
+
+    console.log(modalFact);
+    console.log(modalOpen);
+  }
+  }
   
   return (
-    <div className={`searchbar ${showSearchBar ? "active" : ""}`}>
+    <div className={`searchbar active ${usedInForm ? 'searchbar-form' : ''}`}>
       <div className="searching-area">
-        <IconButton onClick={toggleSearchBar}>
-          <SearchIcon />
-        </IconButton>
-        <form className="searchBar__form" onSubmit={handleSubmit}>
+        <div className="searchBar__form">
           <input
             type="text"
             className="searchBar__input"
@@ -143,10 +169,18 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
               setSearchTerm(e.target.value);
               setSearchResults([]);
             }}
+            ref={ref}
+            onClick={handleClick}
+           // onSubmit={() => {handleSubmit}}
           />
 
-        </form>
+        </div>
         {isLoading && <div className="loading" ><CircularProgress size={24} color="inherit" /></div>}
+        <IconButton onClick={async () => {
+          await handleSubmit();
+      }}>
+        <SearchIcon />
+      </IconButton>
       </div>
       {searchResults && Object.values(searchResults).some(cat => cat.length > 0) && (
         <div className="searchResults">
@@ -155,7 +189,7 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
               <React.Fragment key={category}>
                 {results.length > 0 && (
                   <React.Fragment>
-                    <span className="category" ><strong>{rawCategoryToPrintable(category)}</strong></span>
+                    {!usedInForm ? <span className="category" ><strong>{rawCategoryToPrintable(category)}</strong></span> : ''}
                     {renderResults(results, category)}
                   </React.Fragment>
                 )}
@@ -175,8 +209,33 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
           }} setFilters={setFilters} />
         </div>
       }
+      {
+        modalOpen &&
+        <SearchBarModalResult fact={modalFact} open={modalOpen} setOpen={setModalOpen} />
+      }
     </div >
   );
 }
+
+
+export const useFocus = () => {
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+  }, []);
+
+  const handleClick = () => {
+    if (ref.current) {
+      ref.current.focus();
+
+      ref.current.style 
+    }
+  };
+
+  return { ref, handleClick };
+};
 
 export default SearchBar;

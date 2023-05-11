@@ -13,7 +13,6 @@ export type ExtendedSession = {
 }
 export type SearchFilters = {
     event: boolean,
-    //anecdote: boolean,
     chain: boolean,
     historicalFigure: boolean,
     location: boolean,

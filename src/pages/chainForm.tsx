@@ -2,6 +2,12 @@
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import MapCoordPicker from '~/components/MapCoordPicker';
+import SearchBar from '~/components/searchbar/SearchBar';
+import FactChainEdition from '~/components/FactChainEdition';
+import {selectFact} from '../events/ChainFormModalEvents';
+import {bus} from '../utils/bus';
+import { useState, useEffect } from 'react';
+import { FactProps } from 'types/types';
 
 interface ChainDto {
   name: string;
@@ -20,13 +26,28 @@ interface ChainDto {
 
 const ChainForm = () => {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<ChainDto>();
-
+  const [tempFacts, addTmpFacts] = useState<FactProps[]>([]);
   const router = useRouter();
 
   const onSubmit = (data: ChainDto) => {
+    event.preventDefault()
+
     console.log(data);
+
     router.push('/mapWrapper');
   };
+
+  useEffect(() => {
+    bus.subscribe(selectFact, event => {
+      console.log("chain handle");
+      console.log(event);
+
+      const fact = event.payload;
+
+      addTmpFacts([...tempFacts, fact]);
+      //setModalOpen(false);
+    });
+  });
 
   return (
     <div className="container" >
@@ -62,16 +83,14 @@ const ChainForm = () => {
 
         <p>Ajout d&apos;événements déjà existants</p>
 
-        <input
-          type="text"
-          id="search-event"
-          placeholder="Prise de la Bastille"
-          {...register('searchEvent', { required: false })}
-        />
-        {/*<FactList filter="search-event"></FactList>*/}
+        <SearchBar showChecklist={false} usedInForm={true}></SearchBar>
+
+        <h4>Ordonnancement des événements</h4>
+
+        <FactChainEdition facts={tempFacts}></FactChainEdition>
 
         <button type="submit">Envoyer 🚀</button>
-      </form>s
+      </form>
     </div>
   );
 };
