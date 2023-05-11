@@ -156,13 +156,19 @@
         @extend .batf-tab;
 
         background-color: $secondary-color;
-
-        color: $text-color;
     }
 }
 
 .tab-content {
     display: flex;
     flex-direction: column;
+    height: 100%;
+}
+
+.loadingTabs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     height: 100%;
 }

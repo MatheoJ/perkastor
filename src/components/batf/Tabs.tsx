@@ -1,5 +1,6 @@
 import { NextPage } from "next"
 import React, { ReactElement, useState } from "react"
+import RingLoader from "react-spinners/RingLoader";
 
 import TabTitle from "./TabTitle"
 
@@ -9,7 +10,7 @@ type Props = {
   setSelectedTab: React.Dispatch<React.SetStateAction<number>>
 }
 
-const Tabs: NextPage<Props> = ({ children, selectedTab, setSelectedTab }) => {
+const Tabs: NextPage<Props> = ({ children, selectedTab, setSelectedTab, isLoading, setIsLoading }) => {
   
   function handleTabChange(tab: number){
     setSelectedTab(tab);
@@ -29,7 +30,7 @@ const Tabs: NextPage<Props> = ({ children, selectedTab, setSelectedTab }) => {
         ))}
       </ul>
       <div className="batf-content">
-         {children[selectedTab]}
+      {isLoading ? <div className="loadingTabs" ><RingLoader size={100} color="white" /></div> : children[selectedTab]}
       </div>
     </div>
   )
