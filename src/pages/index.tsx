@@ -78,6 +78,11 @@ const Home: NextPage<{}> = () => {
           <p>Ce site est collaboratif, n’hésitez pas à rajouter vos propres anecdotes historiques.</p>
           <p>Le projet Perkastor étant open source, on vous invite à participer activement à son développement en vous rendant sur notre <a href='https://github.com/MatheoJ/perkastor' target='_blank'>Github</a>.</p>
           <br/>
+          <h4>Vidéo de présentation</h4>
+            <div className="videoPresentation-youtube-withoutIframe">
+              <iframe width="560" height="315" src="https://www.youtube.com/embed/hKnz7sYcbAA" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen={true}></iframe>
+            </div>
+
           <p><Link href="/privacyPolicy" target="_blank" rel="noopener noreferrer">Politique de confidentialité</Link><br/><Link href="/gcu" target="_blank" rel="noopener noreferrer">Conditions générales d'utilisation</Link></p>
         </div>
 
