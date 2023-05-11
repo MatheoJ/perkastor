@@ -5,7 +5,9 @@ export default class BatfNoMarkerSelected extends React.Component {
 
     render() {
         return <div>
-            <h1>Nothing selected</h1>
+            <div className="fact">
+                <div style={{textAlign:"center", justifyContent:"center", display:"flex", alignItems:"center", height:"100%", fontSize:"24px", color:"rgb(0,153,255)"}}>Aucun contenu trouvé</div>
+                </div>
         </div>;
     }
 }

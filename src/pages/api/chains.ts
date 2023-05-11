@@ -34,8 +34,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
+                        return;
                     } else {
                         res.status(404).json({ message: "Chaine non trouvée pour l'id " + chainId });
+                        return;
                     }
                 } else if (userId) {
                     const prismaResult = await prisma.factChain.findMany({
@@ -58,14 +60,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
+                        return;
                     }
                     else {
                         res.status(404).json({ message: `Chaine non trouvée pour l'utilisateur ${userId}` });
-                    }
-                    if (prismaResult) {
-                        res.status(200).json({ data: prismaResult });
-                    } else {
-                        res.status(404).json({ message: `Chaine non trouvée pour l'utilisateur ${userId}` });
+                        return;
                     }
                 } else if (locationId && locationId !== "null") {
                     const prismaResult = await prisma.factChain.findMany({
@@ -94,9 +93,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
+                        return;
                     }
                     else {
                         res.status(404).json({ message: `Chaine non trouvée pour la localisation ${locationId}` });
+                        return;
                     }
 
                 } else {
@@ -117,8 +118,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
+                        return;
                     } else {
                         res.status(404).json({ message: "Chaine non trouvée" });
+                        return;
                     }
                 }
                 break;
@@ -173,8 +176,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (updatedFactChain) {
                     res.status(201).json({ data: updatedFactChain });
+                    return;
                 } else {
                     res.status(500).json({ message: "Erreur serveur sur l'ajout d'une chaîne de faits" });
+                    return;
                 }
                 break;
             case 'PUT':
@@ -217,8 +222,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                     if (result) {
                         res.status(200).json({ data: result });
+                        return;
                     } else {
                         res.status(500).json({ message: "Erreur serveur lors de la mise à jour de la chaîne de faits" });
+                        return;
                     }
                     break;
                 }
@@ -243,8 +250,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                     if (result) {
                         res.status(200).json({ data: result });
+                        return;
                     } else {
                         res.status(500).json({ message: "Erreur serveur lors de la mise à jour partielle de la chaîne de faits et de la suppression d'un élément" });
+                        return;
                     }
                     break;
                 }
@@ -257,16 +266,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 });
                 if (deletedFactChain) {
                     res.status(201).json({ data: deletedFactChain });
+                    return;
                 } else {
                     res.status(500).json({ message: "Erreur serveur sur la suppression d'une chaîne de faits" });
+                    return;
                 }
                 break;
             default:
                 res.status(405).end(`Method ${method} Not Allowed`);
+                return;
         }
     }
     catch (error) {
         console.log(error);
         res.status(500).json({ message: error });
+        return;
     }
 }

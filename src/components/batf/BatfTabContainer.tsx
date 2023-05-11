@@ -16,6 +16,7 @@ import FactChainContributions from "../FactChainContributions";
 import { Avatar } from "@mui/material";
 import { Fullscreen, Remove } from "@mui/icons-material";
 import { set } from "zod";
+import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
 // selectedTab, setSelectedTab
 const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfState}) => {
   const [markerSelected, setMarkerSelected] = useState(false);
@@ -159,7 +160,13 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
     switch (selectedTab) {
       case 0:
         if (editMod) {
+          if(facts.length == 0){
+            return <BatfNoMarkerSelected/>;
+          }
           return <FactListContributions facts={facts} setFacts={setFacts} />;
+        }
+        if(facts.length == 0){
+          return <BatfNoMarkerSelected/>;
         }
         return <FactList facts={facts} lastSlide={lastSlide} setLastSlide={setLastSlide} />;
       case 1:
@@ -167,13 +174,25 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       case 2:
         if (editMod) {
           if (itemSelected === null) {
+            if(chains.length == 0){
+              return <BatfNoMarkerSelected/>;
+            }
             return <ChainListContributions chains={chains} setItemSelected={setItemSelected} setChains={setChains} />;
+          }
+          if(itemSelected === null){
+            return <BatfNoMarkerSelected/>;
           }
           return <FactChainContributions chain={itemSelected} setItemSelected={setItemSelected} setChangedChain={setChangedChain} />;
         }
         else {
           if (itemSelected === null) {
+            if(chains.length == 0){
+              return <BatfNoMarkerSelected/>;
+            }
             return <ChainList chains={chains} setItemSelected={setItemSelected} />;
+          }
+          if(itemSelected === null){
+            return <BatfNoMarkerSelected/>;
           }
           return <Chain chain={itemSelected} setItemSelected={setItemSelected} />;
         }

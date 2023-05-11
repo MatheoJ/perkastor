@@ -65,7 +65,7 @@ const Event = () => {
   const onSubmit = async (data: EventData) => {
 
     var selectedFigureId : string[]= selectedFigures.map(elem => elem.id);
-
+    console.log(data);
 
     var dataEvent;
     var location = {
@@ -78,7 +78,7 @@ const Event = () => {
     };
 
     dataEvent = {
-      title: data.name,
+      title: data.name, 
       shortDesc: "",
       content: data.description,
       location: location,
@@ -174,6 +174,13 @@ const Event = () => {
           router.push("/mapWrapper");
         })
       }
+    }else{
+      MySwal.fire({
+        title: "Erreur lors de l'ajout de l'évènement",
+        icon: "error",
+        showCancelButton: false,
+        confirmButtonText: "Ok",
+      })
     }
   };
 
@@ -190,7 +197,6 @@ const Event = () => {
   async function handleSearch(e) {
     var filter : SearchFilters = {
       event: false,
-      anecdote: false,
       chain: false,
       historicalFigure: true,
       location: false,
@@ -232,11 +238,8 @@ const Event = () => {
         {errors.name && <p className="error-message">Le nom est requis.</p>}
 
         <label htmlFor="description">Description de l'évènement*</label>
-        <input
-          type="text"
-          id="description"
-          {...register("description", { required: true })}
-        />
+        <textarea name="desc" cols={40} rows={5} id="description" {...register("description", { required: true })}></textarea>
+
         {errors.description && (
           <p className="error-message">La description est requise.</p>
         )}
