@@ -70,7 +70,7 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                                 <Button variant="text"
                                         style={{ color: "#F1B706", cursor:"pointer"}}
                                         title='Accéder au formulaire pour ajouter une chaîne d&apos;anecdotes historiques' 
-                                        onClick={() => handleClick({ item: "addEvent" })}>
+                                        onClick={() => handleClick({ item: "addChain" })}>
                                     <LinkIcon style={{ color: '#F1B706' }} />
                                     <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter une chaine d'événements</span>
                                 </Button>
