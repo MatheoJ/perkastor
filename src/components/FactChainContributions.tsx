@@ -113,9 +113,12 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
   }
   return (
     <div className="chainListContributions">
-      <Avatar sx={{ width: 30, height: 30, color: '#fff', backgroundColor: '#40AC92' }} className='arrow-back' onClick={() => setItemSelected(null)}>
-        <ArrowBackIcon />
-      </Avatar>
+      <div className="factChainHeader">
+        <Avatar sx={{ width: 30, height: 30, color: '#333', backgroundColor: '#fff' }} onClick={() => setItemSelected(null)} className='returnBtn'>
+          <ArrowBackIcon />
+        </Avatar>
+        <h3>&thinsp;Chaîne d'évènements</h3>
+      </div>
       {facts.map((fact, index) => (
         <div
           key={fact.id}
@@ -133,7 +136,7 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
 
             <ImageWithFallback id='imageFactList' src={fact.bannerImg} alt="fact image" width={300} height={200} fallback='/resources/404-error.png' className='imageFactList' />
 
-            <div className='chainContributionsTitleText'>
+            <div className='factChainContributionsTitleText'>
               <div className="left">
                 <p><span className='strong'>{describeFactTitle(fact)}</span></p>
                 <ul className='no-margin date-container'>
