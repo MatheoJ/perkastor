@@ -238,10 +238,10 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
           <Tab className={"tab-content"} title="Anecdote historique">
             {selectedTab === 0 && selectedComponent()}
           </Tab>
-          <Tab className={"tab-content"} title="Personnages Historiques">
+          <Tab className={"tab-content"} title="Personnage Historique">
             {selectedTab === 1 && selectedComponent()}
           </Tab>
-          <Tab className={"tab-content"} title="Chaînes">
+          <Tab className={"tab-content"} title="Chaîne d'anecdotes">
             {selectedTab === 2 && selectedComponent()}
           </Tab>
         </Tabs>

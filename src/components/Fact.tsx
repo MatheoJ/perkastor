@@ -42,7 +42,6 @@ const Fact: NextPage<Props> = ({ fact }) => {
         if (date.getFullYear() === 1 || date.getFullYear() === 4) {
             return 'N/A'
         }
-        console.log(date.toDateString().split(' ')[1])
         if (date.toDateString().split(' ')[1] === 'Jan' && date.toDateString().split(' ')[2] === '01' && date.getFullYear() === 1970) {
             return 'N/A'
         }

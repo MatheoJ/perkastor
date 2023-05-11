@@ -96,7 +96,12 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
           if(!result.deathDate){
             result.deathDate = "aujourd'hui"
           }else{
-            var deathYear = result.deathDate.slice(0,4);
+            try{
+              var deathYear = result.deathDate.slice(0,4);
+            }
+            catch(e){
+              deathYear = "????"
+            }
           }
           resultTitle = `(${birthYear}-${deathYear}) - ${result.name}`
           break;
@@ -199,6 +204,11 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
       {searchResultsVisibility && searchResults && Object.values(searchResults).some(cat => cat.length > 0) && (
         <div className="searchResults">
           <div className="searchResults-content">
+          {showChecklist &&
+              <div className="checklist-area">
+                <FiltersChecklist filters={filters} setFilters={setFilters} />
+              </div>
+          }
             {Object.entries(searchResults).map(([category, results]) => (
               <React.Fragment key={category}>
                 {results.length > 0 && (
