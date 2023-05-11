@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Fact from './Fact';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';

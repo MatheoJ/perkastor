@@ -1,12 +1,14 @@
+import { NextPage } from 'next';
 import React from 'react'
 
 type Props = {
   children: React.ReactNode;
-  title: string;
+  title?: string;
+  className?: string;
 }
 
-const Tab: NextPage<Props> = ({ children }) => {
-  return <div>{children}</div>
+const Tab: NextPage<Props> = ({ children, title, className }) => {
+  return <div className={className}>{children}</div>
 }
 
 export default Tab;
