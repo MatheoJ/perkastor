@@ -20,7 +20,6 @@ interface Props {
 function FiltersChecklist({ filters, setFilters }: Props) {
     const [formats, setFormats] = React.useState(() => ['bold', 'italic']);
     const [localFilters, setLocalFilters] = useState(filters);
-    const [alignment, setAlignment] = React.useState<string | null>('left');
 
     const handleFilterChange = (filterName: keyof SearchFilters) => (event: React.ChangeEvent<HTMLInputElement>) => {
       const updatedFilters = { ...localFilters, [filterName]: event.target.checked };
@@ -37,24 +36,32 @@ function FiltersChecklist({ filters, setFilters }: Props) {
       };
 
     return (
-        <ToggleButtonGroup
-          value={formats}
-          onChange={handleFormat}
-          aria-label="filters for search results"
-        >
-          <ToggleButton value="event" aria-label="include events">
-            <EventIcon />
-          </ToggleButton>
-          <ToggleButton value="chains" aria-label="include chains">
-            <LinkIcon/>
-          </ToggleButton>
-          <ToggleButton value="hfigures" aria-label="include historical figures">
-            <Person4Icon/>
-          </ToggleButton>
-          <ToggleButton value="users" aria-label="include users">
-            <PersonIcon/>
-          </ToggleButton>
-        </ToggleButtonGroup>
+      <div className='filters-checklist'>
+      <label className="container-checkbox">
+          Évènements
+          <input type="checkbox" checked={localFilters.event} 
+              onChange={handleFilterChange('event')}/>
+          <span className="checkmark" />
+      </label>
+      <label className="container-checkbox">
+          Chaine d'évènements
+          <input type="checkbox" checked={localFilters.chain}  
+              onChange={handleFilterChange('chain')}/>
+          <span className="checkmark" />
+      </label>
+      <label className="container-checkbox">
+          Personnages historiques
+          <input type="checkbox" checked={localFilters.historicalFigure}
+              onChange={handleFilterChange('historicalFigure')}/>
+          <span className="checkmark" />
+      </label>
+      <label className="container-checkbox">
+          Lieux
+          <input type="checkbox" checked={localFilters.location}
+              onChange={handleFilterChange('location')}/>
+          <span className="checkmark" />
+      </label>
+  </div>
       );
 
 }

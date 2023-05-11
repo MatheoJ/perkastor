@@ -1,6 +1,9 @@
 .filters-checklist{
-  width: 200px;
-  border : solid 1px black;
+  flex-wrap: wrap;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+  column-gap: 10px;
 }
 
 
@@ -15,6 +18,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    width: 45px;
   }
   
   /* Hide the browser's default checkbox */

@@ -74,12 +74,13 @@
   position: relative;
   width: 100%;
   min-width: 200px;
-  max-height: 35px;
-  margin-left: 40px;
+  max-width: 300px;
+  //margin-left: 40px;
   display: flex;
   flex-direction: column;
   border-radius: 5px;
   animation: fade-in 1s ease;
+  margin-bottom: 10px;
 }
 
 @keyframes fade-in {
