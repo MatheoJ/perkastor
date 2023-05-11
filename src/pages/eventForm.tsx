@@ -198,6 +198,7 @@ const Event = () => {
   }
 
   return (
+    <div className='body-event'>
     <div className="container">
       <h1>Ajout d'un évènement</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -307,6 +308,7 @@ const Event = () => {
         <Button className='button_submit' id='q1.button' type="submit" disabled={uploading}>Enregistrer</Button>
       </form>
 
+    </div>
     </div>
   );
 };
