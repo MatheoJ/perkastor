@@ -180,12 +180,12 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       case 0:
         if (editMod) {
           if(facts.length == 0){
-            return <BatfNoMarkerSelected name={"Aucun évènement trouvé"}/>;
+            return <BatfNoMarkerSelected name={"Aucun évènement selectionné"}/>;
           }
           return <FactListContributions facts={facts} setFacts={setFacts}  />;
         }
         if(facts.length == 0){
-          return <BatfNoMarkerSelected  name={"Aucun évènement trouvé"}/>;
+          return <BatfNoMarkerSelected  name={"Aucun évènement selectionné"}/>;
         }
         return <FactList facts={facts} lastSlide={lastSlide} setLastSlide={setLastSlide} />;
       case 1:
@@ -197,24 +197,24 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
         if (editMod) {
           if (itemSelected === null) {
             if(chains.length == 0){
-              return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement selectionnée"}/>;
             }
             return <ChainListContributions chains={chains} setItemSelected={setItemSelected} setChains={setChains} />;
           }
           if(itemSelected === null){
-            return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
+            return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement selectionnée"}/>;
           }
           return <FactChainContributions chain={itemSelected} setItemSelected={setItemSelected} setChangedChain={setChangedChain} />;
         }
         else {
           if (itemSelected === null) {
             if(chains.length == 0){
-              return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement selectionnée"}/>;
             }
             return <ChainList chains={chains} setItemSelected={setItemSelected} />;
           }
           if(itemSelected === null){
-            return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
+            return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement selectionnée"}/>;
           }
           return <Chain chain={itemSelected} setItemSelected={setItemSelected} />;
         }

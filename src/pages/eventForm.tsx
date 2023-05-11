@@ -106,7 +106,6 @@ const Event = () => {
       const responseData = await response.json();
       // change image related to the fact whose id is responseData.id
         if (imageSrc) {
-
           console.log("Image insérée");
           const image = await ref.current?.triggerUpload(responseData.data.id);
 

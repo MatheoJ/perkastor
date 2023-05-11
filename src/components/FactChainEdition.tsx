@@ -7,9 +7,10 @@ import {FactProps} from 'types/types';
 
 interface FactChainEditionProps {
     facts: FactProps[];
+    setTmpFacts: React.Dispatch<React.SetStateAction<{}[]>>;
 }
 
-const FactChainEdition = ({ facts }: FactChainEditionProps) => {
+const FactChainEdition = ({ facts, setTmpFacts} : FactChainEditionProps) => {
   //const [factsList, setFacts] = useState<FactProps[]>(facts);
 
   const handleMoveFact = (currentIndex: number, newIndex: number) => {
@@ -17,21 +18,8 @@ const FactChainEdition = ({ facts }: FactChainEditionProps) => {
     const movedFact = newFactList[currentIndex];
     newFactList.splice(currentIndex, 1);
     newFactList.splice(newIndex, 0, movedFact);
-    
-    facts = newFactList;
+    setTmpFacts(newFactList);
     //setFacts(newFactList);
-  };
-
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-    e.dataTransfer.setData('index', String(index));
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-    e.preventDefault();
-    const draggedIndex = Number(e.dataTransfer.getData('index'));
-    if (draggedIndex !== index) {
-      handleMoveFact(draggedIndex, index);
-    }
   };
 
   const handleDeleteFact = async (factIndex: number) => {
@@ -43,19 +31,10 @@ const FactChainEdition = ({ facts }: FactChainEditionProps) => {
       cancelButtonText: 'Annuler',
     }).then(async (result) => {
        if (result.isConfirmed) {
-        console.log("avant suppression");
-        console.log([...facts]);
 
         const newFactList = [...facts];
-        newFactList.splice(factIndex, 1);
-        console.log("après suppression");
-        console.log(newFactList);
-        
-        facts = newFactList;
-        console.log("after");
-        console.log(facts);
-        //setFacts(newFactList);
-
+        newFactList.splice(factIndex, 1);       
+        setTmpFacts(newFactList);
         await Swal.fire('Évènement supprimé', '', 'success');
       }
     });
@@ -69,15 +48,17 @@ const FactChainEdition = ({ facts }: FactChainEditionProps) => {
           <div
             key={fact.id}
             className="factContainer"
-            draggable
-            onDragStart={(e) => handleDragStart(e, index)}
-            onDragOver={(e) => handleDragOver(e, index)}
           >
             <div className="factActions">
-              <button className="factActionBtn" onClick={() => handleMoveFact(index, index - 1)}>
+              <button className="factActionBtn" onClick={(event) => {
+                event.preventDefault();
+                handleMoveFact(index, index - 1);}}>
+                
                 <ArrowUpwardIcon />
               </button>
-              <button className="factActionBtn" onClick={() => handleMoveFact(index, index + 1)}>
+              <button className="factActionBtn" onClick={(event) => {
+                event.preventDefault();
+                handleMoveFact(index, index + 1);}}>
                 <ArrowDownwardIcon />
               </button>
             </div>
@@ -101,7 +82,9 @@ const FactChainEdition = ({ facts }: FactChainEditionProps) => {
                 </div>
             </div>
             <div className='deleteBtn'>
-              <button className="factActionBtn" onClick={() => handleDeleteFact(index)}>
+              <button className="factActionBtn" onClick={(event) => {
+                event.preventDefault();
+                handleDeleteFact(index)}}>
                 <DeleteIcon />
               </button>
             </div>

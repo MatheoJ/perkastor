@@ -73,11 +73,12 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                         </h4>
                     }
                     </div>
-                    <div className="factHeadBottomRight">
+                    
+                    {/*<div className="factHeadBottomRight">
                     <div className="factImage">
-                            <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                            <Image src={historicalPerson.image} alt="" width={300} height={200} />
                         </div>
-                    </div>
+                </div>*/}
                 </div>
             </div>
             <div className="historicalFigureBody">
@@ -119,13 +120,13 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
     );
 };
 
-/*
-<ul>
-                                {historicalPerson.facts.map(elem => {
-                                    return (<li key={elem.id}>
-                                        {elem.shortDesc}
-                                    </li>)
-                                })}
-                            </ul>
-                            */
+    /*
+    <ul>
+    {historicalPerson.facts.map(elem => {
+        return (<li key={elem.id}>
+            {elem.shortDesc}
+        </li>)
+    })}
+    </ul>
+    */
 export default HistoricalFigureView;
