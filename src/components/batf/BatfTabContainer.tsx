@@ -11,7 +11,7 @@ import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
 import { useSession } from 'next-auth/react';
 import { contributionClickEvent } from "~/events/ContributionClickEvent";
-import { selectHistoricalFigureFromSearchBar, selectEventFromSearchBar } from '../../events/SelectSearchBarResultEvent';
+import { selectHistoricalFigureFromSearchBar, selectEventFromSearchBar, selectChainFromSearchBar } from '../../events/SelectSearchBarResultEvent';
 import FactChainContributions from "../FactChainContributions";
 import { Avatar } from "@mui/material";
 import { Fullscreen, Remove } from "@mui/icons-material";
@@ -72,11 +72,20 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       setSelectedTab(0);
       setFacts([event.payload]);
     });
+    const unsubChain = bus.subscribe(selectChainFromSearchBar, event => {
+      if(batfState == "minimized"){
+        setBatfState("normal");
+      }
+      setSelectedTab(2);
+      setItemSelected(event.payload);
+    });
+
     return () => {
       unsubClick();
       unsubMap();
       unsubHistFigure();
       unsubEventFrom();
+      unsubChain();
     };
   }, []);
 
@@ -171,38 +180,41 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       case 0:
         if (editMod) {
           if(facts.length == 0){
-            return <BatfNoMarkerSelected/>;
+            return <BatfNoMarkerSelected name={"Aucun évènement trouvé"}/>;
           }
-          return <FactListContributions facts={facts} setFacts={setFacts} />;
+          return <FactListContributions facts={facts} setFacts={setFacts}  />;
         }
         if(facts.length == 0){
-          return <BatfNoMarkerSelected/>;
+          return <BatfNoMarkerSelected  name={"Aucun évènement trouvé"}/>;
         }
         return <FactList facts={facts} lastSlide={lastSlide} setLastSlide={setLastSlide} />;
       case 1:
+        if(historicalFigure === null){
+          return <BatfNoMarkerSelected  name={"Aucun personnage historique selectionné"}/>;
+        }
         return <HistoricalFiguresView historicalPerson={historicalFigure} />;
       case 2:
         if (editMod) {
           if (itemSelected === null) {
             if(chains.length == 0){
-              return <BatfNoMarkerSelected/>;
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
             }
             return <ChainListContributions chains={chains} setItemSelected={setItemSelected} setChains={setChains} />;
           }
           if(itemSelected === null){
-            return <BatfNoMarkerSelected/>;
+            return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
           }
           return <FactChainContributions chain={itemSelected} setItemSelected={setItemSelected} setChangedChain={setChangedChain} />;
         }
         else {
           if (itemSelected === null) {
             if(chains.length == 0){
-              return <BatfNoMarkerSelected/>;
+              return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
             }
             return <ChainList chains={chains} setItemSelected={setItemSelected} />;
           }
           if(itemSelected === null){
-            return <BatfNoMarkerSelected/>;
+            return <BatfNoMarkerSelected name={"Aucune chaîne d'évènement trouvée"}/>;
           }
           return <Chain chain={itemSelected} setItemSelected={setItemSelected} />;
         }

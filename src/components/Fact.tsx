@@ -41,6 +41,13 @@ const Fact: NextPage<Props> = ({ fact }) => {
         if (date.getFullYear() === 1 || date.getFullYear() === 4) {
             return 'N/A'
         }
+        console.log(date.toDateString().split(' ')[1])
+        if(date.toDateString().split(' ')[1] === 'Jan' && date.toDateString().split(' ')[2] === '01' && date.getFullYear() === 1970) {
+            return 'N/A'
+        }
+        if(date.toDateString().split(' ')[1] === 'Jan' && date.toDateString().split(' ')[2] === '01') {
+            return date.getFullYear().toString();
+        }
         return date.toLocaleDateString('fr-FR', {
             weekday: 'long',
             year: 'numeric',
@@ -103,7 +110,7 @@ const Fact: NextPage<Props> = ({ fact }) => {
                     </> :
                     <div className="factHeadTop">
                         <h1 className={'display-2'}>
-                            L'évènement {sortedDates.length > 1 ? 'des ' : (formatDate(sortedDates[0]) === 'N/A' ? '' : 'du ')}
+                            L'évènement {sortedDates.length > 1 ? 'des ' : (formatDate(sortedDates[0]) === 'N/A' ? '' : formatDate(sortedDates[0]).length > 4 ? 'du ' : 'de ')}
                             {sortedDates.map((date, index) => {
                                 const formattedDate = formatDate(date);
                                 return (

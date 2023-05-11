@@ -13,6 +13,11 @@ import { useSession } from "next-auth/react";
 import { Button } from '@mui/material';
 import { SearchFilters } from 'types/types';
 
+<style jsx>{`
+  .button_submit {
+    cursor: pointer;
+  }
+`}</style>
 interface EventData {
   name: string;
   typeLieux: string;
@@ -238,7 +243,15 @@ const Event = () => {
         {errors.name && <p className="error-message">Le nom est requis.</p>}
 
         <label htmlFor="description">Description de l'évènement*</label>
-        <textarea name="desc" cols={40} rows={5} id="description" {...register("description", { required: true })}></textarea>
+        <textarea
+          name="desc"
+          cols={40}
+          rows={5}
+          id="description"
+          {...register("description", { required: true })}
+          required
+        ></textarea>
+
 
         {errors.description && (
           <p className="error-message">La description est requise.</p>

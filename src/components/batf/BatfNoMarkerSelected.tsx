@@ -1,13 +1,15 @@
 import React from "react";
 
 
-export default class BatfNoMarkerSelected extends React.Component {
+const BatfNoMarkerSelected = ({name}) => {
 
-    render() {
-        return <div>
+    return (
+         <div>
             <div className="fact">
-                <div style={{textAlign:"center", justifyContent:"center", display:"flex", alignItems:"center", height:"100%", fontSize:"24px", color:"rgb(0,153,255)"}}>Aucun contenu trouvé</div>
+                <div style={{textAlign:"center", justifyContent:"center", display:"flex", alignItems:"center", height:"100%", fontSize:"24px", color:"rgb(0,153,255)"}}>{name}</div>
                 </div>
-        </div>;
-    }
+        </div>
+    );
 }
+
+export default BatfNoMarkerSelected;
