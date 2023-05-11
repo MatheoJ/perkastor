@@ -15,6 +15,10 @@ import {Geometry} from "geojson";
 import FiltersChecklist from "./FiltersChecklist";
 import { NextPage } from "next";
 
+
+import Paper from '@mui/material/Paper';
+import InputBase from '@mui/material/InputBase';
+
 import SearchBarModalResult from "./SearchBarModalResult";
 
 interface Props{
@@ -27,8 +31,9 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchResultsVisibility, setSearchResultsVisibility] = useState<boolean>(false);
 
-  const { ref, handleClick } = useFocus();
+  const { ref, handleClick } = useFocus(setSearchResultsVisibility);
 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [modalFact, setModalFact] = useState<FactPrisma>(null);
@@ -46,18 +51,14 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
   };
 
   const handleSubmit = async () => {
-    //e.preventDefault();
-    console.log("test");
     setIsLoading(true);
-    
-    // passer les parametres sélectionnés comme filtre puis ajouter &filtersParam=${JSON.stringify({})} a la fin de l'url
+  
     const results = await fetch(`/api/search?query=${searchTerm}&filtersParam=${JSON.stringify(filters)}`);
     const resultat = await results.json();
 
-    console.log("résultat api");
-    console.log(results);
     setSearchResults(resultat.data);
     setIsLoading(false);
+    setSearchResultsVisibility(true);
   };
 
   function renderResults(results: any[], category: string) {
@@ -111,7 +112,11 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
   
       return (
         <div key={result.id} className="dataItem">
-          <button className="dataItem__name" onClick={(event) => handleClickOnResult(event, results, category, index)} category={category}>{resultTitle}</button>
+          <span className="dataItem__name" onClick={(event) => {
+            handleClickOnResult(event, results, category, index);
+            setSearchResultsVisibility(false);
+          }
+            } category={category}>{resultTitle}</span>
         </div>
       )
     })
@@ -143,6 +148,10 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
         break;
       case 'chains':
         bus.publish(selectChainFromSearchBar(results[i] as FactChain));
+        break;
+      case 'historicalPersons':
+        bus.publish(selectHistoricalFigureFromSearchBar(results[i] as HistoricalPerson));
+        break;
     }
   }
   else{
@@ -150,15 +159,21 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
 
     setModalOpen(true);
     setModalFact(results[i]);
-
-    console.log(modalFact);
-    console.log(modalOpen);
   }
   }
   
+  const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      
+      await handleSubmit();
+    }
+  };
+
+
   return (
     <div className={`searchbar active ${usedInForm ? 'searchbar-form' : ''}`}>
-      <div className="searching-area">
+      <div className="searching-area" style={{borderRadius: `5px 5px ${searchResultsVisibility ? '0 0' : '5px 5px'}`}}>
         <div className="searchBar__form">
           <input
             type="text"
@@ -171,18 +186,17 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
             }}
             ref={ref}
             onClick={handleClick}
-           // onSubmit={() => {handleSubmit}}
+            onKeyDown={handleKeyDown}
           />
-
         </div>
         {isLoading && <div className="loading" ><CircularProgress size={24} color="inherit" /></div>}
         <IconButton onClick={async () => {
-          await handleSubmit();
-      }}>
+            await handleSubmit();
+          }}>
         <SearchIcon />
       </IconButton>
       </div>
-      {searchResults && Object.values(searchResults).some(cat => cat.length > 0) && (
+      {searchResultsVisibility && searchResults && Object.values(searchResults).some(cat => cat.length > 0) && (
         <div className="searchResults">
           <div className="searchResults-content">
             {Object.entries(searchResults).map(([category, results]) => (
@@ -198,17 +212,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
           </div>
         </div>
       )}
-      {showChecklist &&
-        <div className="checklist-area">
-          <FiltersChecklist filters={{
-            event: true,
-            chain: true,
-            historicalFigure: true,
-            location: true,
-            user: true
-          }} setFilters={setFilters} />
-        </div>
-      }
+      
       {
         modalOpen &&
         <SearchBarModalResult fact={modalFact} open={modalOpen} setOpen={setModalOpen} />
@@ -218,7 +222,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
 }
 
 
-export const useFocus = () => {
+export const useFocus = (searchBarResultVisibility: React.Dispatch<React.SetStateAction<boolean>>) => {
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -231,7 +235,7 @@ export const useFocus = () => {
     if (ref.current) {
       ref.current.focus();
 
-      ref.current.style 
+      searchBarResultVisibility(true);
     }
   };
 
