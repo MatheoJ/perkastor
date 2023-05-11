@@ -6,6 +6,11 @@
     height: 400px;
 }
 
+.sortedFigure {
+    width: 400px;
+    height: 400px;
+}
+
 .slick-arrow.slick-prev {
     font-size: 0;
     line-height: 0;

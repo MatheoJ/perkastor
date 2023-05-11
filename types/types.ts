@@ -48,6 +48,7 @@ export interface FactProps extends Fact {
     location: {
         id: string;
         name: string;
+        type: string;
     };
     personsInvolved: PersonProps[];
     keyDates : Date[];

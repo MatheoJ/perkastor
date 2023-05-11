@@ -1,6 +1,6 @@
 .historicalFigure {
     flex: 1;
-    height: 90%;
+    max-height: 450px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -9,14 +9,17 @@
     padding: 10px;
     overflow-y: scroll;
     overflow-x: hidden;
-    background-color: #EADFC3;
+    background-color: #ccc;
+    margin-bottom: 20px;
+    box-shadow: 5px 5px 5px 1px rgba(0, 0, 0, 0.66);
 }
 
 .historicalFigureHead {
     position: relative;
     width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: space-between;
+    flex: 1;
     margin-bottom: 5px;
     border-bottom: 1px solid black;
     color: #344453; 
@@ -40,6 +43,24 @@
     display: flex;
     justify-content: space-between;
     margin: 5px;
+}
+
+.historicalFigureHeadTop {
+    display: inline-block;
+    flex: 1;
+}
+
+.historicalFigureHeadRight {
+    display: inline-block;
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0px 5px 0px 5px;
+    color: #344453; 
+    line-height: 0;
 }
 
 .historicalFigureBody {

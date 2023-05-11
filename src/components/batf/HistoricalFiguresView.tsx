@@ -40,12 +40,20 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                 <div className="historicalFigureHeadTop">
                     <h1>{historicalPerson.name}</h1>
                 </div>
-                <div className="historicalFigureHeadBottom">
-                    <div className="historicalFigureHeadBottomLeft">
+                <div className="historicalFigureHeadRight">
+                        {
+                            !isNaN(historicalPerson.birthDate.getTime()) &&
+                            <h4>
+                                Né.e le : {historicalPerson.birthDate.getDate()} - {historicalPerson.birthDate.getMonth() + 1} - {historicalPerson.birthDate.getFullYear()}
+                            </h4>
+                        }
+                        {
+                            !isNaN(historicalPerson.deathDate.getTime()) &&
+                            <h4>
+                                Mort.e le : {historicalPerson.deathDate.getDate()} - {historicalPerson.deathDate.getMonth() + 1} - {historicalPerson.deathDate.getFullYear()}
+                            </h4>
+                        }
                     </div>
-                    <div className="historicalFigureHeadBottomRight">
-                    </div>
-                </div>
             </div>
             <div className="historicalFigureBody">
                 <div className='content-left'>
@@ -58,21 +66,6 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                             <Image src={historicalPerson.image ? get_image_url(historicalPerson.image.split("File:")[1]) : "image_default/einstein.jpg"} alt="" width={300} height={200} />
                         </div>
                     ) : null}
-                    <div>
-                        {
-                            !isNaN(historicalPerson.birthDate.getTime()) &&
-                            <p>
-                                Né.e le : {historicalPerson.birthDate.getDate()} - {historicalPerson.birthDate.getMonth() + 1} - {historicalPerson.birthDate.getFullYear()}
-                            </p>
-                        }
-                        {
-                            !isNaN(historicalPerson.deathDate.getTime()) &&
-                            <p>
-                                Décédé.e le : {historicalPerson.deathDate.getDate()} - {historicalPerson.deathDate.getMonth() + 1} - {historicalPerson.deathDate.getFullYear()}
-                            </p>
-                        }
-                    </div>
-
                 </div>
             </div>
             {historicalPerson.facts ? (
