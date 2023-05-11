@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { HistoricalPerson, Fact } from '@prisma/client';
 import { NextPage } from 'next';
 import crypto from 'crypto';
+import FactList from '../FactList';
 
 
 interface HistoricalFigureProps extends HistoricalPerson {
@@ -42,12 +43,13 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
     }
 
     return (
-        <div className="historicalFigure">
-            <div className="historicalFigureHead">
-                <div className="historicalFigureHeadTop">
-                    <h1>{historicalPerson.name}</h1>
+        <div className="fact">
+            <div className="factHead">
+                <div className="factHeadTop">
+                    <h1 className='mark'>{historicalPerson.name}</h1>
                 </div>
-                <div className="historicalFigureHeadBottom">
+                <div className="factHeadBottom">
+                    <div className="factHeadBottomLeft">
                     {
                         !isNaN(historicalPerson.birthDate.getTime()) &&
                         <h4>
@@ -70,6 +72,12 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                             })}
                         </h4>
                     }
+                    </div>
+                    <div className="factHeadBottomRight">
+                    <div className="factImage">
+                            <Image src={fact.bannerImg} alt="" width={300} height={200} />
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className="historicalFigureBody">

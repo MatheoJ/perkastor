@@ -48,26 +48,6 @@ const Batf: NextPage<BatfProps> = ({ children }) => {
 
     return (
         <div className={`batf ${classAssigner()}`}>
-            <div className={`inner-batf`}>
-                <BatfTabContainer
-                    onFullScreenClick={maximize}
-                    onMinimizeClick={hide}
-                    setBatfState={setState}
-                    batfState={state}
-                    isLoading={isLoading}
-                    setIsLoading={setIsLoading}
-                />
-            </div>
-            {state === "minimized" && (
-                <button className="toggle batf-minimized-btn" onClick={show}>
-                    <i className="fa fa-bars"></i>
-                </button>
-            )}
-        </div>
-    );
-    /*
-    return (
-        <div className={`batf ${classAssigner()}`}>
             <div className={`batf-handle ${state !== "minimized" && state !== "fullscreen" ? 'hidden' : 'visible'}`}>
                 <button className="toggle batf-minimized-btn" onClick={show}>
                     <MenuIcon className="menu" style={{ color: "#F1B706", }} />
@@ -79,8 +59,6 @@ const Batf: NextPage<BatfProps> = ({ children }) => {
             </div>
         </div>
     );
-    */
-
 }
 
 export default Batf;

@@ -149,3 +149,11 @@
     max-width: 100px;
     margin-left: auto;
 }
+.factItemImage img {
+    height: auto;
+    width: auto;
+    max-height: 100%;
+    max-width: 100%;
+    margin-left: auto;
+}
+
