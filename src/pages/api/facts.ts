@@ -314,7 +314,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 let createLocation: boolean = false;
                 let location;
                 // search location by id
-                if (req.body.location.id && req.body.location.id !== "") {
+                if (req.body.location.hasOwnProperty("id") && req.body.location.id !== "") {
                     // Check if the fact's location exists
                     location = await prisma.location.findUnique({
                         where: {
@@ -325,7 +325,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(422).json({ message: `Le lieu n\'existe pas.` });
                         return;
                     }
-                }                
+                }
                 // search location by [coordinates, name] pair
                 else {
                     if (!req.body.location.latitude || !req.body.location.longitude) {
@@ -336,6 +336,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         res.status(422).json({ message: `Le nom du lieu n'est pas renseigné.` });
                         return;
                     }
+
+                    // check if the location doesn't already exist
                     location = await prisma.location.findFirst({
                         where: {
                             
@@ -347,16 +349,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 }        
                         
                     });
-                    await prisma.location.update({
-                        where: {
-                            id: location.id
-                        },
-                        data: {
-                            hasFact: true
-                        }
-                    })
                     
-                    if (!location) {
+                    if (location) {
+                        if (!location.hasFact) {
+                            await prisma.location.update({
+                                where: {
+                                    id: location.id
+                                },
+                                data: {
+                                    hasFact: true
+                                }
+                            })
+                        }
+                    } else {
                         createLocation = true;
                     }
                 }
