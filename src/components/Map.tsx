@@ -96,7 +96,6 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
   return (
       <div ref={mapContainer} className={'map-container'}>
         {mapInstance && <Marker map={mapInstance} />}
-        {mapInstance && <FlyTo map={mapInstance} />}
         {mapInstance && <DisplayLocation map={mapInstance} locationSelected={locationSelected} onLocationSelect={handleSelectLocation}  />}
     </div>
   );

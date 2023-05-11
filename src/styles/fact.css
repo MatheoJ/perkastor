@@ -8,8 +8,9 @@
     padding: 10px;
     overflow-y: scroll;
     overflow-x: hidden;
-    background-color: #EADFC3;
+    background-color: #ccc;
     color: black;
+    box-shadow: 5px 5px 5px 1px rgba(0, 0, 0, 0.66);
 }
 
 .factHead {
@@ -32,6 +33,10 @@
     font-size: 15px;
 }
 
+.factHeadTop {
+    text-align: center;
+}
+
 .factHeadBottom {
     position: relative;
     display: flex;
@@ -44,9 +49,13 @@
     display: inline-block;
     height: max-content ;
 }
-.factHeadBottomRight h2{
+
+.factHeadBottomRight li{
     display: inline-block;
     height: max-content ;
+    text-align: center;
+    font-size: 30px;
+    margin: 0px 5px 0px 5px;
 }
 
 

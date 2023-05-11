@@ -25,6 +25,8 @@ interface EventData {
   idHistoricalFigure: string[];
 }
 
+
+
 const Event = () => {
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
@@ -47,6 +49,7 @@ const Event = () => {
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [histFigToDisplay, setHistFigToDisplay] = useState<any[]>([]);
   const [selectedFigures, setSelectedFigures] = useState([]);
+  const [imageSrc, setImageSrc] = useState<File | null>(null);
   const ref = useRef<any>();
 
   const handlelLocationSelected = (locSelected: any) => {
@@ -73,6 +76,7 @@ const Event = () => {
       longitude: data.coordinatesLong,
       area: 0
     };
+
     dataEvent = {
       title: data.name,
       shortDesc: "",
@@ -96,12 +100,71 @@ const Event = () => {
     if (response.ok) {
       const responseData = await response.json();
       // change image related to the fact whose id is responseData.id
+        if (imageSrc) {
 
-      const image = await ref.current?.triggerUpload(responseData.data.id);
+          console.log("Image insérée");
+          const image = await ref.current?.triggerUpload(responseData.data.id);
 
-      if (image) {
-        setUploading(false);
-        // display a sweet alert popup to inform the user of the success
+          if (image) {
+            setUploading(false);
+            // display a sweet alert popup to inform the user of the success
+            MySwal.fire({
+              title: "Evènement ajouté avec succès",
+              icon: "success",
+              showCancelButton: false,
+              confirmButtonText: "Ok",
+            }).then(async () => {
+              router.push("/mapWrapper");
+            })
+
+          } else {
+            // display a sweet alert popup to inform the user of the error
+            // and ask him if he wants to retry to update the fact's image
+            // if he does, call the updateFactImage function again
+            // if he doesn't, redirect to his profile page
+
+            MySwal.fire({
+              title: "Erreur lors de l'ajout de l'image de l'évènement",
+              text: "Voulez-vous réessayer ?",
+              icon: "error",
+              showCancelButton: true,
+              confirmButtonText: "Réessayer",
+              cancelButtonText: "Annuler",
+            }).then(async () => {
+              const value = await MySwal.fire();
+              if (value) {
+                setUploading(true);
+                const retryUploadImage = await ref.current?.triggerUpload();
+                setUploading(false);
+                if (retryUploadImage) {
+                  // display a sweet alert popup to inform the user of the success
+                  MySwal.fire({
+                    title: "Evènement ajouté avec succès",
+                    icon: "success",
+                    showCancelButton: false,
+                    confirmButtonText: "Ok",
+                  }).then(async () => {
+                    router.push("/mapWrapper");
+                  })
+                } else {
+                  MySwal.fire({
+                    title: "L'image n'a pas pu être ajoutée à l'évènement",
+                    icon: "error",
+                    showCancelButton: false,
+                    confirmButtonText: "Ok",
+                  }).then(async () => {
+                    router.push("/mapWrapper");
+                  })
+                }
+                setUploading(false);
+                return;
+              }
+              router.push("/mapWrapper");
+            })
+          
+          };
+      }else{
+        console.log("Pas d'image");
         MySwal.fire({
           title: "Evènement ajouté avec succès",
           icon: "success",
@@ -110,54 +173,9 @@ const Event = () => {
         }).then(async () => {
           router.push("/mapWrapper");
         })
-
-      } else {
-        // display a sweet alert popup to inform the user of the error
-        // and ask him if he wants to retry to update the fact's image
-        // if he does, call the updateFactImage function again
-        // if he doesn't, redirect to his profile page
-
-        MySwal.fire({
-          title: "Erreur lors de l'ajout de l'image de l'évènement",
-          text: "Voulez-vous réessayer ?",
-          icon: "error",
-          showCancelButton: true,
-          confirmButtonText: "Réessayer",
-          cancelButtonText: "Annuler",
-        }).then(async () => {
-          const value = await MySwal.fire();
-          if (value) {
-            setUploading(true);
-            const retryUploadImage = await ref.current?.triggerUpload();
-            setUploading(false);
-            if (retryUploadImage) {
-              // display a sweet alert popup to inform the user of the success
-              MySwal.fire({
-                title: "Evènement ajouté avec succès",
-                icon: "success",
-                showCancelButton: false,
-                confirmButtonText: "Ok",
-              }).then(async () => {
-                router.push("/mapWrapper");
-              })
-            } else {
-              MySwal.fire({
-                title: "L'image n'a pas pu être ajoutée à l'évènement",
-                icon: "error",
-                showCancelButton: false,
-                confirmButtonText: "Ok",
-              }).then(async () => {
-                router.push("/mapWrapper");
-              })
-            }
-            setUploading(false);
-            return;
-          }
-          router.push("/mapWrapper");
-        })
-      };
-    } 
-  }
+      }
+    }
+  };
 
   const handleMapClick = (longitude: number, latitude: number) => {
     setValue("coordinatesLong", longitude);
@@ -180,17 +198,20 @@ const Event = () => {
     };
     // handle the search query
     e.preventDefault();
-    var queryParams2 = new URLSearchParams({
-      query: query,
-      filtersParam: JSON.stringify(filter)
-    });
 
-    const response2 = await fetch(`/api/search?${queryParams2}`, {
-      method: "GET",
-    });
+    if(query !== ''){
+      var queryParams2 = new URLSearchParams({
+        query: query,
+        filtersParam: JSON.stringify(filter)
+      });
 
-    var histfig = await response2.json();
-    setHistFigToDisplay(histfig.data.historicalPersons); 
+      const response2 = await fetch(`/api/search?${queryParams2}`, {
+        method: "GET",
+      });
+
+      var histfig = await response2.json();
+      setHistFigToDisplay(histfig.data.historicalPersons);
+    }
   }
 
   function handleChange(event) {
@@ -221,7 +242,7 @@ const Event = () => {
         )}
 
         <h3>Image de l'évènement</h3>
-        <CropperView toUpdate='fact' width={150} height={150} defaultFilename='fact.png' defaultFileType='png' alt={'Fait historique'} cropShape='rect' variant='square' uploadOnSubmit={false} ref={ref} />
+        <CropperView toUpdate='fact' width={150} height={150} defaultFilename='fact.png' defaultFileType='png' alt={'Fait historique'} cropShape='rect' variant='square' uploadOnSubmit={false} ref={ref} imageSrc={imageSrc} setImageSrc={setImageSrc} />
 
         <h3>Lieu de l'évènement</h3>
         <MapCoordPicker onMapClick={handleMapClick} locSelected={locationSelected} onLocationSelect={handlelLocationSelected} />
@@ -298,7 +319,7 @@ const Event = () => {
       <div>
         <h3>Associer un personnage historique </h3>
         <input type="text" value={query} onChange={handleChange} />
-        <button onClick={handleSearch}>Search</button>
+        <Button onClick={handleSearch}>Search</Button>
       </div>
               
       <div title="Historical_People" className="idiv">
@@ -312,5 +333,6 @@ const Event = () => {
     </div>
   );
 };
+
 
 export default Event;
