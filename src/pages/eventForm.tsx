@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Button } from '@mui/material';
 import { SearchFilters } from 'types/types';
+import  SearchBarLieux  from '~/components/searchbar/SearchBarLieux';
 
 <style jsx>{`
   .button_submit {
@@ -71,6 +72,8 @@ const Event = () => {
 
     var selectedFigureId : string[]= selectedFigures.map(elem => elem.id);
     console.log(data);
+
+
 
     var dataEvent;
     var location = {
@@ -196,6 +199,15 @@ const Event = () => {
     setValue("idLieux", "");
   };
 
+  const onResultClick = (locSelected: any) => {
+    console.log(locSelected);
+    setValue("coordinatesLong", locSelected.longitude);
+    setValue("coordinatesLat", locSelected.latitude);
+    setValue("NomLieux", locSelected.name);
+    setValue("typeLieux", locSelected.type);
+    setValue("idLieux", locSelected.id);
+  };
+
   const [query, setQuery] = useState('');
 
   async function handleSearch(e) {
@@ -260,6 +272,11 @@ const Event = () => {
         <CropperView toUpdate='fact' width={150} height={150} defaultFilename='fact.png' defaultFileType='png' alt={'Fait historique'} cropShape='rect' variant='square' uploadOnSubmit={false} ref={ref} imageSrc={imageSrc} setImageSrc={setImageSrc} />
 
         <h3>Lieu de l'évènement</h3>
+        Choisissez un lieu existant avec la barre de recherche ou la carte.
+        Et cliquer sur une localisation sans marqueur pour créer un nouveau lieu.
+      
+        <SearchBarLieux showChecklist={false} usedInForm={true} onResultClick={onResultClick}/>
+               
         <MapCoordPicker onMapClick={handleMapClick} locSelected={locationSelected} onLocationSelect={handlelLocationSelected} />
         <label htmlFor="NomLieux">Nom du lieu*</label>
         <input
@@ -338,7 +355,7 @@ const Event = () => {
       </div>
               
       <div title="Historical_People" className="idiv">
-        <HistoricalFigureList historicalPersonList={histFigToDisplay} selectedFigures={selectedFigures} setSelectedFigures={setSelectedFigures}/>
+        <HistoricalFigureList historicalPersonList={histFigToDisplay} selectedFigures={selectedFigures} setSelectedFigures={setSelectedFigures} />
       </div>
       
         <Button className='button_submit' id='q1.button' type="submit" disabled={uploading}>Enregistrer</Button>
