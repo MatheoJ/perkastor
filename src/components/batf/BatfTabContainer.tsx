@@ -16,8 +16,9 @@ import FactChainContributions from "../FactChainContributions";
 import { Avatar } from "@mui/material";
 import { Fullscreen, Remove } from "@mui/icons-material";
 import { set } from "zod";
+
 // selectedTab, setSelectedTab
-const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfState}) => {
+const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfState, isLoading, setIsLoading }) => {
   const [markerSelected, setMarkerSelected] = useState(false);
   const [facts, setFacts] = useState([]);
   const [editMod, setEditMod] = useState(false);
@@ -31,6 +32,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
   const [lastSlide, setLastSlide] = useState(0);
   const [changedChain, setChangedChain] = useState(null);
   let lastTimeMapChanged = 0;
+
 
   useEffect(() => {
     const unsubMap = bus.subscribe(selectMapEvent, event => {
@@ -55,18 +57,18 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       setEditMod(previous => !previous);
     });
     const unsubHistFigure = bus.subscribe(selectHistoricalFigureFromSearchBar, event => {
-        //const payload = await Promise.resolve(event.payload);
-        setHistoricalFigure(null);
-        setHistoricalFigure(event.payload);
+      //const payload = await Promise.resolve(event.payload);
+      setHistoricalFigure(null);
+      setHistoricalFigure(event.payload);
     });
 
     const unsubEventFrom = bus.subscribe(selectEventFromSearchBar, event => {
-        //const payload = await Promise.resolve(event.payload);
-        if(batfState == "minimized"){
-          setBatfState("normal");
-        }
-        setSelectedTab(0);
-        setFacts([event.payload]);
+      //const payload = await Promise.resolve(event.payload);
+      if (batfState == "minimized") {
+        setBatfState("normal");
+      }
+      setSelectedTab(0);
+      setFacts([event.payload]);
     });
     return () => {
       unsubClick();
@@ -77,6 +79,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
   }, []);
 
   async function fetchLocationData() {
+    setIsLoading(true);
     if (!editMod) {
       if (locationId) {
         const promises = [fetch(`/api/facts?locationId=${locationId}`), fetch(`/api/chains?locationId=${locationId}`)];
@@ -92,11 +95,12 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       }
     }
     setSelectedTab(0)
+    setIsLoading(false);
   }
 
   async function fetchUserFacts() {
-    if (editMod)
-     {
+    if (editMod) {
+      setIsLoading(true);
       let userId = session?.user?.id;
       if (userId != null) {
         const promises = [fetch(`/api/facts?userId=${userId}`), fetch(`/api/chains?userId=${userId}`)];
@@ -106,13 +110,18 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
         responseJson.data ? setFacts(responseJson.data) : setFacts([]);
         response2Json.data ? setChains(response2Json.data) : setChains([]);
       }
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
+    console.log('loading: ' + isLoading);
+  }, [isLoading]);
+
+  useEffect(() => {
     if (historicalFigure != null) {
-      if(batfState == "minimized"){
-         setBatfState("normal")
+      if (batfState == "minimized") {
+        setBatfState("normal")
       }
       setSelectedTab(1);
     }
@@ -193,18 +202,17 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
 
       <div className="tabs-container">
         {editMod ? <h2 style={{ textAlign: "center" }}>Edition</h2> : <h2>Consultation</h2>}
-        <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} key={editMod ? 'edit' : 'view'}>
-        <Tab className={"tab-content"} title="Événements">
-          {selectedTab === 0 && selectedComponent()}
-        </Tab>
-        <Tab className={"tab-content"} title="Personnage Historique">
-          {selectedTab === 1 && selectedComponent()}
-        </Tab>
-        <Tab className={"tab-content"} title="Chaines">
-          {selectedTab === 2 && selectedComponent()}
-        </Tab>
-      </Tabs>
-
+        <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} isLoading={isLoading} setIsLoading={setIsLoading} key={editMod ? 'edit' : 'view'}>
+          <Tab className={"tab-content"} title="Événements">
+            {selectedTab === 0 && selectedComponent()}
+          </Tab>
+          <Tab className={"tab-content"} title="Personnage Historique">
+            {selectedTab === 1 && selectedComponent()}
+          </Tab>
+          <Tab className={"tab-content"} title="Chaines">
+            {selectedTab === 2 && selectedComponent()}
+          </Tab>
+        </Tabs>
       </div>
     </>
   );

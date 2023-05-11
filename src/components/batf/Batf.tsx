@@ -10,6 +10,7 @@ interface BatfProps {
 }
 
 const Batf: NextPage<BatfProps> = ({ children }) => {
+    const [isLoading, setIsLoading] = useState(false);
     const [state, setState] = useState<"normal" | "fullscreen" | "minimized">("minimized");
     //const [selectedTab, setSelectedTab] = useState<"Événements" | "Anecdotes" | "Chaînes">("Événements");
     useEffect(() => {
@@ -53,8 +54,9 @@ const Batf: NextPage<BatfProps> = ({ children }) => {
                     onMinimizeClick={hide}
                     setBatfState={setState}
                     batfState={state}
+                    isLoading={isLoading}
+                    setIsLoading={setIsLoading}
                 />
-                {children}
             </div>
             {state === "minimized" && (
                 <button className="toggle batf-minimized-btn" onClick={show}>

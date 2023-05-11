@@ -22,6 +22,7 @@ import "~/components/searchbar/searchbar.scss";
 import "~/styles/factListContributions.css";
 import "~/components/searchbar/filterschecklist.css";
 import "~/styles/chainListContributions.css";
+import "~/styles/loader.css"
 
 import Layout from "../components/layout/layout";
 import 'slick-carousel/slick/slick.css';
