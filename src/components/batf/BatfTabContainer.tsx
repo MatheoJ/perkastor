@@ -152,7 +152,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
           if (itemSelected === null) {
             return <ChainListContributions chains={chains} />;
           }
-          return <FactChainContributions chain={itemSelected} />;
+          return <FactChainContributions chain={itemSelected} setItemSelected={setItemSelected}/>;
         }
         else {
           if (itemSelected === null) {
