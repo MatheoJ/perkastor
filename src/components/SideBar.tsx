@@ -1,24 +1,25 @@
+
 import Head from 'next/head';
 import FolderSharedIcon from '@mui/icons-material/FolderShared';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { bus } from '../utils/bus';
 import { contributionClickEvent } from '../events/ContributionClickEvent';
+import { useState } from 'react';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
 function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setInsertMode }:
     { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({ item }: { item: String }) => void, insertMode: boolean, setInsertMode: ({ insertMode }: { insertMode: boolean }) => void }) {
+    
+    const [editMode, setEditMode] = useState(false);
 
-
-    const handleClick = ({ item }: { item: String }) => { //Fonction qui permet d'envoyer l'item sélectionné dans la sidebar à la page mapWrapper
+    const handleClick = ({ item }: { item: String }) => { 
         onSidebarItemClick({ item });
-        if (item == "modeInsertion" && insertMode == false) {
-            setInsertMode({ insertMode: true });
-        } else {
-            setInsertMode({ insertMode: false });
-        }
-        if(item == "contributions"){
-            bus.publish(contributionClickEvent(true));
+
+        if(item == "edit"){
+            setEditMode(!editMode);
+            bus.publish(contributionClickEvent(!editMode));
         }
         if (item == "addEvent") {
-
             window.location.href = "/eventForm";
         }
     }
@@ -30,15 +31,15 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                     <ul className='topIcons'>
                         <li>
                             <div className="icon">
-                                <button title='Accéder à mes contributions' onClick={() => handleClick({ item: "contributions" })}>
-                                    <FolderSharedIcon style={{ color: '#F1B706' }} />
-                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Contributions</span>
+                                <button title={editMode ? 'Accéder à la mode Consultation' : 'Accéder à la mode Edition'} onClick={() => handleClick({ item: "edit" })} style={{cursor:"pointer"}}>
+                                    {editMode ? < VisibilityIcon style={{ color: '#F1B706' }} /> :  <EditIcon style={{ color: '#F1B706' }}/>}
+                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>{editMode ? 'Accès mode Consultation' : 'Accès mode Edition'}</span>
                                 </button>
                             </div>
                         </li>
                         <li>
                             <div className="icon">
-                                <button title='Accéder au formulaire pour ajouter un évènement' onClick={() => handleClick({ item: "addEvent" })}>
+                                <button title='Accéder au formulaire pour ajouter un évènement' onClick={() => handleClick({ item: "addEvent" })} style={{cursor:"pointer"}}>
                                     <AddCircleIcon style={{ color: '#F1B706' }} />
                                     <span style={{ fontSize: '10px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter un évènement</span>
                                 </button>

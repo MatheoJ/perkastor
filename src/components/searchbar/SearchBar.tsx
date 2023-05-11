@@ -8,7 +8,6 @@ import { Fact, HistoricalPerson } from "@prisma/client";
 import {Geometry} from "geojson";
 import FiltersChecklist from "./FiltersChecklist";
 
-
 function SearchBar({ showChecklist }: { showChecklist: boolean }) {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,7 +63,12 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
           break;
   
         case 'historicalPersons':
-          var birthYear = result.birthDate.slice(0,4);
+          var birthYear
+          try{
+            birthYear = result.birthDate.slice(0,4);
+          }catch(e){
+            birthYear = "????"
+          }
           if(!result.deathDate){
             result.deathDate = "aujourd'hui"
           }else{

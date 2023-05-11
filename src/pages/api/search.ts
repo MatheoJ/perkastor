@@ -106,6 +106,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                     { deathDate: date },
                                     {shortDesc: {contains: query as string, mode: "insensitive"}}
                                 ]
+                            },
+                            include: {
+                                FactHistoricalPerson: {
+                                    include: {
+                                        fact: {
+                                            include: {
+                                                location: true,
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         });
                     }

@@ -51,12 +51,14 @@ interface FactChainContributionsProps {
     description: string;
   };
   setItemSelected: React.Dispatch<React.SetStateAction<{}>>;
+  setChangedChain: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, setItemSelected }) => {
+const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, setItemSelected, setChangedChain }) => {
   
   const updateFacts = (chain) => {
-    const facts = chain.items.sort((a, b) => a.position - b.position).map((item) => item.fact);
+    var facts = chain.items.sort((a, b) => a.position - b.position).map((item) => item.fact);
+    console.log("facts", facts);
     return facts;
   };
 
@@ -68,7 +70,7 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
     }
     const itemsToSwap = [chain.items[currentIndex].id, chain.items[newIndex].id];
     const chainItemIdsToSwapArray = JSON.stringify(itemsToSwap);
-    const newChain = await fetch(`api/chain-items?chainItemIdsToSwapArray=${chainItemIdsToSwapArray}`, {
+    const newChain = await fetch(`api/chain-items?chainItemIdsToSwap=${chainItemIdsToSwapArray}`, {
       method: 'PATCH',
     });
     if(newChain.status >=300) {
@@ -77,9 +79,14 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
       return;
     }
     const newChainJson = await newChain.json();
-    setItemSelected(updateFacts(newChainJson));
+    if(newChainJson){
+      console.log("new chain", newChainJson.data);
+      setItemSelected(newChainJson.data);
+      //setRemovedChainItemId(newChainJson.data.items[currentIndex].id);
+      setFacts(updateFacts(newChainJson.data));
+    }
   };
-
+/*
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
     e.dataTransfer.setData('index', String(index));
   };
@@ -91,7 +98,7 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
       handleMoveFact(draggedIndex, index);
     }
   };
-
+*/
   const handleDeleteFact = (factIndex: number) => {
     Swal.fire({
       title: 'Êtes-vous sûr de vouloir supprimer cet évènement ?',
@@ -110,9 +117,11 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
           return;
         }
         newChain = await newChain.json();
-        console.log("new chain", newChain);
-        setItemSelected(newChain);
-        setFacts(updateFacts(newChain));
+        if(newChain){
+          setItemSelected(newChain.data);
+          setFacts(updateFacts(newChain.data));
+          setChangedChain(newChain.data);
+        }
         Swal.fire('Évènement supprimé', '', 'success');
       }
     });
@@ -131,9 +140,9 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
           <div
             key={fact.id}
             className="factContainer"
-            draggable
-            onDragStart={(e) => handleDragStart(e, index)}
-            onDragOver={(e) => handleDragOver(e, index)}
+            //draggable
+            //onDragStart={(e) => handleDragStart(e, index)}
+            //onDragOver={(e) => handleDragOver(e, index)}
           >
             <div className="factActions">
               <button className="factActionBtn" onClick={() => handleMoveFact(index, index - 1)}>
@@ -145,7 +154,7 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
             </div>
             <div className="factTitle">
                 {<Image src={fact.bannerImg ? fact.bannerImg : "/images_default/perecastor.png"} alt="" width={200} height={100} />}
-              <div className='factTitleText'> <p>{fact.title} <br /> {fact.keyDates.join(",")}</p> </div>
+              <div className='factTitleText'> <p>{fact.title} </p></div>
             </div>
             <div className='deleteBtn'>
               <button className="factActionBtn" onClick={() => handleDeleteFact(index)}>

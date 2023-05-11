@@ -34,11 +34,14 @@
 
 .batf-minimized{
     @extend .batf;
-
     width: 2em;
     height: 4em;
     border-radius: 10px 0 0 10px;
     bottom: 0;
+}
+
+.batf-minimized > .inner-batf{
+    display: none;
 }
 
 .batf-minimized-btn{

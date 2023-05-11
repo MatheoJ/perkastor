@@ -12,6 +12,7 @@ interface Props {
 }
 
 import crypto from 'crypto';
+import FactList from '../FactList';
 
 function get_image_url(filename: string): string {
     filename = filename.replace(' ', '_');
@@ -23,7 +24,7 @@ function get_image_url(filename: string): string {
 
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
-
+    console.log(historicalPerson);
     if (!historicalPerson) {
         return null;
     }
@@ -80,13 +81,7 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
                     <div>
                         Anecdotes et Événements associés :
                         <div className="content">
-                            <ul>
-                                {historicalPerson.facts.map(elem => {
-                                    return (<li key={elem.id}>
-                                        {elem.shortDesc}
-                                    </li>)
-                                })}
-                            </ul>
+                            <FactList facts={historicalPerson.facts} />
                         </div>
                     </div>
                 </div>
@@ -96,5 +91,13 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
     );
 };
 
-
+/*
+<ul>
+                                {historicalPerson.facts.map(elem => {
+                                    return (<li key={elem.id}>
+                                        {elem.shortDesc}
+                                    </li>)
+                                })}
+                            </ul>
+                            */
 export default HistoricalFigureView;

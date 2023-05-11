@@ -17,7 +17,7 @@ const Tabs: NextPage<Props> = ({ children, selectedTab, setSelectedTab }) => {
 
   return (
     <div style={{flexGrow: 1}}>
-      <ul className="tabs-row">    
+      <ul className="tabs-row" style={{cursor:"pointer"}}>    
         {children.map((item, index) => (
           <TabTitle
             key={index}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import BatfTabContainer from "./BatfTabContainer";
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
@@ -11,13 +11,17 @@ interface BatfProps {
 const Batf: NextPage<BatfProps> = ({ children }) => {
     const [state, setState] = useState<"normal" | "fullscreen" | "minimized">("minimized");
     //const [selectedTab, setSelectedTab] = useState<"Événements" | "Anecdotes" | "Chaînes">("Événements");
-
-    const handleMapChange = bus.subscribe(selectMapEvent, event => {
-        if (event.payload != null) {
-            setState("normal");
-            //setSelectedTab("Événements");
+    useEffect(() => {
+        const handleMapChange = bus.subscribe(selectMapEvent, event => {
+            if (event.payload != null) {
+                setState("normal");
+                //setSelectedTab("Événements");
+            }
+        });
+        return () => {
+            handleMapChange();
         }
-    });
+    }, []);
 
 
     const maximize = () => {
@@ -39,27 +43,26 @@ const Batf: NextPage<BatfProps> = ({ children }) => {
 
         return 'batf-' + state;
     }
-    /*
+
     return (
         <div className={`batf ${classAssigner()}`}>
-            <div className={'inner-batf'}>
-                <BatfTabContainer 
-                    style={{ display: state === "minimized" ? "none" : "block" }} 
-                    onFullScreenClick={maximize} 
-                    onMinimizeClick={hide} 
-                    setBatfState={setState} 
-                    batfSate={state}
+            <div className={`inner-batf`}>
+                <BatfTabContainer
+                    onFullScreenClick={maximize}
+                    onMinimizeClick={hide}
+                    setBatfState={setState}
+                    batfState={state}
                 />
-                {state === "minimized" && (
-                    <button className="toggle batf-minimized-btn" onClick={show}>
-                        <i className="fa fa-bars"></i>
-                    </button>
-                )}
                 {children}
             </div>
+            {state === "minimized" && (
+                <button className="toggle batf-minimized-btn" onClick={show}>
+                    <i className="fa fa-bars"></i>
+                </button>
+            )}
         </div>
     );
-    */
+    /*
     return (
             <div className={`batf ${classAssigner()}`}>
             {
@@ -80,7 +83,8 @@ const Batf: NextPage<BatfProps> = ({ children }) => {
             {children}
         </div>
     );
-        
+    */
+
 }
 
 export default Batf;

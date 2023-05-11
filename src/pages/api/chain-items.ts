@@ -8,7 +8,7 @@ import { prisma } from '../../lib/db'
 //const { hasSome } = require('prisma-multi-tenant');
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
-    const { chainItemId, newTitle, newComment, chainItemToAdd, chainItemToRemove, chainItemIdsToSwap } = req.query;
+    const { chainItemId, newTitle, newComment, chainItemToAdd, chainItemIdsToSwap, newPosition } = req.query;
     const session: ExtendedSession = await getServerSession(req, res, authOptions);
     try {
         switch (method) {
@@ -36,34 +36,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             case 'PATCH':
                 {
                     // Update FactChain with provided fields
-                    const updatedFactChainItem = await prisma.factChainItem.update({
-                        where: { id: chainItemId as string },
-                        data: {
-                            ...(newTitle && { title: newTitle as string }),
-                            ...(newComment && { comment: newComment as string }),
-                        },
-                    });
+                    var updatedFactChainItem;
+                    if(newTitle || newComment || newPosition){
+                        updatedFactChainItem = await prisma.factChainItem.update({
+                            where: { id: chainItemId as string },
+                            data: {
+                                ...(newTitle && { title: newTitle as string }),
+                                ...(newComment && { comment: newComment as string }),
+                                ...(newPosition && { position: newPosition as number })
+                            },
+                        });
+                    }
                     if (chainItemIdsToSwap) {
-                        const chainItemIdsToSwapArray = chainItemIdsToSwap as string[];
+                        const chainItemIdsToSwapArray = chainItemIdsToSwap.replace("[", "").replace("]", "").replace(/"/g, "").split(",");
+                        console.log(chainItemIdsToSwapArray);
                         const chainItem1 = await prisma.factChainItem.findUnique({
                             where: { id: chainItemIdsToSwapArray[0] },
                         });
                         const chainItem2 = await prisma.factChainItem.findUnique({
                             where: { id: chainItemIdsToSwapArray[1] },
                         });
-                        if (chainItem1 && chainItem2) {
+                        if (chainItem1 && chainItem2 && chainItem1.factChainId === chainItem2.factChainId) {
                             const position1 = chainItem1.position;
                             const position2 = chainItem2.position;
                             await prisma.factChainItem.update({
-                                where: { id: chainItemIdsToSwapArray[0] },
+                                where: { id: chainItemIdsToSwapArray[0]},
                                 data: { position: position2 },
                             });
                             await prisma.factChainItem.update({
-                                where: { id: chainItemIdsToSwapArray[1] },
+                                where: { id: chainItemIdsToSwapArray[1]},
                                 data: { position: position1 },
                             });
                         }
-                        // return new chain
+                        console.log("ouioui");
                         const newChain = await prisma.factChain.findUnique({
                             where: { id: chainItem1.factChainId },
                             include: {
@@ -74,6 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 },
                             },
                         });
+                        console.log("nouvelle chaine : ", newChain);
                         if (newChain) {
                             res.status(200).json({ data: newChain });
                         }

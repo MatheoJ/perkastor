@@ -9,9 +9,10 @@ import { createDeflate } from 'zlib';
 interface ChainListContributionsProps {
   chains: ChainListProps[];
   setItemSelected: React.Dispatch<React.SetStateAction<{}>>;
+  setChains: React.Dispatch<React.SetStateAction<{}[]>>;
 }
 
-const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains, setChains, setItemSelected}) => {
+const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains, setItemSelected, setChains}) => {
 
   const handleDeleteChain = (chainIndex: number) => {
     Swal.fire({

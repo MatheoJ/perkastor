@@ -58,7 +58,7 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
       }
     );
     
-    bus.subscribe(selectLocationFromSearchBar, event => {
+    const unsub = bus.subscribe(selectLocationFromSearchBar, event => {
       const handlePayload = async () => {
         const payload = await Promise.resolve(event.payload);
         // @ts-ignore
@@ -88,6 +88,7 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
 
     return () => {
       map.remove();
+      unsub();
     };
   }, []);
 
