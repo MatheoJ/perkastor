@@ -188,7 +188,7 @@ const Event = () => {
     const response2 = await fetch(`/api/search?${queryParams2}`, {
       method: "GET",
     });
-    
+
     var histfig = await response2.json();
     setHistFigToDisplay(histfig.data.historicalPersons); 
   }
@@ -277,10 +277,6 @@ const Event = () => {
           <p className="error-message">La latitude est requise.</p>
         )}
 
-        <label htmlFor="idLieux">Id du Lieu</label>
-        <input type="text" id="idLieux" {...register("idLieux")} readOnly />
-
-
         <h3>Dates de l'évènement</h3>
         <Controller
           name="listOfDates"
@@ -303,10 +299,11 @@ const Event = () => {
         <input type="text" value={query} onChange={handleChange} />
         <button onClick={handleSearch}>Search</button>
       </div>
-
+              
       <div title="Historical_People" className="idiv">
         <HistoricalFigureList historicalPersonList={histFigToDisplay} selectedFigures={selectedFigures} setSelectedFigures={setSelectedFigures}/>
       </div>
+      
         <Button className='button_submit' id='q1.button' type="submit" disabled={uploading}>Enregistrer</Button>
       </form>
 
