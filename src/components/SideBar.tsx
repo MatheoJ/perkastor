@@ -5,19 +5,21 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { bus } from '../utils/bus';
 import { contributionClickEvent } from '../events/ContributionClickEvent';
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setInsertMode }:
     { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({ item }: { item: String }) => void, insertMode: boolean, setInsertMode: ({ insertMode }: { insertMode: boolean }) => void }) {
     
     const [editMode, setEditMode] = useState(false);
+    const { data: session, status } = useSession();
 
     const handleClick = ({ item }: { item: String }) => { 
         onSidebarItemClick({ item });
 
         if(item == "edit"){
             // si l'utilisateur n'est pas connecté, on le redirige vers la page de connexion
-            if(!localStorage.getItem("user")){
+            if( status != "authenticated" ){
                 window.location.href = "/auth";
             }else{
                 setEditMode(!editMode);
