@@ -3,8 +3,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { CircularProgress, IconButton } from "@mui/material";
 import { SearchFilters, SearchResult } from 'types/types';
 import { bus } from "~/utils/bus";
-import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent} from '../../events/SelectSearchBarResultEvent';
-import { Fact, HistoricalPerson } from "@prisma/client";
+import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent, selectChainFromSearchBar} from '../../events/SelectSearchBarResultEvent';
+import { Fact, FactChain, HistoricalPerson } from "@prisma/client";
 import {Geometry} from "geojson";
 import FiltersChecklist from "./FiltersChecklist";
 
@@ -122,10 +122,11 @@ function SearchBar({ showChecklist }: { showChecklist: boolean }) {
       case 'locations':
         bus.publish(selectLocationFromSearchBar(results[i] as Geometry));
         break;
+      case 'chains':
+        bus.publish(selectChainFromSearchBar(results[i] as FactChain));
     }
   }
   
-
   return (
     <div className={`searchbar ${showSearchBar ? "active" : ""}`}>
       <div className="searching-area">

@@ -10,9 +10,10 @@ interface DisplayLocationProps {
   map: maplibregl.Map;
   locationSelected: any;
   onLocationSelect: (locSelected: any) => void;
+  filter: string;
 }
 
-const DisplayLocation: NextPage<DisplayLocationProps> = ({ map, locationSelected, onLocationSelect }) => {
+const DisplayLocation: NextPage<DisplayLocationProps> = ({ map, locationSelected, onLocationSelect, filter}) => {
 
   const updateLocation = async () => {
 
@@ -22,6 +23,7 @@ const DisplayLocation: NextPage<DisplayLocationProps> = ({ map, locationSelected
       maxLatitude: map.getBounds()._ne.lat.toString(),
       minLongitude: map.getBounds()._sw.lng.toString(),
       minLatitude: map.getBounds()._sw.lat.toString(),
+      filter: filter
     });
 
     const response = await fetch(`/api/locations?${queryParams}`, {
