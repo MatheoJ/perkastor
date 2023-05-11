@@ -3,10 +3,8 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #344453;
     border-radius: 4px;
-    background-color: #ccc;
+    background-color: #fff;
     /* make it a button */
     cursor: pointer;
   }
@@ -15,6 +13,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    margin-right: 10px;
+
   }
   
   .deleteBtn {
@@ -53,13 +54,49 @@
   .chainListContributions {
     width: 93%;
     margin-top: 10%;
+    margin-left: auto;
+    margin-right: auto;
 
   }
 
   .chainTitleText {
     margin-left: 10px;
     color: #344453;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .left {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100%;
+    margin-left: 2em;
+  }
+
+  .right {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+  }
+
+  .chainTitleText .date-container {
+    justify-content: flex-end;
+    height: auto;
+    margin-bottom: 10px;
+    margin-top: 10px;
   }
 
   
-  
+  .chainTitleText div {
+    font-weight: 700;
+    margin: 0;
+    height: 100%;
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }

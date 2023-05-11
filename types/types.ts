@@ -66,6 +66,7 @@ export interface ChainListProps extends FactChain {
     author: {
       id: string;
       name: string;
+      image?: string;
   };
   items: FactChainItemProps[];
 }

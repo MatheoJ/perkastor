@@ -3,8 +3,9 @@ import Fact from './Fact';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Add from '@material-ui/icons/Add';
 import Swal from 'sweetalert2';
-import {ChainListProps} from '../../types/types';
+import { ChainListProps } from '../../types/types';
 import { createDeflate } from 'zlib';
+import { NextPage } from 'next';
 
 interface ChainListContributionsProps {
   chains: ChainListProps[];
@@ -12,7 +13,7 @@ interface ChainListContributionsProps {
   setChains: React.Dispatch<React.SetStateAction<{}[]>>;
 }
 
-const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains, setItemSelected, setChains}) => {
+const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains, setItemSelected, setChains }) => {
 
   const handleDeleteChain = (chainIndex: number) => {
     Swal.fire({
@@ -26,7 +27,7 @@ const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains,
         const newChain = await fetch(`api/chains?id=${chains[chainIndex].id}`, {
           method: 'DELETE',
         });
-        if(newChain.status >=300) {
+        if (newChain.status >= 300) {
           setItemSelected(null);
           Swal.fire('Erreur', 'Une erreur est survenue lors de la suppression de la chaine', 'error');
           return;
@@ -37,19 +38,36 @@ const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains,
     });
   };
 
+  const formatDate = (date: any) => {
+    return (new Date(date)).toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    })
+  }
+
   return (
     <div className="chainListContributions">
       {chains.map((chain, index) => (
         <div
           key={chain.id}
           className="chainContainer"
-          
+
         >
           <div className="chainTitle" onClick={() => {
             setItemSelected(chain);
           }}>
             <img src={chain.image ? chain.image : "/images_default/perecastor.png"} alt="chain image" id='imageChainList' className='imageFactList' />
-            <div className='chainTitleText'> <p>{chain.title} <br/> {chain.createdAt.split("T")[0]}</p> </div>
+            <div className='chainTitleText'>
+              <p>{chain.title}
+                <br />
+                <div className="date-container">
+                  <li>
+                    {formatDate(chain.createdAt)}
+                  </li>
+                </div>
+              </p>
+            </div>
           </div>
           <div className='deleteBtn'>
             <button className="chainActionBtn" onClick={() => handleDeleteChain(index)}>
@@ -58,7 +76,7 @@ const ChainListContributions: NextPage<ChainListContributionsProps> = ({ chains,
           </div>
         </div>
       ))}
-      <div className="addChainBtn" onClick={() => window.location.href="/chainForm"}>
+      <div className="addChainBtn" onClick={() => window.location.href = "/chainForm"}>
         <button className="chainActionBtn">
           <Add />
         </button>
