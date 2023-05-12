@@ -62,6 +62,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
       //const payload = await Promise.resolve(event.payload);
       setHistoricalFigure(null);
       setHistoricalFigure(event.payload);
+      setSelectedTab(1);
     });
 
     const unsubEventFrom = bus.subscribe(selectEventFromSearchBar, event => {

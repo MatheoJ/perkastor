@@ -19,6 +19,7 @@ const FactList: NextPage<FactListProps> = ({ facts, lastSlide, setLastSlide }) =
     slidesToScroll: 1,
     afterChange: current => setLastSlide(current),
     initialSlide: lastSlide,
+    autoplay: false,
   };
 
   return (
