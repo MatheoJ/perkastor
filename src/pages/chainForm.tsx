@@ -86,6 +86,7 @@ const ChainForm = () => {
   }, []);
 
   return (
+    <div className='body-event'>
     <div className="container" >
       <h1>Constitution d'une chaîne</h1>
       <p>Qu'est-ce qu'une <strong>chaîne</strong> ?</p>
@@ -117,6 +118,14 @@ const ChainForm = () => {
         
         <button type="submit">Envoyer 🚀</button>
       </form>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+    </div>
     </div>
   );
 }
