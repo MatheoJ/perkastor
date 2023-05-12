@@ -86,8 +86,8 @@ yarn prisma generate
 To build the image:
 ```
 docker-compose -f docker-compose.prod.yml build
-docker images // check the image name, e.g: champif-prof
-docker run -p 80:80 --name champif-prod champif-prod
+docker images // check the image name, e.g: perkastor-prod
+docker run -p 80:80 --name perkastor-prod perkastor-prod
 // 80 is the nginx's exposed port
 ```
 

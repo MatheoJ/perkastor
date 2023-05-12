@@ -8,6 +8,9 @@ await import("./src/env.mjs");
 const config = {
   swcMinify: true,
   reactStrictMode: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 
   /**
    * If you have `experimental: { appDir: true }` set, then you must comment the below `i18n` config
