@@ -9,7 +9,7 @@ import Button from './buttons/Button';
 import DisplayLocation from './DisplayLocation';
 import { bus } from '../utils/bus';
 import { selectMapEvent } from '../events/map/SelectMapEvent';
-import { selectLocationFromSearchBar } from '~/events/SelectSearchBarResultEvent';
+import { selectLocationFromSearchBar, selectLocationItem } from '~/events/SelectSearchBarResultEvent';
 import { LngLatLike } from 'maplibre-gl';
 import { NextPage } from "next";
 
@@ -57,7 +57,30 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
         map.addImage('pin_event', image);
       }
     );
-    
+    const unsubItem = bus.subscribe(selectLocationItem, event => {
+      const handlePayload = async () => {
+        const endPoints : LngLatLike = [event.payload.longitude, event.payload.latitude]; // DO NOT MODIFY THIS LINE
+        map?.flyTo({
+          center: endPoints,
+          zoom: 10,
+          bearing: 0,
+          speed: 1.5, // make the flying slow
+          curve: 1, // change the speed at which it zooms out
+          // This can be any easing function: it takes a number between
+          // 0 and 1 and returns another number between 0 and 1.
+          easing: function (t) {
+            return t;
+          },
+          // this animation is considered essential with respect to prefers-reduced-motion
+          essential: true
+        });
+      };
+      handlePayload().catch(error => {
+        console.error("Error handling payload:", error);
+      });
+    });
+      
+
     const unsub = bus.subscribe(selectLocationFromSearchBar, event => {
       const handlePayload = async () => {
         const payload = await Promise.resolve(event.payload);
@@ -89,6 +112,7 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
     return () => {
       map.remove();
       unsub();
+      unsubItem();
     };
   }, []);
 

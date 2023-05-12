@@ -5,6 +5,8 @@ import { FactChain } from '@prisma/client';
 import { FactChainItemProps } from '../../types/types';
 import { NextPage } from 'next';
 import FactChainItem from './FactChainITem';
+import { selectLocationItem } from '~/events/SelectSearchBarResultEvent';
+import { bus } from '~/utils/bus';
 
 interface ChainListProps {
   chain: {title :string,
@@ -19,10 +21,11 @@ interface ChainListProps {
           }
         }
   setItemSelected: React.Dispatch<React.SetStateAction<{}>>;
+  addBackArrow: boolean;
 }
 
-const ChainList: NextPage<ChainListProps> = ({ chain, setItemSelected }) => {
-  console.log('chain', chain)
+const ChainList: NextPage<ChainListProps> = ({ chain, setItemSelected, addBackArrow}) => {
+  //console.log('chain', chain)
   //const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
   //const [items, setItems] = useState(facts.slice(0, 10));
   /*
@@ -32,6 +35,12 @@ const ChainList: NextPage<ChainListProps> = ({ chain, setItemSelected }) => {
     }, 1500);
   };*/
 
+  const handleChangeItem = (index: number) => {
+    console.log('index', index)
+    console.log('chain', chain)
+    bus.publish(selectLocationItem(chain.items[index].fact.location));
+  }
+  
   const settings = {
     dots: true,
     infinite: true,
@@ -49,11 +58,13 @@ const ChainList: NextPage<ChainListProps> = ({ chain, setItemSelected }) => {
 
   return (
     <div>
+      {addBackArrow &&
       <div onClick={() => setItemSelected(null)} style={{cursor: "pointer"}} >
         <i className="fa fa-arrow-left" aria-hidden="true"></i>
       </div>
+      }
       
-      <Slider className='sliderFactList' {...settings}>
+      <Slider className='sliderFactList' {...settings} afterChange={handleChangeItem}>
         {chain.items.map((item) => (
           <div className='sortedFact' key={item.id} style={{width: '100%'}}>
             <FactChainItem item={item} />

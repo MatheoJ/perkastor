@@ -4,20 +4,28 @@ import { FactChainItem as FactChainItemType } from '@prisma/client'
 import { Fact as FactType } from '@prisma/client'
 import { FactChainItemProps } from '../../types/types'
 import { NextPage } from 'next';
-
+import { bus } from '../utils/bus';
+import selectLocationItem from '../events/SelectSearchBarResultEvent';
 interface Props {
     item: FactChainItemProps;
 }
 
 const Fact: NextPage<Props> = (props) => {
     const { item } = props;
-
+    /*
+    const [location, setLocation] = useState<FactType['location']>(item.fact.location);
+    useEffect(() => {
+        if (item.fact.location !== location) {
+            setLocation(item.fact.location);
+            bus.publish(selectLocationItem(item.fact.location));
+        }
+      }, [location]);
+      */
     const formatDate = (dateStr: string): string => {
         const date = new Date(dateStr);
         if (date.getFullYear() === 1 || date.getFullYear() === 4) {
             return 'N/A'
         }
-        console.log(date.toDateString().split(' ')[1])
         if(date.toDateString().split(' ')[1] === 'Jan' && date.toDateString().split(' ')[2] === '01' && date.getFullYear() === 1970) {
             return 'N/A'
         }
@@ -56,7 +64,7 @@ const Fact: NextPage<Props> = (props) => {
                 </div>
                 <div className='content-right'>
                     <div className="factImage">
-                        {<Image src={item.fact.bannerImg ? item.fact.bannerImg : "/resources/404-error.png"} alt="" width={300} height={200} />}
+                        {<Image src={item.fact.bannerImg ? item.fact.bannerImg :  "/resources/404-error.png"} alt="" width={300} height={200} />}
                     </div>
                     <ul>
                         {item.fact.personsInvolved.map((person) => (

@@ -216,11 +216,14 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
               return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdotes historique selectionnée"}/>;
             }
             return <ChainList chains={chains} setItemSelected={setItemSelected} />;
+          }else{
+            if(chains.length == 0){
+                return <Chain chain={itemSelected} setItemSelected={setItemSelected} addBackArrow={false} />;
+            }else{
+              return <Chain chain={itemSelected} setItemSelected={setItemSelected} addBackArrow={true} />;
+            }
           }
-          if(itemSelected === null){
-            return <BatfNoMarkerSelected name={"Aucune chaîne d'anecdotes historique selectionnée"}/>;
-          }
-          return <Chain chain={itemSelected} setItemSelected={setItemSelected} />;
+          
         }
     }
   }
