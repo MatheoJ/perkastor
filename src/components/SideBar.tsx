@@ -10,12 +10,17 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { usePosition } from 'use-position';
+import {selectLocationFromSearchBar} from '../events/SelectSearchBarResultEvent';
+import { Geometry } from "geojson";
 
 function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setInsertMode }:
     { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({ item }: { item: String }) => void, insertMode: boolean, setInsertMode: ({ insertMode }: { insertMode: boolean }) => void }) {
     
     const [editMode, setEditMode] = useState(false);
     const { data: session, status } = useSession();
+    const [position, setPosition] = useState({ latitude: 0, longitude: 0 });
 
     const handleClick = ({ item }: { item: String }) => { 
         onSidebarItemClick({ item });
@@ -35,6 +40,26 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
         else if (item == "addChain") {
             window.location.href = "/chainForm";
         }
+        else if (item == "locateMe"){
+            navigator.geolocation.getCurrentPosition((position) => {
+                setPosition({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                });
+            });
+
+            console.log(position.latitude, position.longitude);
+
+            const geoObj: Geometry = {
+                geometry: 'Point',
+                longitude: position.longitude,
+                latitude: position.latitude
+            };
+
+            console.log(geoObj.coordinates)
+
+            bus.publish(selectLocationFromSearchBar(geoObj));
+        }
     }
 
     return (
@@ -42,6 +67,17 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
             <div className="content">
                 <div className="top-content">
                     <ul className='topIcons'>
+                        <li>
+                            <div className="icon">
+                                <Button variant="text"
+                                        style={{ color: "#F1B706", cursor:"pointer"}}
+                                        title='Me localiser sur la carte pour découvrir les événements autour de moi' 
+                                        onClick={() => handleClick({ item: "locateMe" })}>
+                                    <LocationOnIcon style={{ color: '#F1B706' }} />
+                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Me localiser</span>
+                                </Button>
+                            </div>
+                        </li>
                         <li>
                             <div className="icon">
                                 <Button variant="text"
@@ -75,7 +111,6 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                                     <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter une chaine d'événements</span>
                                 </Button>
                             </div>
-
                         </li>
                     </ul>
 
