@@ -153,6 +153,9 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
   }, [locationId]);
 
   useEffect(() => {
+    if(editMod){
+      setHistoricalFigure(null);
+    }
     fetchUserFacts();
   }, [editMod]);
 
