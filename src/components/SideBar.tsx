@@ -14,10 +14,10 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { usePosition } from 'use-position';
 import {selectLocationFromSearchBar} from '../events/SelectSearchBarResultEvent';
 import { Geometry } from "geojson";
-
+import { useRouter } from 'next/router';
 function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setInsertMode }:
     { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({ item }: { item: String }) => void, insertMode: boolean, setInsertMode: ({ insertMode }: { insertMode: boolean }) => void }) {
-    
+    //const router  = useRouter();
     const [editMode, setEditMode] = useState(false);
     const { data: session, status } = useSession();
     const [position, setPosition] = useState({ latitude: 0, longitude: 0 });
@@ -27,8 +27,10 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
 
         if(item == "edit"){
             // si l'utilisateur n'est pas connecté, on le redirige vers la page de connexion
-            if( status != "authenticated" ){
+            if(!session){
+                
                 window.location.href = "/auth";
+              
             }else{
                 setEditMode(!editMode);
                 bus.publish(contributionClickEvent(!editMode));
@@ -48,15 +50,12 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                 });
             });
 
-            console.log(position.latitude, position.longitude);
 
             const geoObj: Geometry = {
                 geometry: 'Point',
                 longitude: position.longitude,
                 latitude: position.latitude
             };
-
-            console.log(geoObj.coordinates)
 
             bus.publish(selectLocationFromSearchBar(geoObj));
         }
@@ -71,7 +70,7 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                             <div className="icon">
                                 <Button variant="text"
                                         style={{ color: "#F1B706", cursor:"pointer"}}
-                                        title='Me localiser sur la carte pour découvrir les événements autour de moi' 
+                                        title='Me localiser sur la carte pour découvrir les anecdotes historiques autour de moi' 
                                         onClick={() => handleClick({ item: "locateMe" })}>
                                     <LocationOnIcon style={{ color: '#F1B706' }} />
                                     <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Me localiser</span>
@@ -108,7 +107,7 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                                         title='Accéder au formulaire pour ajouter une chaîne d&apos;anecdotes historiques' 
                                         onClick={() => handleClick({ item: "addChain" })}>
                                     <LinkIcon style={{ color: '#F1B706' }} />
-                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter une chaine d'événements</span>
+                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter une chaine d'anecdotes historiques</span>
                                 </Button>
                             </div>
                         </li>
