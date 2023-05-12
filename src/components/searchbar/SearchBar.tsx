@@ -184,7 +184,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
           <input
             type="text"
             className="searchBar__input"
-            placeholder="Chercher un évènement, un lieu..."
+            placeholder="Chercher une anecdote, un lieu..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);

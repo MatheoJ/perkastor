@@ -71,7 +71,7 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                             <div className="icon">
                                 <Button variant="text"
                                         style={{ color: "#F1B706", cursor:"pointer"}}
-                                        title='Me localiser sur la carte pour découvrir les événements autour de moi' 
+                                        title='Me localiser sur la carte pour découvrir les anecdotes historiques autour de moi' 
                                         onClick={() => handleClick({ item: "locateMe" })}>
                                     <LocationOnIcon style={{ color: '#F1B706' }} />
                                     <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Me localiser</span>
@@ -108,7 +108,7 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                                         title='Accéder au formulaire pour ajouter une chaîne d&apos;anecdotes historiques' 
                                         onClick={() => handleClick({ item: "addChain" })}>
                                     <LinkIcon style={{ color: '#F1B706' }} />
-                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter une chaine d'événements</span>
+                                    <span style={{ fontSize: '8px', marginTop: '-5px', textAlign: 'center', color: 'white' }}>Ajouter une chaine d'anecdotes historiques</span>
                                 </Button>
                             </div>
                         </li>
