@@ -26,7 +26,7 @@ RUN yarn build
 FROM nginx:1.24.0-alpine AS production
 # Add bash to explore the container's filesystem
 RUN apk add --no-cache bash
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=builder /app /usr/share/nginx/html
 # Delete default nginx conf
 RUN rm /etc/nginx/conf.d/default.conf
 # Add our nginx conf

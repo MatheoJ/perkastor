@@ -88,6 +88,8 @@ const ChainForm = () => {
   return (
     <div className="container" >
       <h1>Constitution d'une chaîne</h1>
+      <p>Qu'est-ce qu'une <strong>chaîne</strong> ?</p>
+      <p>Une chaîne est une succession d'anecdotes historiques qui se suivent chronologiquement. Contribuer à l'écosystème permet de partager les événements qui vous tiennent à coeur.</p>
       <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="name">Nom de la chaîne</label>
         <input
@@ -107,13 +109,12 @@ const ChainForm = () => {
         />
         {errors.description && <p className="error-message" >La description est requise.</p>}
 
-        <h3>Contenu de la chaîne</h3>
-
-        <p>Ajout d'anecdotes historiques déjà existantes</p>
+        <label>Recherche des événements</label>
         <SearchBar showChecklist={false} usedInForm={true}></SearchBar>
-        <h4>Ordonnancement des anecdotes historiques</h4>
+        <label>Constitution de la chaîne</label>
         <FactChainEdition facts={tempFacts} setTmpFacts={setTmpFacts}></FactChainEdition>
 
+        
         <button type="submit">Envoyer 🚀</button>
       </form>
     </div>

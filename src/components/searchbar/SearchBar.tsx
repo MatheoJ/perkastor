@@ -150,6 +150,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
         break;
       case 'locations':
         bus.publish(selectLocationFromSearchBar(results[i] as Geometry));
+        console.log(results[i]);
         break;
       case 'chains':
         bus.publish(selectChainFromSearchBar(results[i] as FactChain));
@@ -179,7 +180,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
   return (
     <div className={`searchbar active ${usedInForm ? 'searchbar-form' : ''}`} ref={ref2}>
       <div className="searching-area" style={{borderRadius: `5px 5px ${searchResultsVisibility ? '0 0' : '5px 5px'}`}}>
-        <div className="searchBar__form">
+        <div className={`searchBar__form`} style={{width: usedInForm ? '100%' : 'auto'}}>
           <input
             type="text"
             className="searchBar__input"
