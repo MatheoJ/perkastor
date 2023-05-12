@@ -59,10 +59,24 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
     );
     const unsubItem = bus.subscribe(selectLocationItem, event => {
       const handlePayload = async () => {
-        const endPoints : LngLatLike = [event.payload.longitude, event.payload.latitude]; // DO NOT MODIFY THIS LINE
+        const [type, location] = event.payload;
+        const endPoints : LngLatLike = [location.longitude, location.latitude]; // DO NOT MODIFY THIS LINE
+        var zoom;
+        if(type == "rue"){
+          zoom = 17;
+        }else if(type == "ville"){
+          zoom = 10;
+        }else if(type == "departement"){
+          zoom = 8;
+        }else if(type == "region"){
+          zoom = 6;
+        }else{
+          zoom = 4;
+        }
+
         map?.flyTo({
           center: endPoints,
-          zoom: 10,
+          zoom: zoom,
           bearing: 0,
           speed: 1.5, // make the flying slow
           curve: 1, // change the speed at which it zooms out

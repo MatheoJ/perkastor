@@ -37,7 +37,7 @@ const ChainList: NextPage<ChainListProps> = ({ chain, setItemSelected, addBackAr
 
   const handleChangeItem = (index: number) => {
     if(chain.items[index].fact.location){
-      bus.publish(selectLocationItem(chain.items[index].fact.location));
+      bus.publish(selectLocationItem([chain.items[index].fact.location.type, chain.items[index].fact.location]));
     }
   }
   
