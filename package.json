@@ -42,6 +42,7 @@
     "node-sass": "^8.0.0",
     "postcss-import": "^15.1.0",
     "react": "18.2.0",
+    "react-cool-onclickoutside": "^1.7.0",
     "react-dom": "18.2.0",
     "react-easy-crop": "^4.7.4",
     "react-hook-form": "^7.43.9",
@@ -54,6 +55,7 @@
     "sweetalert2": "^11.7.5",
     "sweetalert2-react-content": "^5.0.7",
     "ts-bus": "^2.3.1",
+    "use-position": "^1.0.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {

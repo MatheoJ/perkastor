@@ -14,11 +14,7 @@ import Fact from "../Fact";
 import {Geometry} from "geojson";
 import FiltersChecklist from "./FiltersChecklist";
 import { NextPage } from "next";
-
-
-import Paper from '@mui/material/Paper';
-import InputBase from '@mui/material/InputBase';
-
+import useOnclickOutside from "react-cool-onclickoutside";
 import SearchBarModalResult from "./SearchBarModalResult";
 
 interface Props{
@@ -44,6 +40,10 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
     location: !usedInForm,
     chain: !usedInForm,
     user: !usedInForm,
+  });
+
+  const ref2 = useOnclickOutside(() => {
+   setSearchResultsVisibility(false);
   });
 
   const toggleSearchBar = () => {
@@ -177,7 +177,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
 
 
   return (
-    <div className={`searchbar active ${usedInForm ? 'searchbar-form' : ''}`}>
+    <div className={`searchbar active ${usedInForm ? 'searchbar-form' : ''}`} ref={ref2}>
       <div className="searching-area" style={{borderRadius: `5px 5px ${searchResultsVisibility ? '0 0' : '5px 5px'}`}}>
         <div className="searchBar__form">
           <input
