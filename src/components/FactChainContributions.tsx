@@ -104,7 +104,13 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
     }
     return fact.title;
   }
-
+  const getDate = (date: any) => {
+    const dateObj =new Date(date);
+    if(dateObj.toLocaleDateString().split('/')[1] === '01' && dateObj.toLocaleDateString().split('/')[0] === '01'){
+      return dateObj.getFullYear();
+    }
+    return dateObj.toLocaleDateString('fr-FR', { year: 'numeric', month: 'numeric', day: 'numeric' });
+  }
   return (
     <div className="chainListContributions">
       <div className="factChainHeader">
@@ -135,7 +141,7 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
                 <p><span className='strong'>{describeFactTitle(fact)}</span></p>
                 <ul className='no-margin date-container'>
                   {fact.keyDates.map((date, index) => {
-                    return <li key={index}>{(new Date(date)).toLocaleDateString('fr-FR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</li>;
+                    return <li key={index}>{getDate(date)}</li>;
                   })}
                 </ul>
               </div>
@@ -149,7 +155,7 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
         </div>
       ))}
       <div className='flex-center'>
-        <Link href="/eventForm">
+        <Link href="/chainForm">
           <Avatar sx={{ width: 30, height: 30, color: '#fff', backgroundColor: '#40AC92' }} className='factActionBtn'>
             <Add />
           </Avatar>

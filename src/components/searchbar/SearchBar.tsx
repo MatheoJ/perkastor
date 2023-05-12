@@ -3,7 +3,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { CircularProgress, IconButton } from "@mui/material";
 import { SearchFilters, SearchResult } from 'types/types';
 import { bus } from "~/utils/bus";
-import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent} from '../../events/SelectSearchBarResultEvent';
+import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent, selectChainFromSearchBar } from '../../events/SelectSearchBarResultEvent';
 import {HistoricalPerson, FactPrisma} from "@prisma/client";
 
 import {FactProps} from 'types/types';
@@ -14,11 +14,7 @@ import Fact from "../Fact";
 import {Geometry} from "geojson";
 import FiltersChecklist from "./FiltersChecklist";
 import { NextPage } from "next";
-
-
-import Paper from '@mui/material/Paper';
-import InputBase from '@mui/material/InputBase';
-
+import useOnclickOutside from "react-cool-onclickoutside";
 import SearchBarModalResult from "./SearchBarModalResult";
 
 interface Props{
@@ -44,6 +40,10 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
     location: !usedInForm,
     chain: !usedInForm,
     user: !usedInForm,
+  });
+
+  const ref2 = useOnclickOutside(() => {
+   setSearchResultsVisibility(false);
   });
 
   const toggleSearchBar = () => {
@@ -177,7 +177,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
 
 
   return (
-    <div className={`searchbar active ${usedInForm ? 'searchbar-form' : ''}`}>
+    <div className={`searchbar active ${usedInForm ? 'searchbar-form' : ''}`} ref={ref2}>
       <div className="searching-area" style={{borderRadius: `5px 5px ${searchResultsVisibility ? '0 0' : '5px 5px'}`}}>
         <div className="searchBar__form">
           <input

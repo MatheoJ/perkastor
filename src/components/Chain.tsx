@@ -44,7 +44,7 @@ const ChainList: NextPage<ChainListProps> = ({ chain, setItemSelected }) => {
     arrows: false,
     variableWidth: false,
     outerWidth: 100,
-    autoplay: true,
+    autoplay: false,
   };
 
   return (

@@ -70,3 +70,16 @@ $slick-arrow-color: black !default;
     max-width: 100%;
     max-height: 100%;
 }
+
+.slider{
+    display: flex;
+    width: 70%;
+    padding-left: 15%;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+

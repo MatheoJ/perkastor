@@ -92,12 +92,10 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
     };
   }, []);
 
-
-
   return (
       <div ref={mapContainer} className={'map-container'}>
         {mapInstance && <Marker map={mapInstance} />}
-        {mapInstance && <DisplayLocation map={mapInstance} locationSelected={locationSelected} onLocationSelect={handleSelectLocation} filter={"hasFact"} />}
+        {mapInstance && <DisplayLocation map={mapInstance} locationSelected={locationSelected} onLocationSelect={handleSelectLocation} filter={"all"} />}
     </div>
   );
 }
