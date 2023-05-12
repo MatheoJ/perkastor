@@ -1,16 +1,16 @@
-// pages/event.tsx
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import MapCoordPicker from '~/components/MapCoordPicker';
 import SearchBar from '~/components/searchbar/SearchBar';
 import FactChainEdition from '~/components/FactChainEdition';
 import { selectFact } from '../events/ChainFormModalEvents';
 import { bus } from '../utils/bus';
-import { useState, useEffect } from 'react';
 import { FactProps } from 'types/types';
 import { useSession } from 'next-auth/react';
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
 interface ChainDto {
   title: string;
   description: string;
@@ -26,15 +26,15 @@ const ChainForm = () => {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<ChainDto>();
   const [tempFacts, setTmpFacts] = useState([]);
   const router = useRouter();
-  const MySwal = withReactContent(Swal)
+  const MySwal = withReactContent(Swal);
+
   // need to be authorized to access this page
   const { data: session, status, update } = useSession({
-    required: true
-  })
+    required: true,
+  });
 
   const onSubmit = (data: ChainDto) => {
-    event.preventDefault()
-    console.log(data);
+    event.preventDefault();
 
     const chain = {
       title: data.title,

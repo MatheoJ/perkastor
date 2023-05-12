@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react";
 import { Button } from '@mui/material';
 import { SearchFilters } from 'types/types';
 import SearchBarLieux from '~/components/searchbar/SearchBarLieux';
-
+import { useEffect } from 'react';
 <style jsx>{`
   .button_submit {
     cursor: pointer;

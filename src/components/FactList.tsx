@@ -41,7 +41,7 @@ const FactList: NextPage<FactListProps> = ({ facts, lastSlide, setLastSlide }) =
 
   return (
     <>
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative', transform:"translateY(-80%)" }}>
         <div className='slider'>
           <RangeSlider value={dateRange} onChange={(event, newValue) => setDateRange(newValue)} style={{ color: "white" }} />
         </div>

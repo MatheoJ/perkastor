@@ -36,9 +36,9 @@ const ChainList: NextPage<ChainListProps> = ({ chain, setItemSelected, addBackAr
   };*/
 
   const handleChangeItem = (index: number) => {
-    console.log('index', index)
-    console.log('chain', chain)
-    bus.publish(selectLocationItem(chain.items[index].fact.location));
+    if(chain.items[index].fact.location){
+      bus.publish(selectLocationItem(chain.items[index].fact.location));
+    }
   }
   
   const settings = {

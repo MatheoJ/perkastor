@@ -17,7 +17,6 @@ interface Props {
 
 const Fact: NextPage<Props> = ({ fact }) => {
     // Tri des keyDates dans l'ordre chronologique
-    console.log(fact)
     const sortedDates = fact.keyDates
         .map(dateStr => new Date(Date.parse(dateStr.toString())))
         .filter(date => !isNaN(date.getTime()))
