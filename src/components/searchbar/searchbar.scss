@@ -18,8 +18,10 @@
 .searchbar-form{
   position: relative;
   top: auto;
-  left: auto;
   z-index: 0;
+  border: 1px solid #ededf0;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 .searching-area {

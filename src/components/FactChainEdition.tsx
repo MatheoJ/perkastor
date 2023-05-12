@@ -4,7 +4,8 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Swal from 'sweetalert2';
 import {FactProps} from 'types/types';
-
+import ImageWithFallback from './ImageWithFallback';
+import { Alert, AlertTitle } from '@mui/material';
 interface FactChainEditionProps {
     facts: FactProps[];
     setTmpFacts: React.Dispatch<React.SetStateAction<{}[]>>;
@@ -53,7 +54,6 @@ const FactChainEdition = ({ facts, setTmpFacts} : FactChainEditionProps) => {
               <button className="factActionBtn" onClick={(event) => {
                 event.preventDefault();
                 handleMoveFact(index, index - 1);}}>
-                
                 <ArrowUpwardIcon />
               </button>
               <button className="factActionBtn" onClick={(event) => {
@@ -63,7 +63,7 @@ const FactChainEdition = ({ facts, setTmpFacts} : FactChainEditionProps) => {
               </button>
             </div>
             <div className="factTitle">
-              <img src={fact.bannerImg} alt="fact image" id='imageFactList' />
+            <ImageWithFallback src={fact.bannerImg} alt="" width={100} height={100} fallback='/resources/404-error.png' />
               <div className='factTitleText'> 
                 {(() => {
                     if (fact.title.length < 1) {
@@ -90,6 +90,13 @@ const FactChainEdition = ({ facts, setTmpFacts} : FactChainEditionProps) => {
             </div>
           </div>
         ))}
+        {
+            facts.length === 0 ? 
+            <Alert severity="warning">
+                <AlertTitle>Attention</AlertTitle>
+                Aucune tâche n'a été ajouté à la chaîne pour le moment.
+            </Alert> : null
+        }
       </div>
     </>
   );
