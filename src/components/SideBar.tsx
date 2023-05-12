@@ -4,7 +4,7 @@ import FolderSharedIcon from '@mui/icons-material/FolderShared';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { bus } from '../utils/bus';
 import { contributionClickEvent } from '../events/ContributionClickEvent';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -49,17 +49,16 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
                     longitude: position.coords.longitude
                 });
             });
-
-
-            const geoObj: Geometry = {
-                geometry: 'Point',
-                longitude: position.longitude,
-                latitude: position.latitude
-            };
-
-            bus.publish(selectLocationFromSearchBar(geoObj));
         }
     }
+    useEffect(() => {
+        const geoObj: Geometry = {
+            geometry: 'Point',
+            longitude: position.longitude,
+            latitude: position.latitude
+        };
+        bus.publish(selectLocationFromSearchBar(geoObj));
+    }, [position]);
 
     return (
         <div className={`sidebar ${isOpen ? 'open' : ''}`}>
