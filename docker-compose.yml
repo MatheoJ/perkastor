@@ -19,6 +19,7 @@ services:
       - nodemodules:/src/node_modules # Cache node_modules
     ports:
       - 3000:3000
-
+    env_file:
+      - .env
 volumes:
-    nodemodules: {}
+  nodemodules: {}

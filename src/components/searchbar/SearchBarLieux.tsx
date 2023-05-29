@@ -58,7 +58,8 @@ const SearchBarLieu: NextPage<Props> = ({ showChecklist, usedInForm, onResultCli
     setIsLoading(false);
   };
 
-  function renderResults(results: any[], category: string) {
+  function renderResults(results: any, category: string) {
+    results = Array.isArray(results) ? results : [results];
     return results.map((result, index) => {
       let resultTitle = '';
       switch (category) {
@@ -101,7 +102,7 @@ const SearchBarLieu: NextPage<Props> = ({ showChecklist, usedInForm, onResultCli
   
       return (
         <div key={result.id} className="dataItem">
-          <button className="dataItem__name" onClick={(event) => handleClickOnResult(event, results, category, index)} category={category}>{resultTitle}</button>
+          <button className="dataItem__name" onClick={(event) => handleClickOnResult(event, results, category, index)} data-category={category}>{resultTitle}</button>
         </div>
       )
     })

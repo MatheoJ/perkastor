@@ -1,11 +1,7 @@
 import { type NextPage } from 'next';
 import TopBar from '../TopBar';
 import SideBar from '../SideBar';
-import Fact from '../Fact';
-import FactList from '../FactList';
 import { useState } from 'react';
-import FactChain from '../FactChainContributions';
-import FactListContributions from '../FactListContributions';
 
 const MainNavigation: NextPage = () => {
   const [selectedItem, setSelectedItem] = useState<String>(""); // Keep track of the selected item in the sidebar
@@ -25,7 +21,7 @@ const MainNavigation: NextPage = () => {
   };  
   return (
     <header>
-      <TopBar toggleSidebar={toggleSidebar} />
+      <TopBar />
       <SideBar
         isOpen={sidebarIsOpen}
         toggleSidebar={toggleSidebar}

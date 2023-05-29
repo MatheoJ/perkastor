@@ -1,8 +1,11 @@
+import { NextPage } from "next";
 import React from "react";
 
+interface Props {
+    name: string;
+}
 
-const BatfNoMarkerSelected = ({name}) => {
-
+const BatfNoMarkerSelected: NextPage<Props> = ({name}) => {
     return (
          <div>
             <div className="fact">

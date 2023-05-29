@@ -1,15 +1,12 @@
-import { useEffect, useState } from 'react';
-import Head from 'next/head';
-import logo from "src/images/perecastor.png";
+import { useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
-import { AccountCircle, VerifiedUserOutlined } from '@mui/icons-material';
-import MenuIcon from '@mui/icons-material/Menu';
+import { AccountCircle } from '@mui/icons-material';
 import MapIcon from '@mui/icons-material/Map';
 import { Button } from '@mui/material';
+import { NextPage } from 'next';
 
-function TopBar() {
+const TopBar: NextPage = () => {
     const { data: session, status, update } = useSession({
         required: false
     })

@@ -27,16 +27,28 @@
 .searching-area {
   display: flex;
   align-items: center;
+  
+  flex-direction: column;
   height: 35px;
   background-color: white;
   border-radius: 5px 5px 0 0;
+  width: 300px;
+  max-width: 300px;
 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+  > .row {
+    width: 100%;
+  }
+  > .row:nth-child(1) {
+    justify-content: space-between;
+  }
 }
 
 .searchBar__form {
   display: none;
   width: 300px;
+  flex: 1 1 auto;
 }
 
 .searchBar__input {
@@ -124,7 +136,7 @@
 
 .searchResults .dataItem {
   width: 100%;
-  margin-left: 5px;
+  margin-left: 15px;
   height: 50px;
   display: flex;
   align-items: center;

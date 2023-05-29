@@ -13,21 +13,6 @@ import { Button } from '@mui/material';
 function UserProfile() {
   const [formSuccess, setFormSuccess] = useState<string>();
   const [formError, setFormError] = useState<string>();
-  // const [isLoading, setIsLoading] = useState(true);
-
-  // useEffect(() => {
-  //   getSession().then((session) => {
-  //     if (!session) {
-  //       window.location.href = '/auth';
-  //     } else {
-  //       setIsLoading(false);
-  //     }
-  //   });
-  // }, []);
-
-  // if (isLoading) {
-  //   return <p className={classes.profile}>Loading...</p>;
-  // }
 
   const { data: session, status, update } = useSession({
     required: false
@@ -45,7 +30,7 @@ function UserProfile() {
     navigator.clipboard.writeText(`${URL}/profile/${session.user.id}`)
   }
 
-  async function changePasswordHandler(passwordData: string) {
+  async function changePasswordHandler(passwordData: Object) {
     const response = await fetch('/api/user/change-password', {
       method: 'PATCH',
       body: JSON.stringify(passwordData),

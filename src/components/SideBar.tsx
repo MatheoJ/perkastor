@@ -1,6 +1,4 @@
 
-import Head from 'next/head';
-import FolderSharedIcon from '@mui/icons-material/FolderShared';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { bus } from '../utils/bus';
 import { contributionClickEvent } from '../events/ContributionClickEvent';
@@ -11,12 +9,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Button } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { usePosition } from 'use-position';
 import {selectLocationFromSearchBar} from '../events/SelectSearchBarResultEvent';
 import { Geometry } from "geojson";
-import { useRouter } from 'next/router';
-function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setInsertMode }:
-    { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({ item }: { item: String }) => void, insertMode: boolean, setInsertMode: ({ insertMode }: { insertMode: boolean }) => void }) {
+import { NextPage } from 'next';
+
+interface Props {
+    isOpen: boolean;
+    onSidebarItemClick: ({ item }: { item: String }) => void;
+}
+const Sidebar: NextPage<Props> = ({ isOpen, onSidebarItemClick }) => {
     //const router  = useRouter();
     const [editMode, setEditMode] = useState(false);
     const { data: session, status } = useSession();
@@ -53,7 +54,8 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
     }
     useEffect(() => {
         const geoObj: Geometry = {
-            geometry: 'Point',
+            // @ts-ignore
+            geometry: 'Point', // DO NOT MODIFY THIS LINE
             longitude: position.longitude,
             latitude: position.latitude
         };

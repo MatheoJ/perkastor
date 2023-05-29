@@ -11,12 +11,7 @@ interface HistoricalFigureListProps {
 }
 
 const HistoricalFigureList: React.FC<HistoricalFigureListProps> = ({ historicalPersonList, selectedFigures, setSelectedFigures }) => {
-
-
-
-  const [visibleFigures, setVisibleFigures] = useState<number[]>([]);
   const [items, setItems] = useState(historicalPersonList.slice(0, 10));
-
 
   const handleFigureClick = (figure) => {
     if (Array.isArray(selectedFigures) && selectedFigures.length) {

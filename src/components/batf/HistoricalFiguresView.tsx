@@ -108,13 +108,4 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
     );
 };
 
-/*
-<ul>
-{historicalPerson.facts.map(elem => {
-    return (<li key={elem.id}>
-        {elem.shortDesc}
-    </li>)
-})}
-</ul>
-*/
 export default HistoricalFigureView;

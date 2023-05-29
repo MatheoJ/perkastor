@@ -1,3 +1,4 @@
+import { NextPage } from "next";
 import React from "react"
 
 type Props = {
@@ -7,7 +8,7 @@ type Props = {
   selectedTab: number;
 }
 
-const TabTitle: React.FC<Props> = ({ title, index, setSelectedTab, selectedTab }) => {
+const TabTitle: NextPage<Props> = ({ title, index, setSelectedTab, selectedTab }) => {
   const classAssigner = () => {
     if (selectedTab === index){
       return 'batf-selectedtab';

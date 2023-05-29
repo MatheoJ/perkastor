@@ -9,7 +9,7 @@ const config = {
   swcMinify: true,
   reactStrictMode: true,
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
 
   /**

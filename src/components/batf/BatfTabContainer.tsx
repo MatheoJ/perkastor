@@ -17,9 +17,18 @@ import { Avatar } from "@mui/material";
 import { Fullscreen, Remove } from "@mui/icons-material";
 import { set } from "zod";
 import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
+import { NextPage } from "next";
+
+type BatfState = "normal" | "fullscreen" | "minimized";
+interface Props {
+  onMinimizeClick: () => void;
+  onFullScreenClick: () => void;
+  setBatfState: (state: BatfState) => void;
+  batfState: BatfState;
+}
 
 // selectedTab, setSelectedTab
-const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfState }) => {
+const TabContainer: NextPage<Props> = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfState }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [markerSelected, setMarkerSelected] = useState(false);
   const [facts, setFacts] = useState([]);
@@ -55,7 +64,7 @@ const TabContainer = ({ onMinimizeClick, onFullScreenClick, setBatfState, batfSt
     });
 
     const unsubClick = bus.subscribe(contributionClickEvent, event => {
-      setBatfState(previous => previous == "minimized" ? "normal" : previous);
+      setBatfState(batfState === "minimized" ? "normal" : batfState);
       setEditMod(previous => !previous);
     });
     const unsubHistFigure = bus.subscribe(selectHistoricalFigureFromSearchBar, event => {

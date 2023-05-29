@@ -1,23 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import { CircularProgress, IconButton } from "@mui/material";
-import { SearchFilters, SearchResult } from 'types/types';
+import { FactProps, SearchFilters, SearchResult } from 'types/types';
 import { bus } from "~/utils/bus";
-import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent, selectChainFromSearchBar } from '../../events/SelectSearchBarResultEvent';
-import {HistoricalPerson, FactPrisma} from "@prisma/client";
+import { selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent, selectChainFromSearchBar } from '../../events/SelectSearchBarResultEvent';
+import { Fact, FactChain, HistoricalPerson } from "@prisma/client";
 
-import {FactProps} from 'types/types';
-
-import Fact from "../Fact";
-
-
-import {Geometry} from "geojson";
+import { Geometry } from "geojson";
 import FiltersChecklist from "./FiltersChecklist";
 import { NextPage } from "next";
 import useOnclickOutside from "react-cool-onclickoutside";
 import SearchBarModalResult from "./SearchBarModalResult";
+import SearchItem from "./SearchItem";
 
-interface Props{
+interface Props {
   showChecklist: boolean;
   usedInForm: boolean;
 }
@@ -32,7 +28,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
   const { ref, handleClick } = useFocus(setSearchResultsVisibility);
 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [modalFact, setModalFact] = useState<FactPrisma>(null);
+  const [modalFact, setModalFact] = useState<FactProps>(null);
 
   const [filters, setFilters] = useState<SearchFilters>({
     event: true,
@@ -43,7 +39,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
   });
 
   const ref2 = useOnclickOutside(() => {
-   setSearchResultsVisibility(false);
+    setSearchResultsVisibility(false);
   });
 
   const toggleSearchBar = () => {
@@ -52,7 +48,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-  
+
     const results = await fetch(`/api/search?query=${searchTerm}&filtersParam=${JSON.stringify(filters)}`);
     const resultat = await results.json();
 
@@ -61,73 +57,79 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
     setSearchResultsVisibility(true);
   };
 
-  function renderResults(results: any[], category: string) {
+  function renderResults(results: any, category: string) {
+    results = Array.isArray(results) ? results : [results]
     return results.map((result, index) => {
       let resultTitle = '';
+      let untruncatedText = '';
+      let truncated: boolean = false;
       switch (category) {
         //case 'anecdotes':
         case 'events':
           if (result.title.length < 1) {
-            const date = result.keyDates[0].slice(0,4);
+            const date = result.keyDates[0].slice(0, 4);
             let content: string = result.content;
-  
-            if (result.content.length > 30){
-              content = result.content.slice(0,30) + "...";
+
+            if (result.content.length > 30) {
+              content = result.content.slice(0, 30) + "...";
+              truncated = true;
             }
-  
-            resultTitle = `(${date}) -${content}`;
+
+            resultTitle = `(${date}) - ${content}`;
+            untruncatedText = `(${date}) - ${result.content}`;
           }
-          else{
+          else {
             resultTitle = result.title;
+            untruncatedText = resultTitle;
           }
           break;
-  
+
         case 'locations':
           resultTitle = result.name;
+          untruncatedText = resultTitle;
           break;
-  
+
         case 'historicalPersons':
-          var birthYear
-          try{
-            birthYear = result.birthDate.slice(0,4);
-          }catch(e){
-            birthYear = "????"
+          let birthYear: string
+          try {
+            birthYear = result.birthDate.slice(0, 4);
+          } catch (e) {
+            birthYear = "?"
           }
-          if(!result.deathDate){
-            result.deathDate = "aujourd'hui"
-          }else{
-            try{
-              var deathYear = result.deathDate.slice(0,4);
+          let deathYear: string;
+          if (!result.deathDate) {
+            deathYear = "aujourd'hui"
+          } else {
+            try {
+              deathYear = result.deathDate.slice(0, 4);
             }
-            catch(e){
-              deathYear = "????"
+            catch (e) {
+              deathYear = "?"
             }
           }
           resultTitle = `(${birthYear}-${deathYear}) - ${result.name}`
+          untruncatedText = resultTitle;
           break;
-  
         case 'users':
           resultTitle = `${result.name}`;
+          untruncatedText = resultTitle;
           break;
-          
         case 'chains':
           resultTitle = `${result.title}`;
+          untruncatedText = resultTitle;
           break;
       }
-  
+
       return (
-        <div key={result.id} className="dataItem">
-          <span className="dataItem__name" onClick={(event) => {
-            handleClickOnResult(event, results, category, index);
-            setSearchResultsVisibility(false);
-          }
-            } category={category}>{resultTitle}</span>
-        </div>
+        <SearchItem key={result.id} truncated={truncated} text={resultTitle} untruncatedText={untruncatedText} onClick={(event) => {
+          handleClickOnResult(event, results, category, index);
+          setSearchResultsVisibility(false);
+        }} category={category} />
       )
     })
   }
 
-  function rawCategoryToPrintable(category: string){
+  function rawCategoryToPrintable(category: string) {
     switch (category) {
       case 'events':
         return 'Évènements';
@@ -142,36 +144,36 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
     }
   }
 
-  function handleClickOnResult(event, results: any, category:string, i: number){
-    if (!usedInForm){
+  function handleClickOnResult(event, results: any, category: string, i: number) {
+    if (!usedInForm) {
       switch (category) {
         case 'events':
-          bus.publish(selectEventFromSearchBar(results[i] as FactPrisma));
-        break;
-      case 'locations':
-        bus.publish(selectLocationFromSearchBar(results[i] as Geometry));
-        console.log(results[i]);
-        break;
-      case 'chains':
-        bus.publish(selectChainFromSearchBar(results[i] as FactChain));
-        break;
-      case 'historicalPersons':
-        bus.publish(selectHistoricalFigureFromSearchBar(results[i] as HistoricalPerson));
-        break;
+          bus.publish(selectEventFromSearchBar(results[i] as Fact));
+          break;
+        case 'locations':
+          bus.publish(selectLocationFromSearchBar(results[i] as Geometry));
+          console.log(results[i]);
+          break;
+        case 'chains':
+          bus.publish(selectChainFromSearchBar(results[i] as Fact[]));
+          break;
+        case 'historicalPersons':
+          bus.publish(selectHistoricalFigureFromSearchBar(results[i] as HistoricalPerson));
+          break;
+      }
+    }
+    else {
+      event.preventDefault();
+
+      setModalOpen(true);
+      setModalFact(results[i]);
     }
   }
-  else{
-    event.preventDefault();
 
-    setModalOpen(true);
-    setModalFact(results[i]);
-  }
-  }
-  
   const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      
+
       await handleSubmit();
     }
   };
@@ -179,37 +181,42 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
 
   return (
     <div className={`searchbar active ${usedInForm ? 'searchbar-form' : ''}`} ref={ref2}>
-      <div className="searching-area" style={{borderRadius: `5px 5px ${searchResultsVisibility ? '0 0' : '5px 5px'}`}}>
-        <div className={`searchBar__form`} style={{width: usedInForm ? '100%' : 'auto'}}>
-          <input
-            type="text"
-            className="searchBar__input"
-            placeholder="Chercher une anecdote, un lieu..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setSearchResults([]);
-            }}
-            ref={ref}
-            onClick={handleClick}
-            onKeyDown={handleKeyDown}
-          />
-        </div>
-        {isLoading && <div className="loading" ><CircularProgress size={24} color="inherit" /></div>}
-        <IconButton onClick={async () => {
+      <div className="searching-area" style={{ borderRadius: `5px 5px ${searchResultsVisibility ? '0 0' : '5px 5px'}` }}>
+        <div className="row">
+          <div className={`searchBar__form`} style={{ width: usedInForm ? '100%' : 'auto' }}>
+            <input
+              type="text"
+              className="searchBar__input"
+              placeholder="Chercher une anecdote, un lieu..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setSearchResults([]);
+              }}
+              ref={ref}
+              onClick={handleClick}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+          {isLoading && <div className="loading" ><CircularProgress size={24} color="inherit" /></div>}
+          <IconButton onClick={async () => {
             await handleSubmit();
           }}>
-        <SearchIcon />
-      </IconButton>
+            <SearchIcon />
+          </IconButton>
+        </div>
+        <div className="row">
+          {showChecklist ?
+            <div className="checklist-area">
+              <FiltersChecklist filters={filters} setFilters={setFilters} />
+            </div> : null
+          }
+        </div>
       </div>
       {searchResultsVisibility && searchResults && Object.values(searchResults).some(cat => cat.length > 0) && (
         <div className="searchResults">
           <div className="searchResults-content">
-          {showChecklist &&
-              <div className="checklist-area">
-                <FiltersChecklist filters={filters} setFilters={setFilters} />
-              </div>
-          }
+
             {Object.entries(searchResults).map(([category, results]) => (
               <React.Fragment key={category}>
                 {results.length > 0 && (
@@ -223,7 +230,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
           </div>
         </div>
       )}
-      
+
       {
         modalOpen &&
         <SearchBarModalResult fact={modalFact} open={modalOpen} setOpen={setModalOpen} />

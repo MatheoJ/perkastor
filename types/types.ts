@@ -33,21 +33,20 @@ export interface PersonProps extends HistoricalPerson {
     facts: FactProps[];
 }
 export interface FactProps extends Fact {
-    author: {
+    author?: {
         id: string;
         name: string;
     };
-    tags: {
+    tags?: {
         id: string;
         name: string;
     }[];
-    location: {
+    location?: {
         id: string;
         name: string;
         type: string;
     };
-    personsInvolved: PersonProps[];
-    keyDates : Date[];
+    personsInvolved?: PersonProps[];
 }
 
 export interface FactListProps {

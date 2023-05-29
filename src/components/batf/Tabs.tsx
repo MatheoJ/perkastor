@@ -7,7 +7,9 @@ import TabTitle from "./TabTitle"
 type Props = {
   children: ReactElement[],
   selectedTab: number,
-  setSelectedTab: React.Dispatch<React.SetStateAction<number>>
+  setSelectedTab: React.Dispatch<React.SetStateAction<number>>,
+  isLoading: boolean,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const Tabs: NextPage<Props> = ({ children, selectedTab, setSelectedTab, isLoading, setIsLoading }) => {

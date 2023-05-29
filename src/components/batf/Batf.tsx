@@ -6,7 +6,7 @@ import { NextPage } from "next";
 import MenuIcon from '@mui/icons-material/Menu';
 
 interface BatfProps {
-    children: React.ReactNode
+    children?: React.ReactNode
 }
 
 const Batf: NextPage<BatfProps> = ({ children }) => {
