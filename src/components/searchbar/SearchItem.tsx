@@ -4,7 +4,6 @@ import { type NextPage } from "next";
 import { useState } from "react";
 
 interface Props{
-    key: React.Key,
     truncated: boolean;
     text: string;
     untruncatedText: string;
@@ -12,7 +11,7 @@ interface Props{
     onClick: (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
   }
   
-  const SearchIem: NextPage<Props> = ({ key, truncated, text, untruncatedText, category, onClick }) => {
+  const SearchIem: NextPage<Props> = ({ truncated, text, untruncatedText, category, onClick }) => {
     const [extanded, setExtanded] = useState(false);
     return (
         <div className="dataItem">

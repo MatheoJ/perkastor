@@ -10,14 +10,12 @@ interface BatfProps {
 }
 
 const Batf: NextPage<BatfProps> = ({ children }) => {
-    const [isLoading, setIsLoading] = useState(false);
     const [state, setState] = useState<"normal" | "fullscreen" | "minimized">("minimized");
-    //const [selectedTab, setSelectedTab] = useState<"Événements" | "Anecdotes" | "Chaînes">("Événements");
+    
     useEffect(() => {
         const handleMapChange = bus.subscribe(selectMapEvent, event => {
             if (event.payload != null) {
                 setState("normal");
-                //setSelectedTab("Événements");
             }
         });
         return () => {

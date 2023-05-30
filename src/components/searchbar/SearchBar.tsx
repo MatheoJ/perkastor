@@ -12,6 +12,7 @@ import { type NextPage } from "next";
 import useOnclickOutside from "react-cool-onclickoutside";
 import SearchBarModalResult from "./SearchBarModalResult";
 import SearchItem from "./SearchItem";
+import { useFocus } from "~/utils/useFocus";
 
 interface Props {
   showChecklist: boolean;
@@ -144,7 +145,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
     }
   }
 
-  function handleClickOnResult(event, results: any, category: string, i: number) {
+  function handleClickOnResult(event: MouseEvent, results: any[], category: string, i: number) {
     if (!usedInForm) {
       switch (category) {
         case 'events':
@@ -166,7 +167,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
       event.preventDefault();
 
       setModalOpen(true);
-      setModalFact(results[i]);
+      setModalFact(results[i] as unknown as FactProps);
     }
   }
 
@@ -181,7 +182,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
 
   return (
     <div className={`searchbar active ${usedInForm ? 'searchbar-form' : ''}`} ref={ref2}>
-      <div className="searching-area" style={{ borderRadius: `5px 5px ${searchResultsVisibility ? '0 0' : '5px 5px'}` }}>
+      <div className="searching-area" style={{ borderRadius: `5px 5px ${searchResultsVisibility && searchResults && Object.entries(searchResults).length > 0 ? '0 0' : '5px 5px'}` }}>
         <div className="row">
           <div className={`searchBar__form`} style={{ width: usedInForm ? '100%' : 'auto' }}>
             <input
@@ -198,7 +199,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
               onKeyDown={handleKeyDown}
             />
           </div>
-          {isLoading && <div className="loading" ><CircularProgress size={24} color="inherit" /></div>}
+          {isLoading && <div className="loading" ><CircularProgress size={18} color="inherit" /></div>}
           <IconButton onClick={async () => {
             await handleSubmit();
           }}>
@@ -238,26 +239,5 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
     </div >
   );
 }
-
-
-export const useFocus = (searchBarResultVisibility: React.Dispatch<React.SetStateAction<boolean>>) => {
-  const ref = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.focus();
-    }
-  }, []);
-
-  const handleClick = () => {
-    if (ref.current) {
-      ref.current.focus();
-
-      searchBarResultVisibility(true);
-    }
-  };
-
-  return { ref, handleClick };
-};
 
 export default SearchBar;
