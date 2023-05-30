@@ -82,7 +82,7 @@ const SearchBarModalResult = ({fact, open, setOpen}: Props) => {
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
         {(() => {
             if (fact.title.length < 1) {
-                const date = fact.keyDates[0].slice(0,4);
+                const date = (fact.keyDates[0] as unknown as String).slice(0,4);
                 let content: string = fact.content;
 
                 if (fact.content.length > 30) {

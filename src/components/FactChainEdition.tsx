@@ -67,7 +67,7 @@ const FactChainEdition = ({ facts, setTmpFacts} : FactChainEditionProps) => {
               <div className='factTitleText'> 
                 {(() => {
                     if (fact.title.length < 1) {
-                        const date = fact.keyDates[0].slice(0,4);
+                        const date = (fact.keyDates[0] as unknown as string).slice(0,4);
                         let content: string = fact.content;
         
                         if (fact.content.length > 30) {

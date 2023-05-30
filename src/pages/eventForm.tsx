@@ -13,12 +13,7 @@ import { useSession } from "next-auth/react";
 import { Button } from '@mui/material';
 import { SearchFilters } from 'types/types';
 import SearchBarLieux from '~/components/searchbar/SearchBarLieux';
-import { useEffect } from 'react';
-<style jsx>{`
-  .button_submit {
-    cursor: pointer;
-  }
-`}</style>
+
 interface EventData {
   name: string;
   typeLieux: string;
@@ -70,13 +65,8 @@ const Event = () => {
 
   const onSubmit = async (data: EventData) => {
 
-    var selectedFigureId: string[] = selectedFigures.map(elem => elem.id);
-    console.log(data);
-
-
-
-    var dataEvent;
-    var location = {
+    const selectedFigureId: string[] = selectedFigures.map(elem => elem.id);
+    const location = {
       id: data.idLieux,
       name: data.NomLieux,
       type: data.typeLieux,
@@ -85,7 +75,7 @@ const Event = () => {
       area: 0
     };
 
-    dataEvent = {
+    const dataEvent = {
       title: data.name,
       shortDesc: "",
       content: data.description,
@@ -211,7 +201,7 @@ const Event = () => {
   const [query, setQuery] = useState('');
 
   async function handleSearch(e) {
-    var filter: SearchFilters = {
+    const filter: SearchFilters = {
       event: false,
       chain: false,
       historicalFigure: true,
@@ -222,7 +212,7 @@ const Event = () => {
     e.preventDefault();
 
     if (query !== '') {
-      var queryParams2 = new URLSearchParams({
+      const queryParams2 = new URLSearchParams({
         query: query,
         filtersParam: JSON.stringify(filter)
       });
@@ -231,7 +221,7 @@ const Event = () => {
         method: "GET",
       });
 
-      var histfig = await response2.json();
+      const histfig = await response2.json();
       setHistFigToDisplay(histfig.data.historicalPersons);
     }
   }

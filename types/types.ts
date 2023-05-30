@@ -32,6 +32,7 @@ export type SearchResult = {
 export interface PersonProps extends HistoricalPerson {
     facts: FactProps[];
 }
+
 export interface FactProps extends Fact {
     author?: {
         id: string;
@@ -41,11 +42,7 @@ export interface FactProps extends Fact {
         id: string;
         name: string;
     }[];
-    location?: {
-        id: string;
-        name: string;
-        type: string;
-    };
+    location?: Location;
     personsInvolved?: PersonProps[];
 }
 

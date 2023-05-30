@@ -85,8 +85,8 @@ const SearchBarLieu: NextPage<Props> = ({ showChecklist, usedInForm, onResultCli
           break;
   
         case 'historicalPersons':
-          var birthYear = result.birthDate.slice(0,4);
-          var deathYear = result.deathDate.slice(0,4);
+          const birthYear = result.birthDate.slice(0,4);
+          const deathYear = result.deathDate.slice(0,4);
   
           resultTitle = `(${birthYear}-${deathYear}) - ${result.name}`
           break;

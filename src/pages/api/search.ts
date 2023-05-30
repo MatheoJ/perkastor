@@ -98,7 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     if (filters.historicalFigure){
                         //check if query is a date
-                        var date = new Date(query as string);
+                        let date = new Date(query as string);
                         if(isNaN(date.getTime())){
                             date = undefined;
                         }

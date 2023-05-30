@@ -12,7 +12,7 @@ interface FlyToProps {
 
 const FlyTo: NextPage<FlyToProps> = ({ map, lngLat = [0, 0] }) => {
 
-    var end: LngLatLike = [2.3160431, 48.7791939 ];    
+    const end: LngLatLike = [2.3160431, 48.7791939 ];    
 
     const handleButtonClick = () => {
         if (!map) return;

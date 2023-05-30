@@ -21,8 +21,7 @@ interface FactChainContributionsProps {
 const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, setItemSelected, setChangedChain }) => {
 
   const updateFacts = (chain) => {
-    var facts = chain.items.sort((a, b) => a.position - b.position).map((item) => item.fact);
-    console.log("facts", facts);
+    const facts = chain.items.sort((a, b) => a.position - b.position).map((item) => item.fact);
     return facts;
   };
 
@@ -44,25 +43,11 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
     }
     const newChainJson = await newChain.json();
     if (newChainJson) {
-      console.log("new chain", newChainJson.data);
       setItemSelected(newChainJson.data);
-      //setRemovedChainItemId(newChainJson.data.items[currentIndex].id);
       setFacts(updateFacts(newChainJson.data));
     }
   };
-  /*
-    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-      e.dataTransfer.setData('index', String(index));
-    };
-  
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-      e.preventDefault();
-      const draggedIndex = Number(e.dataTransfer.getData('index'));
-      if (draggedIndex !== index) {
-        handleMoveFact(draggedIndex, index);
-      }
-    };
-  */
+
   const handleDeleteFact = (factIndex: number) => {
     Swal.fire({
       title: 'Êtes-vous sûr de vouloir supprimer cette anecdote historique ?',
@@ -72,7 +57,7 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
       cancelButtonText: 'Annuler',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        var newChain = await fetch(`api/chain-items?chainItemId=${chain.items[factIndex].id}`, {
+        let newChain = await fetch(`api/chain-items?chainItemId=${chain.items[factIndex].id}`, {
           method: 'DELETE',
         });
         if (newChain.status >= 300) {
@@ -82,9 +67,9 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
         }
         newChain = await newChain.json();
         if (newChain) {
-          setItemSelected(newChain.data);
-          setFacts(updateFacts(newChain.data));
-          setChangedChain(newChain.data);
+          setItemSelected(newChain['data']);
+          setFacts(updateFacts(newChain['data']));
+          setChangedChain(newChain['data']);
         }
         Swal.fire('Anecdote historique supprimée', '', 'success');
       }

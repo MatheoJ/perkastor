@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, {  } from 'react';
 import Slider from 'react-slick';
-import { FactChainItem as FactChainItemType } from '@prisma/client';
-import { FactChain } from '@prisma/client';
 import { FactChainItemProps } from '../../types/types';
 import { NextPage } from 'next';
-import FactChainItem from './FactChainITem';
+import FactChainItem from './FactChainItem';
 import { selectLocationItem } from '~/events/SelectSearchBarResultEvent';
 import { bus } from '~/utils/bus';
 
@@ -25,19 +23,10 @@ interface ChainListProps {
 }
 
 const ChainList: NextPage<ChainListProps> = ({ chain, setItemSelected, addBackArrow}) => {
-  //console.log('chain', chain)
-  //const [visibleFacts, setVisibleFacts] = useState<number[]>([]);
-  //const [items, setItems] = useState(facts.slice(0, 10));
-  /*
-  const fetchMoreData = () => {
-    setTimeout(() => {
-      setItems(items.concat(facts.slice(items.length, items.length + 10)));
-    }, 1500);
-  };*/
 
   const handleChangeItem = (index: number) => {
     if(chain.items[index].fact.location){
-      bus.publish(selectLocationItem([chain.items[index].fact.location.type, chain.items[index].fact.location]));
+      bus.publish(selectLocationItem(chain.items[index].fact.location));
     }
   }
   

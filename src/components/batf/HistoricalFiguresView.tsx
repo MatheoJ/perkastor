@@ -24,7 +24,7 @@ function getImageUrl(filename: string): string {
 
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
-    var errorDeathDate = false;
+    let errorDeathDate = false;
     if (!historicalPerson) {
         return null;
     }

@@ -4,7 +4,7 @@ import { ExtendedSession } from 'types/types';
 import { authOptions } from './auth/[...nextauth]';
 import ObjectID from 'bson-objectid';
 import { prisma } from '../../lib/db'
-//const { hasSome } = require('prisma-multi-tenant');
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
 
@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
     try {
         switch (method) {
-            case 'GET':
+            case 'GET': {
                 let prismaResult;
                 // Get data from your database
                 if (chainId) {
@@ -34,11 +34,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
-                        return;
-                    } else {
-                        res.status(404).json({ message: "Chaine non trouvée pour l'id " + chainId });
-                        return;
+                        break;
                     }
+                    res.status(404).json({ message: "Chaine non trouvée pour l'id " + chainId });
                 } else if (userId) {
                     const prismaResult = await prisma.factChain.findMany({
                         where: {
@@ -61,12 +59,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
-                        return;
+                        break;
                     }
-                    else {
-                        res.status(404).json({ message: `Chaine non trouvée pour l'utilisateur ${userId}` });
-                        return;
-                    }
+                    res.status(404).json({ message: `Chaine non trouvée pour l'utilisateur ${userId}` });
                 } else if (locationId && locationId !== "null") {
                     const prismaResult = await prisma.factChain.findMany({
                         where: {
@@ -95,13 +90,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
-                        return;
+                        break;
                     }
-                    else {
-                        res.status(404).json({ message: `Chaine non trouvée pour la localisation ${locationId}` });
-                        return;
-                    }
-
+                    res.status(404).json({ message: `Chaine non trouvée pour la localisation ${locationId}` });
                 } else {
                     prismaResult = await prisma.factChain.findMany(
                         {
@@ -120,21 +111,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                     if (prismaResult) {
                         res.status(200).json({ data: prismaResult });
-                        return;
-                    } else {
-                        res.status(404).json({ message: "Chaine non trouvée" });
-                        return;
+                        break;
                     }
+                    res.status(404).json({ message: "Chaine non trouvée" });
                 }
-                break;
-            case 'POST':
+            }
+            break;
+            case 'POST': {
                 // Create data in your database
-                console.log(req.body);
                 const { title, description, factItems, authorId } =req.body;
-                console.log(req.body);
-                var factChainId = ObjectID().toHexString();
+                const factChainId = ObjectID().toHexString();
                 
-                const newFactChain = await prisma.factChain.create({
+                await prisma.factChain.create({
                     data: {
                         id: factChainId,
                         title: title,
@@ -149,7 +137,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 let i = 0;
                 let factIds: string[] = [];
                 for (const factItem of factItems) {
-                    var factItemId = ObjectID().toHexString();
+                    const factItemId = ObjectID().toHexString();
                     factIds.push(factItemId);
                     await prisma.factChainItem.create({
                         data: {
@@ -178,18 +166,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (updatedFactChain) {
                     res.status(201).json({ data: updatedFactChain });
-                    return;
-                } else {
-                    res.status(500).json({ message: "Erreur serveur sur l'ajout d'une chaîne de faits" });
-                    return;
+                    break;
                 }
-                break;
+                res.status(500).json({ message: "Erreur serveur sur l'ajout d'une chaîne de faits" });
+                
+            }
+            break;
             case 'PUT':
                 {
                     const { title, description, factItems } = req.body;
 
                     // Update FactChain
-                    const updatedFactChainResult = await prisma.factChain.update({
+                    await prisma.factChain.update({
                         where: { id: chainId as string },
                         data: {
                             title: title,
@@ -224,19 +212,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                     if (result) {
                         res.status(200).json({ data: result });
-                        return;
-                    } else {
-                        res.status(500).json({ message: "Erreur serveur lors de la mise à jour de la chaîne de faits" });
-                        return;
+                        break;
                     }
-                    break;
+                    res.status(500).json({ message: "Erreur serveur lors de la mise à jour de la chaîne de faits" });
                 }
+                break;
             case 'PATCH':
                 {
                     const { title, description, chainId } = req.body;
 
                     // Update FactChain with provided fields
-                    const updatedFactChain = await prisma.factChain.update({
+                    await prisma.factChain.update({
                         where: { id: chainId as string },
                         data: {
                             ...(title && { title: title }),
@@ -252,12 +238,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                     if (result) {
                         res.status(200).json({ data: result });
-                        return;
-                    } else {
-                        res.status(500).json({ message: "Erreur serveur lors de la mise à jour partielle de la chaîne de faits et de la suppression d'un élément" });
-                        return;
+                        break;
                     }
-                    break;
+                    res.status(500).json({ message: "Erreur serveur lors de la mise à jour partielle de la chaîne de faits et de la suppression d'un élément" });
                 }
             case 'DELETE':
                 // Create data in your database
@@ -268,15 +251,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 });
                 if (deletedFactChain) {
                     res.status(201).json({ data: deletedFactChain });
-                    return;
-                } else {
-                    res.status(500).json({ message: "Erreur serveur sur la suppression d'une chaîne de faits" });
-                    return;
+                    break;
                 }
-                break;
+                res.status(500).json({ message: "Erreur serveur sur la suppression d'une chaîne de faits" });
             default:
                 res.status(405).end(`Method ${method} Not Allowed`);
-                return;
+                break;
         }
     }
     catch (error) {

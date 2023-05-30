@@ -10,7 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  var typeOfLocation;
+  let typeOfLocation;
 
   if (Number(req.query.type) > 13) {
     typeOfLocation = "rue";
@@ -62,7 +62,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       },
     });
     
-    var geojson = {
+    const geojson = {
       type: "FeatureCollection",
       features: [],
     };

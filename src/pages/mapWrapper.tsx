@@ -19,7 +19,6 @@ const mapWrapperPage: NextPage = () => {
     <div className="mapWrapper">
       <SideBar
         isOpen={true}
-        onSidebarItemClick={handleSidebarItemClick}
       />
       <SearchBar showChecklist={true} usedInForm={false} />
       <Batf />

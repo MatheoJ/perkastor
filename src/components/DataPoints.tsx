@@ -60,9 +60,9 @@ const DataPoints: NextPage<DataPointsProps> = ({ map }) => {
 
     map.on('click', 'unclustered-point', function (e) {
       // @ts-ignore
-      var coordinates = e.features[0].geometry.coordinates.slice(); // DO NOT MODIFY THIS LINE
-      var mag = e.features[0].properties.mag;
-      var tsunami;
+      let coordinates = e.features[0].geometry.coordinates.slice(); // DO NOT MODIFY THIS LINE
+      const mag = e.features[0].properties.mag;
+      let tsunami;
         
       if (e.features[0].properties.tsunami === 1) {
       tsunami = 'yes';

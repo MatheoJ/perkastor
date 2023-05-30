@@ -15,16 +15,13 @@ import { NextPage } from 'next';
 
 interface Props {
     isOpen: boolean;
-    onSidebarItemClick: ({ item }: { item: String }) => void;
 }
-const Sidebar: NextPage<Props> = ({ isOpen, onSidebarItemClick }) => {
-    //const router  = useRouter();
+const Sidebar: NextPage<Props> = ({ isOpen }) => {
     const [editMode, setEditMode] = useState(false);
     const { data: session, status } = useSession();
     const [position, setPosition] = useState({ latitude: 0, longitude: 0 });
 
     const handleClick = ({ item }: { item: String }) => { 
-        onSidebarItemClick({ item });
 
         if(item == "edit"){
             // si l'utilisateur n'est pas connecté, on le redirige vers la page de connexion
@@ -64,9 +61,6 @@ const Sidebar: NextPage<Props> = ({ isOpen, onSidebarItemClick }) => {
 
     return (
         <div className={`sidebar ${isOpen ? 'open' : ''}`}>
-            <Head>
-                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-            </Head>
             <div className="content">
                 <div className="top-content">
                     <ul className='topIcons'>

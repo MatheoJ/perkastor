@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import DisplayLocation from "./DisplayLocation";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { NextPage } from "next";
 
 interface MapCoordPickerProps {
   onMapClick: (longitude: number, latitude: number) => void;
@@ -55,7 +56,7 @@ const MapCoordPicker: NextPage<MapCoordPickerProps> = ({ onMapClick, locSelected
   
 
     map2.on('click', function(e) {
-      var features = map2.queryRenderedFeatures(e.point, { layers: ['unclustered-point_loc'] });
+      const features = map2.queryRenderedFeatures(e.point, { layers: ['unclustered-point_loc'] });
       if (!features.length) {
         handleClick(e, map2);
       }

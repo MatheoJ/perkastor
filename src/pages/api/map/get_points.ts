@@ -10,7 +10,7 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
         return;
     }
 
-    var typeOfLocation ;
+    let typeOfLocation ;
 
     if (Number(Array.isArray(req.query.type) ? req.query.type[0] : req.query.type) < 10){
         typeOfLocation = "ville";
@@ -21,7 +21,7 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
     const minLongitude = req.query.minLongitude;
     const maxLongitude = req.query.maxLongitude;
 
-    var query = {
+    const query = {
       $and: [
         { "longitude": { $gte: minLongitude, $lte: maxLongitude } },
         { "latitude": { $gte: minLatitude, $lte: maxLatitude } },
@@ -30,12 +30,12 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
     };
      
   try {    
-
+    // Use MongoClient to connect to the Database instead of prisma to use geo queries
     const client = await connectToDatabase();
     const collection = client.db().collection("locations");
     const cursor = collection.find(query);
 
-    var geojson = {
+    const geojson = {
       type: "FeatureCollection",
       features: [],
     };
