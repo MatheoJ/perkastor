@@ -10,7 +10,7 @@ const GCUpage: React.FC = () => {
       </p>
       <h2>1. Description du service</h2>
       <p>
-      Perkastor est un site web qui permet aux utilisateurs de visualiser une carte interactive contenant des évènements historiques. Les utilisateurs peuvent cliquer sur un évènement pour afficher une description détaillée et ajouter un nouvel évènement via un formulaire de soumission. Les utilisateurs peuvent également créer des chaînes d'évènements et également consulter les évènements ajoutés par d'autres utilisateurs.
+      Perkastor est un site web qui permet aux utilisateurs de visualiser une carte interactive contenant des événements historiques. Les utilisateurs peuvent cliquer sur un événement pour afficher une description détaillée et ajouter un nouvel événement via un formulaire de soumission. Les utilisateurs peuvent également créer des chaînes d'événements et également consulter les événements ajoutés par d'autres utilisateurs.
       </p>
       <h2>2. Utilisation du site</h2>
       <p>
@@ -35,8 +35,8 @@ const GCUpage: React.FC = () => {
       </ul>
       <h2>3. Comptes utilisateur</h2>
       <p>Pour accéder à certaines fonctionnalités du site, vous devez créer un compte utilisateur en fournissant un pseudonyme, une adresse e-mail valide et un mot de passe. Vous êtes responsable de maintenir la confidentialité de votre compte et de votre mot de passe, ainsi que de toutes les activités qui se produisent sous votre compte. Vous acceptez de nous informer immédiatement de toute utilisation non autorisée de votre compte ou de toute autre violation de la sécurité.</p>
-      <h2>4. Soumission d'évènements</h2>
-      En soumettant un évènement à notre site web, vous acceptez que :
+      <h2>4. Soumission d'événements</h2>
+      En soumettant un événement à notre site web, vous acceptez que :
       <ul>
         <li>
         Vous êtes le propriétaire du contenu soumis ou que vous avez le droit de soumettre le contenu ;

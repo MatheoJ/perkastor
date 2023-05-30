@@ -102,7 +102,7 @@ const FactChainContributions: NextPage<FactChainContributionsProps> = ({ chain, 
         <Avatar sx={{ width: 30, height: 30, color: '#333', backgroundColor: '#fff' }} onClick={() => setItemSelected(null)} className='returnBtn'>
           <ArrowBackIcon />
         </Avatar>
-        <h3>&thinsp;Chaîne d'évènements</h3>
+        <h3>&thinsp;Chaîne d'événements</h3>
       </div>
       {facts.map((fact, index) => (
         <div

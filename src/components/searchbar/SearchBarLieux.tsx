@@ -95,7 +95,7 @@ const SearchBarLieu: NextPage<Props> = ({ showChecklist, usedInForm, onResultCli
   function rawCategoryToPrintable(category: string) {
     switch (category) {
       case 'events':
-        return 'Évènements';
+        return 'Événements';
       case 'locations':
         return 'Lieux';
       case 'historicalPersons':
@@ -120,7 +120,7 @@ const SearchBarLieu: NextPage<Props> = ({ showChecklist, usedInForm, onResultCli
           <input
             type="text"
             className="searchBarlieux__input"
-            placeholder="Chercher un évènement, un lieu..."
+            placeholder="Chercher un événement, un lieu..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -144,7 +144,7 @@ const SearchBarLieu: NextPage<Props> = ({ showChecklist, usedInForm, onResultCli
               <React.Fragment key={category}>
                 {results.length > 0 && (
                   <React.Fragment>
-                    {!usedInForm ? <span className="category" ><strong>{rawCategoryToPrintable(category)}</strong></span> : ''}
+                    {!usedInForm ? <span className="category" >{rawCategoryToPrintable(category)}</span> : ''}
                     {renderResults(results, category)}
                   </React.Fragment>
                 )}

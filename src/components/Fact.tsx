@@ -176,7 +176,7 @@ const Fact: NextPage<Props> = ({ fact }) => {
                     </> :
                     <div className="factHeadTop">
                         <h1 className={'display-2'}>
-                            L'évènement {sortedDates.length > 1 ? 'des ' : (formatDate(sortedDates[0]) === 'N/A' ? '' : formatDate(sortedDates[0]).length > 4 ? 'du ' : 'de ')}
+                            L'événement {sortedDates.length > 1 ? 'des ' : (formatDate(sortedDates[0]) === 'N/A' ? '' : formatDate(sortedDates[0]).length > 4 ? 'du ' : 'de ')}
                             {sortedDates.map((date, index) => {
                                 const formattedDate = formatDate(date);
                                 return (

@@ -25,7 +25,7 @@ const FactChainEdition = ({ facts, setTmpFacts} : FactChainEditionProps) => {
 
   const handleDeleteFact = async (factIndex: number) => {
     await Swal.fire({
-      title: 'Êtes-vous sûr de vouloir supprimer cet évènement ?',
+      title: 'Êtes-vous sûr de vouloir supprimer cet événement ?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Supprimer',
@@ -36,7 +36,7 @@ const FactChainEdition = ({ facts, setTmpFacts} : FactChainEditionProps) => {
         const newFactList = [...facts];
         newFactList.splice(factIndex, 1);       
         setTmpFacts(newFactList);
-        await Swal.fire('Évènement supprimé', '', 'success');
+        await Swal.fire('Événement supprimé', '', 'success');
       }
     });
   };

@@ -121,7 +121,7 @@ const Event = () => {
           // if he doesn't, redirect to his profile page
 
           MySwal.fire({
-            title: "Erreur lors de l'ajout de l'image de l'évènement",
+            title: "Erreur lors de l'ajout de l'image de l'événement",
             text: "Voulez-vous réessayer ?",
             icon: "error",
             showCancelButton: true,
@@ -145,7 +145,7 @@ const Event = () => {
                 })
               } else {
                 MySwal.fire({
-                  title: "L'image n'a pas pu être ajoutée à l'évènement",
+                  title: "L'image n'a pas pu être ajoutée à l'événement",
                   icon: "error",
                   showCancelButton: false,
                   confirmButtonText: "Ok",

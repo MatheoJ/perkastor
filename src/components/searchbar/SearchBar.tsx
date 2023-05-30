@@ -20,9 +20,10 @@ interface Props {
 }
 
 const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
+  const staticResults = React.useRef<SearchResult>(null);
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchResultsVisibility, setSearchResultsVisibility] = useState<boolean>(false);
 
@@ -39,6 +40,45 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
     user: !usedInForm,
   });
 
+  useEffect(() => {
+    // filter searchResults
+    const filteredResults: SearchResult = {
+      events: [],
+      historicalPersons: [],
+      locations: [],
+      users: [],
+      chains: [],
+    };
+
+    if (staticResults) {
+      if (filters.event) {
+        filteredResults.events = staticResults.events;
+      }
+      if (filters.historicalFigure) {
+        filteredResults.historicalPersons = staticResults.historicalPersons;
+      }
+      if (filters.location) {
+        filteredResults.locations = staticResults.locations;
+      }
+      if (filters.user) {
+        filteredResults.users = staticResults.users;
+      }
+      if (filters.chain) {
+        filteredResults.chains = staticResults.chains;
+      }
+    }
+
+    console.log("RESULTS: ")
+    console.log(searchResults)
+    console.log("FILTERS: ")
+    console.log(filters)
+    console.log("STATIC RESULTS: ")
+    console.log(staticResults)
+    console.log("FILTERED RESULTS")
+    console.log(filteredResults)
+    setSearchResults(filteredResults);
+  }, [filters])
+
   const ref2 = useOnclickOutside(() => {
     setSearchResultsVisibility(false);
   });
@@ -52,6 +92,8 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
 
     const results = await fetch(`/api/search?query=${searchTerm}&filtersParam=${JSON.stringify(filters)}`);
     const resultat = await results.json();
+
+    staticResults.current = results.data;
 
     setSearchResults(resultat.data);
     setIsLoading(false);
@@ -133,7 +175,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
   function rawCategoryToPrintable(category: string) {
     switch (category) {
       case 'events':
-        return 'Évènements';
+        return 'Événements';
       case 'locations':
         return 'Lieux';
       case 'historicalPersons':
@@ -192,7 +234,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setSearchResults([]);
+                setSearchResults();
               }}
               ref={ref}
               onClick={handleClick}
@@ -214,7 +256,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
           }
         </div>
       </div>
-      {searchResultsVisibility && searchResults && Object.values(searchResults).some(cat => cat.length > 0) && (
+      {searchResultsVisibility && searchResults && searchResults.length > 0 && Object.values(searchResults).some(cat => cat.length > 0) && (
         <div className="searchResults">
           <div className="searchResults-content">
 
@@ -222,7 +264,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
               <React.Fragment key={category}>
                 {results.length > 0 && (
                   <React.Fragment>
-                    {!usedInForm ? <span className="category" ><strong>{rawCategoryToPrintable(category)}</strong></span> : ''}
+                    {!usedInForm ? <span className="category" >{rawCategoryToPrintable(category)}</span> : ''}
                     {renderResults(results, category)}
                   </React.Fragment>
                 )}
