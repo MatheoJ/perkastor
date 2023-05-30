@@ -1,7 +1,7 @@
 import { createEventDefinition } from "ts-bus";
-import { SearchResult } from "types/types";
-import {Geometry} from 'geojson';
-import { Fact, HistoricalPerson, Location } from "@prisma/client";
+import { type SearchResult } from "types/types";
+import {type Geometry} from 'geojson';
+import { type Fact, type HistoricalPerson, type Location } from "@prisma/client";
 
 export const selectSearchBarResultEvent = createEventDefinition<SearchResult>()("searchbar.result.select");
 

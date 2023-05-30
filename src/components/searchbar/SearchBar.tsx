@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import { CircularProgress, IconButton } from "@mui/material";
-import { FactProps, SearchFilters, SearchResult } from 'types/types';
+import { type FactProps, type SearchFilters, type SearchResult } from 'types/types';
 import { bus } from "~/utils/bus";
 import { selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent, selectChainFromSearchBar } from '../../events/SelectSearchBarResultEvent';
-import { Fact, FactChain, HistoricalPerson } from "@prisma/client";
+import { type Fact, FactChain, type HistoricalPerson } from "@prisma/client";
 
-import { Geometry } from "geojson";
+import { type Geometry } from "geojson";
 import FiltersChecklist from "./FiltersChecklist";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import useOnclickOutside from "react-cool-onclickoutside";
 import SearchBarModalResult from "./SearchBarModalResult";
 import SearchItem from "./SearchItem";
@@ -62,7 +62,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
     return results.map((result, index) => {
       let resultTitle = '';
       let untruncatedText = '';
-      let truncated: boolean = false;
+      let truncated = false;
       switch (category) {
         //case 'anecdotes':
         case 'events':

@@ -6,8 +6,8 @@ import DisplayLocation from './DisplayLocation';
 import { bus } from '../utils/bus';
 import { selectMapEvent } from '../events/map/SelectMapEvent';
 import { selectLocationFromSearchBar, selectLocationItem } from '~/events/SelectSearchBarResultEvent';
-import { LngLatLike } from 'maplibre-gl';
-import { NextPage } from "next";
+import { type LngLatLike } from 'maplibre-gl';
+import { type NextPage } from "next";
 
 interface MapPageProps {
   locationSelected : any;

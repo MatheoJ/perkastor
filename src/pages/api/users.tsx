@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { type NextApiRequest, type NextApiResponse } from 'next';
 import { prisma } from '../../lib/db'
 
 //const { hasSome } = require('prisma-multi-tenant');

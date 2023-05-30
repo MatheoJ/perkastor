@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import maplibregl from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { NextPage } from 'next';
+import { type NextPage } from 'next';
 
 interface DataPointsProps {
   map: maplibregl.Map;
@@ -60,7 +60,7 @@ const DataPoints: NextPage<DataPointsProps> = ({ map }) => {
 
     map.on('click', 'unclustered-point', function (e) {
       // @ts-ignore
-      let coordinates = e.features[0].geometry.coordinates.slice(); // DO NOT MODIFY THIS LINE
+      const coordinates = e.features[0].geometry.coordinates.slice(); // DO NOT MODIFY THIS LINE
       const mag = e.features[0].properties.mag;
       let tsunami;
         

@@ -9,6 +9,7 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "start": "next start"
   },
   "dependencies": {
@@ -75,6 +76,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.36.0",
     "eslint-config-next": "^13.2.4",
+    "eslint-config-prettier": "^8.8.0",
     "postcss": "^8.4.23",
     "prettier": "^2.8.6",
     "prisma": "^4.13.0",

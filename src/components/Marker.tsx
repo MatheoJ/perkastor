@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
-import maplibregl from "maplibre-gl";
-import { LngLat } from 'maplibre-gl';
+import type maplibregl from "maplibre-gl";
+import { type LngLat } from 'maplibre-gl';
 import axios from "axios";
 
 import { selectMapEvent } from "../events/map/SelectMapEvent";
 import { bus } from "../utils/bus";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 
 interface MarkerProps {
   map: maplibregl.Map;

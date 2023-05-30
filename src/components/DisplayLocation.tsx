@@ -4,7 +4,7 @@ import { MongoClient } from "mongodb";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { selectMapEvent } from "../events/map/SelectMapEvent";
 import { bus } from "../utils/bus";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 
 interface DisplayLocationProps {
   map: maplibregl.Map;
@@ -66,8 +66,8 @@ const DisplayLocation: NextPage<DisplayLocationProps> = ({ map, locationSelected
 
     map.on('click', 'unclustered-point_loc', function (e) {
       // @ts-ignore
-      var coordinates = e.features[0].geometry.coordinates.slice(); // DO NOT MODIFY THIS LINE
-      var name = e.features[0].properties.name;
+      const coordinates = e.features[0].geometry.coordinates.slice(); // DO NOT MODIFY THIS LINE
+      const name = e.features[0].properties.name;
 
       // Ensure that if the map is zoomed out such that
       // multiple copies of the feature are visible, the

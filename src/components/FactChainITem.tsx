@@ -1,7 +1,7 @@
 import React, {  } from 'react';
 import Image from 'next/image';
-import { FactChainItemProps } from '../../types/types'
-import { NextPage } from 'next';
+import { type FactChainItemProps } from '../../types/types'
+import { type NextPage } from 'next';
 interface Props {
     item: FactChainItemProps;
 }

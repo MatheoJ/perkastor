@@ -10,8 +10,8 @@ import { Button } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import {selectLocationFromSearchBar} from '../events/SelectSearchBarResultEvent';
-import { Geometry } from "geojson";
-import { NextPage } from 'next';
+import { type Geometry } from "geojson";
+import { type NextPage } from 'next';
 
 interface Props {
     isOpen: boolean;
@@ -21,7 +21,7 @@ const Sidebar: NextPage<Props> = ({ isOpen }) => {
     const { data: session, status } = useSession();
     const [position, setPosition] = useState({ latitude: 0, longitude: 0 });
 
-    const handleClick = ({ item }: { item: String }) => { 
+    const handleClick = ({ item }: { item: string }) => { 
 
         if(item == "edit"){
             // si l'utilisateur n'est pas connecté, on le redirige vers la page de connexion

@@ -3,9 +3,9 @@ import Fact from './Fact';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Add from '@material-ui/icons/Add';
 import Swal from 'sweetalert2';
-import { ChainListProps } from '../../types/types';
+import { type ChainListProps } from '../../types/types';
 import { createDeflate } from 'zlib';
-import { NextPage } from 'next';
+import { type NextPage } from 'next';
 import { Avatar } from '@mui/material';
 import ImageWithFallback from './ImageWithFallback';
 

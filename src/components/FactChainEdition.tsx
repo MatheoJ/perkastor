@@ -3,7 +3,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Swal from 'sweetalert2';
-import {FactProps} from 'types/types';
+import {type FactProps} from 'types/types';
 import ImageWithFallback from './ImageWithFallback';
 import { Alert, AlertTitle } from '@mui/material';
 interface FactChainEditionProps {

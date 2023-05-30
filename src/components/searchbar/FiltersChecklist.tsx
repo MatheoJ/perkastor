@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Checkbox, FormControlLabel, FormGroup, FormLabel, Grid, Typography } from '@mui/material';
-import { SearchFilters } from 'types/types';
+import { type SearchFilters } from 'types/types';
 
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';

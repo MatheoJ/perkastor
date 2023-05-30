@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         }
                     });
-                    let result = [];
+                    const result = [];
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult.facts });
                         break;
@@ -85,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     res.status(422).json({ message: `Aucun fait historique ne contient la description ${description}.` });
                 } else if (startDate && !endDate || endDate && !startDate) {
-                    let date = startDate || endDate;
+                    const date = startDate || endDate;
                     // Extraire l'année de la date passée en paramètre
                     const inputDate = new Date(Array.isArray(date) ? date[0] : date);
 
@@ -105,8 +105,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     res.status(422).json({ message: `Aucun fait historique ne contient la date ${date}.` });
                 } else if (startDate && endDate) {
-                    let dateStart = startDate;
-                    let dateEnd = endDate;
+                    const dateStart = startDate;
+                    const dateEnd = endDate;
                     // Extraire l'année de la date passée en paramètre
                     const inputDateStart = new Date(Array.isArray(dateStart) ? dateStart[0] : dateStart);
                     const inputDateEnd = new Date(Array.isArray(dateEnd) ? dateEnd[0] : dateEnd);
@@ -253,7 +253,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     break;
                 }
 
-                let createLocation: boolean = false;
+                let createLocation = false;
                 let location;
                 // search location by id
                 if (req.body.location.hasOwnProperty("id") && req.body.location.id !== "") {
@@ -488,7 +488,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
                 // the difference between http put and http patch is that put is idempotent
                 // so we can't use put to update a fact, we have to use patch
-                let patchData = {}
+                const patchData = {}
                 if (req.body.title) {
                     patchData["title"] = req.body.title
                 }

@@ -1,5 +1,5 @@
 import { FactHistoricalPerson, HistoricalPerson, PrismaClient } from '@prisma/client';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { type NextApiRequest, type NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { HistoricalPerson, Fact } from '@prisma/client';
-import { NextPage } from 'next';
+import { type HistoricalPerson, type Fact } from '@prisma/client';
+import { type NextPage } from 'next';
 import crypto from 'crypto';
 import FactList from '../FactList';
 

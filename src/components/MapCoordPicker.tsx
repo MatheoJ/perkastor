@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import DisplayLocation from "./DisplayLocation";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 
 interface MapCoordPickerProps {
   onMapClick: (longitude: number, latitude: number) => void;

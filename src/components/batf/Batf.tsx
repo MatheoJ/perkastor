@@ -2,7 +2,7 @@ import React, { useState, useEffect, use } from "react";
 import BatfTabContainer from "./BatfTabContainer";
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import MenuIcon from '@mui/icons-material/Menu';
 
 interface BatfProps {

@@ -4,7 +4,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { AccountCircle } from '@mui/icons-material';
 import MapIcon from '@mui/icons-material/Map';
 import { Button } from '@mui/material';
-import { NextPage } from 'next';
+import { type NextPage } from 'next';
 
 const TopBar: NextPage = () => {
     const { data: session, status, update } = useSession({

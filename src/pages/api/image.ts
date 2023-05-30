@@ -1,7 +1,7 @@
 import AWS from "aws-sdk";
-import { NextApiRequest, NextApiResponse } from "next";
+import { type NextApiRequest, type NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
-import { ExtendedSession } from "types/types";
+import { type ExtendedSession } from "types/types";
 import { authOptions } from "~/server/auth";
 import { prisma } from '../../lib/db'
 

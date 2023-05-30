@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 
 import classes from './profile-form.module.css';
-import { NextPage } from 'next';
+import { type NextPage } from 'next';
 
 interface Props {
   onChangePassword: (data: { oldPassword: string; newPassword: string }) => void;

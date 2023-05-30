@@ -1,5 +1,5 @@
-import { NextPage } from "next"
-import React, { ReactElement, useState } from "react"
+import { type NextPage } from "next"
+import React, { type ReactElement, useState } from "react"
 import RingLoader from "react-spinners/RingLoader";
 
 import TabTitle from "./TabTitle"

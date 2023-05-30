@@ -1,8 +1,8 @@
-import React, { SetStateAction, useState } from 'react';
+import React, { type SetStateAction, useState } from 'react';
 import Fact from './Fact';
 import Slider from 'react-slick';
-import { NextPage } from 'next';
-import { FactListProps } from 'types/types';
+import { type NextPage } from 'next';
+import { type FactListProps } from 'types/types';
 import { getEarliestDate } from '~/lib/date-utils';
 import { Slider as RangeSlider } from '@material-ui/core';
 import moment from 'moment';

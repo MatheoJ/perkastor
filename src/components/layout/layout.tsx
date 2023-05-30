@@ -2,8 +2,8 @@ import { Fragment } from 'react';
 
 import MainNavigation from './main-navigation';
 
-import { ReactNode } from "react";
-import { NextPage } from 'next';
+import { type ReactNode } from "react";
+import { type NextPage } from 'next';
 // ...
 interface Props {
     children: ReactNode;

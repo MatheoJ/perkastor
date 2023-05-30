@@ -4,8 +4,8 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import { Fact as FactType, HistoricalPerson } from '@prisma/client'
 import logo from "src/images/perecastor.png";
-import { NextPage } from 'next';
-import { FactProps } from 'types/types';
+import { type NextPage } from 'next';
+import { type FactProps } from 'types/types';
 import { selectHistoricalFigureFromSearchBar } from '~/events/SelectSearchBarResultEvent';
 import { bus } from "../utils/bus";
 import { classNames } from 'react-easy-crop/helpers';

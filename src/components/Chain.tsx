@@ -1,7 +1,7 @@
 import React, {  } from 'react';
 import Slider from 'react-slick';
-import { FactChainItemProps } from '../../types/types';
-import { NextPage } from 'next';
+import { type FactChainItemProps } from '../../types/types';
+import { type NextPage } from 'next';
 import FactChainItem from './FactChainItem';
 import { selectLocationItem } from '~/events/SelectSearchBarResultEvent';
 import { bus } from '~/utils/bus';

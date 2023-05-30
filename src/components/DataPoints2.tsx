@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import maplibregl from "maplibre-gl";
+import type maplibregl from "maplibre-gl";
 import { MongoClient } from "mongodb";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 
 interface DataPointsProps {
   map: maplibregl.Map;

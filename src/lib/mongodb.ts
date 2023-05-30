@@ -1,6 +1,6 @@
 // mongodb.js
 
-import { MongoClient, MongoClientOptions } from 'mongodb'
+import { MongoClient, type MongoClientOptions } from 'mongodb'
 
 
 export async function connectToDatabase() {

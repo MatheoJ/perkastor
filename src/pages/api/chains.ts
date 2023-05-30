@@ -1,6 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { type NextApiRequest, type NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
-import { ExtendedSession } from 'types/types';
+import { type ExtendedSession } from 'types/types';
 import { authOptions } from './auth/[...nextauth]';
 import ObjectID from 'bson-objectid';
 import { prisma } from '../../lib/db'
@@ -135,7 +135,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     },
                 });
                 let i = 0;
-                let factIds: string[] = [];
+                const factIds: string[] = [];
                 for (const factItem of factItems) {
                     const factItemId = ObjectID().toHexString();
                     factIds.push(factItemId);

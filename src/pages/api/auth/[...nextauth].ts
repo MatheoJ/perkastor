@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth, { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
@@ -14,7 +14,7 @@ import { encode, decode } from 'next-auth/jwt'
 import { verifyPassword } from '../../../lib/auth';
 
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { NextApiRequest, NextApiResponse } from 'next/types';
+import { type NextApiRequest, type NextApiResponse } from 'next/types';
 import { prisma } from '../../../lib/db'
 
 // calculate the maxAge for a cookie from a expiresIn value in seconds

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { LngLatLike } from 'maplibre-gl';
+import { type LngLatLike } from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { NextPage } from 'next';
+import { type NextPage } from 'next';
 
 
 interface FlyToProps {

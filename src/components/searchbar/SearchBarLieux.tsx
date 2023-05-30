@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import { CircularProgress, IconButton } from "@mui/material";
-import { SearchFilters, SearchResult } from 'types/types';
+import { type SearchFilters, type SearchResult } from 'types/types';
 import { bus } from "~/utils/bus";
 import {selectEventFromSearchBar, selectHistoricalFigureFromSearchBar, selectLocationFromSearchBar, selectSearchBarResultEvent} from '../../events/SelectSearchBarResultEvent';
 import {HistoricalPerson} from "@prisma/client";
@@ -13,7 +13,7 @@ import Fact from "../Fact";
 
 import {Geometry} from "geojson";
 import FiltersChecklist from "./FiltersChecklist";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 
 
 interface Props{

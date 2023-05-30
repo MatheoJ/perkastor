@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { SearchFilters, SearchResult } from 'types/types';
+import { type NextApiRequest, type NextApiResponse } from 'next';
+import { type SearchFilters, type SearchResult } from 'types/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;

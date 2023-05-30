@@ -17,7 +17,7 @@ import { Avatar } from "@mui/material";
 import { Fullscreen, Remove } from "@mui/icons-material";
 import { set } from "zod";
 import BatfNoMarkerSelected from "./BatfNoMarkerSelected";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 
 type BatfState = "normal" | "fullscreen" | "minimized";
 interface Props {
@@ -36,7 +36,7 @@ const TabContainer: NextPage<Props> = ({ onMinimizeClick, onFullScreenClick, set
   const [chains, setChains] = useState([]);
   const [historicalFigure, setHistoricalFigure] = useState(null);
   const [historicalFigureId, setHistoricalFigureId] = useState(null);
-  const [locationId, setLocationId] = useState<String>(null);
+  const [locationId, setLocationId] = useState<string>(null);
   const { data: session, status, update } = useSession({ required: false });
   const [itemSelected, setItemSelected] = useState(null);
   const [selectedTab, setSelectedTab] = useState(0);
@@ -47,7 +47,7 @@ const TabContainer: NextPage<Props> = ({ onMinimizeClick, onFullScreenClick, set
 
   useEffect(() => {
     const unsubMap = bus.subscribe(selectMapEvent, event => {
-      let now = new Date().getTime();
+      const now = new Date().getTime();
       if (now - lastTimeMapChanged < 1000) {
         if (event.payload == null) {
           setMarkerSelected(false);
@@ -122,7 +122,7 @@ const TabContainer: NextPage<Props> = ({ onMinimizeClick, onFullScreenClick, set
   async function fetchUserFacts() {
     if (editMod) {
       setIsLoading(true);
-      let userId = session?.user?.id;
+      const userId = session?.user?.id;
       if (userId != null) {
         const promises = [fetch(`/api/facts?userId=${userId}`), fetch(`/api/chains?userId=${userId}`)];
         const [response, response2] = await Promise.all(promises);
@@ -182,7 +182,7 @@ const TabContainer: NextPage<Props> = ({ onMinimizeClick, onFullScreenClick, set
   useEffect(() => {
     // change the chain array at the index of the changed chain
     if (changedChain != null) {
-      let newChains = [...chains];
+      const newChains = [...chains];
       newChains[chains.findIndex(chain => chain.id === changedChain.id)] = changedChain;
       setChains(newChains);
     }

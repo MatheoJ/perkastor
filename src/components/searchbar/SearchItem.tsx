@@ -1,6 +1,6 @@
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import { useState } from "react";
 
 interface Props{

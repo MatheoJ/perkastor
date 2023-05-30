@@ -11,7 +11,7 @@ import withReactContent from 'sweetalert2-react-content'
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Button } from '@mui/material';
-import { SearchFilters } from 'types/types';
+import { type SearchFilters } from 'types/types';
 import SearchBarLieux from '~/components/searchbar/SearchBarLieux';
 
 interface EventData {

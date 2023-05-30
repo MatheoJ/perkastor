@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import HistoricalFigureView from "./HistoricalFiguresView";
 import { Fact, HistoricalPerson } from '@prisma/client';
 import Slider from 'react-slick';
-import { PersonProps } from 'types/types';
+import { type PersonProps } from 'types/types';
 
 interface HistoricalFigureListProps {
   historicalPersonList: PersonProps[];
