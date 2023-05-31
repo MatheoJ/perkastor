@@ -2,6 +2,7 @@
   "name": "perkastor",
   "version": "0.1.0",
   "private": true,
+  "type":"module",
   "scripts": {
     "type-check": "tsc",
     "build": "next build",
