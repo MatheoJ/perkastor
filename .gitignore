@@ -49,3 +49,5 @@ data/oldfiles/*.json
 yarn.lock
 
 prisma-perkastor
+
+.env.prod

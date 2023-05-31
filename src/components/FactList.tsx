@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { type SetStateAction, useState } from 'react';
 import Fact from './Fact';
 import Slider from 'react-slick';
-import { NextPage } from 'next';
-import { FactListProps } from 'types/types';
+import { type NextPage } from 'next';
+import { type FactListProps } from 'types/types';
 import { getEarliestDate } from '~/lib/date-utils';
 import { Slider as RangeSlider } from '@material-ui/core';
 import moment from 'moment';
 import BatfNoMarkerSelected from './batf/BatfNoMarkerSelected';
 
-const FactList: NextPage<FactListProps> = ({ facts, lastSlide, setLastSlide }) => {
-  const [dateRange, setDateRange] = useState([0, 100]); // initial range
+interface Props extends FactListProps {
+  lastSlide?: number;
+  setLastSlide?: (lastSlide: number) => void;
+}
+
+const FactList: NextPage<Props> = ({ facts, lastSlide, setLastSlide }) => {
+  if (!lastSlide || !setLastSlide) {
+    [lastSlide, setLastSlide] = useState(0);
+  }
+  const [dateRange, setDateRange] = useState<number[]>([0, 100]); // initial range
   const sliderRef = React.useRef(null);
 
   const settings = {
@@ -43,7 +51,7 @@ const FactList: NextPage<FactListProps> = ({ facts, lastSlide, setLastSlide }) =
     <>
       <div style={{ position: 'relative', transform:"translateY(-80%)" }}>
         <div className='slider'>
-          <RangeSlider value={dateRange} onChange={(event, newValue) => setDateRange(newValue)} style={{ color: "white" }} />
+          <RangeSlider value={dateRange} onChange={(event, newValue) => setDateRange(newValue as SetStateAction<number[]>)} style={{ color: "white" }} />
         </div>
         <div style={{
           display: 'flex',

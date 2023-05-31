@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
-import maplibregl from "maplibre-gl";
-import { LngLat } from 'maplibre-gl';
+import type maplibregl from "maplibre-gl";
+import { type LngLat } from 'maplibre-gl';
 import axios from "axios";
 
 import { selectMapEvent } from "../events/map/SelectMapEvent";
 import { bus } from "../utils/bus";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 
 interface MarkerProps {
   map: maplibregl.Map;
@@ -56,10 +56,10 @@ const Marker: NextPage<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
 
     function onClick(lngLat: LngLat): void {
       coordinates.current.style.display = "block";
-      coordinates.current.innerHTML = ` Coordonnées du clic : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat}`;
+      coordinates.current.innerHTML = `<span style="padding: 5px 10px;">Coordonnées du clic : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat}</span>`;
 
       void getPlaceInfo(lngLat.lat, lngLat.lng, Math.round(map.getZoom())).then((placeInfo) => {
-        coordinates.current.innerHTML = `Coordonnées du clic : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat} <br /> ${placeInfo.name}`;
+        coordinates.current.innerHTML = `<span style="padding: 5px 10px;">Coordonnées du clic : <br /> Longitude: ${lngLat.lng}<br /> Latitude: ${lngLat.lat} <br /> ${placeInfo.name}</span>`;
         
         if (placeInfo.geojson) {
 
@@ -106,7 +106,7 @@ const Marker: NextPage<MarkerProps> = ({ map, lngLat = [0, 0] }) => {
           position: "absolute",
           bottom: "40px",
           left: "10px",
-          padding: "5px 10px",
+          padding: 0,
           margin: 0,
           fontSize: "11px",
           lineHeight: "18px",

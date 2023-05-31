@@ -1,8 +1,8 @@
 import { Edit } from "@mui/icons-material";
 import { Badge, IconButton, Avatar, Button, Slider } from "@mui/material";
-import { NextPage } from "next";
-import { forwardRef, useImperativeHandle, useState, useRef, useCallback, Dispatch, SetStateAction } from "react";
-import Cropper, { Point, Area } from "react-easy-crop";
+import { type NextPage } from "next";
+import { forwardRef, useImperativeHandle, useState, useRef, useCallback, type Dispatch, type SetStateAction } from "react";
+import Cropper, { type Point, type Area } from "react-easy-crop";
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import getCroppedImg, { convertVhToPx, stringAvatar } from './cropImage';
@@ -57,7 +57,7 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
     const [zoom, setZoom] = useState(1)
     const onCropComplete = useCallback(
         (croppedArea: Area, croppedAreaPixels: Area) => {
-            console.log(croppedArea, croppedAreaPixels)
+            // console.log(croppedArea, croppedAreaPixels)
             setCropAreaPixels(croppedAreaPixels)
         },
         []
@@ -76,7 +76,7 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
     }
 
     async function closeCropperAndPreviewImage() {
-        let fileToUpload = await getCroppedImg(imageUrl, cropAreaPixels, 0, {
+        const fileToUpload = await getCroppedImg(imageUrl, cropAreaPixels, 0, {
             horizontal: false,
             vertical: false
         }) as Blob
@@ -122,7 +122,7 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
                 reject("Veuillez sélectionner une image.")
             }
 
-            let fileToUpload = await getCroppedImg(imageUrl, cropAreaPixels, 0, {
+            const fileToUpload = await getCroppedImg(imageUrl, cropAreaPixels, 0, {
                 horizontal: false,
                 vertical: false
             }) as Blob
@@ -176,7 +176,7 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
             <div>
                 <input ref={profileImageRef} hidden accept="image/*" type="file" onChange={(event) => {
                     if (event.target.files) {
-                        console.log(event.target.files[0])
+                        // console.log(event.target.files[0])
                         setVisible(true)
                         setImageSrc(event.target.files[0])
                         setImageUrl(URL.createObjectURL(event.target.files[0]))

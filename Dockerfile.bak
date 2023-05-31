@@ -12,20 +12,25 @@ COPY ./ /usr/src/app
 EXPOSE 3000
 CMD [ "yarn", "run", "start:dev" ]
 
-FROM node:16-alpine as BUILD_IMAGE
+FROM node:16-alpine AS builder
 ENV NODE_ENV production
+RUN mkdir -p /cache
 WORKDIR /app
 # Allow to cache node_modules by copying package.json and yarn.lock first
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --production --ignore-scripts --prefer-offline
-COPY . .
+COPY package.json ./
+COPY yarn.lock ./
+RUN yarn install --production
+COPY ./ ./
 RUN yarn build
 
-FROM node:16-alpine as production
-WORKDIR /app
-COPY --from=BUILD_IMAGE /app/package.json ./package.json
-COPY --from=BUILD_IMAGE /app/node_modules ./node_modules
-COPY --from=BUILD_IMAGE /app/.next ./.next
-COPY --from=BUILD_IMAGE /app/public ./public
-EXPOSE 3000
-CMD ["yarn", "start"]
+FROM nginx:1.24.0-alpine AS production
+# Add bash to explore the container's filesystem
+RUN apk add --no-cache bash
+COPY --from=builder /app /usr/share/nginx/html
+# Delete default nginx conf
+RUN rm /etc/nginx/conf.d/default.conf
+# Add our nginx conf
+COPY nginx.conf /etc/nginx/conf.d/default.con
+COPY nginx.conf /etc/nginx/conf.d
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

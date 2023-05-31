@@ -1,19 +1,20 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
-import { ExtendedSession } from 'types/types';
+import type { ExtendedSession } from 'types/types';
 import { authOptions } from './auth/[...nextauth]';
 import { prisma } from '../../lib/db'
 import ObjectID from 'bson-objectid';
-//const { hasSome } = require('prisma-multi-tenant');
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
 
-    const { fid, userId, description, startDate, endDate, histPersonName, histPersonId, locationId, locationName, latitude, longitude} = req.query;
+    const { fid, userId, description, startDate, endDate, histPersonName, histPersonId, locationId, locationName, latitude, longitude } = req.query;
 
     const session: ExtendedSession = await getServerSession(req, res, authOptions)
 
     try {
         let prismaResult;
+        let foundFact;
         switch (method) {
             case "GET":
                 if (fid) {
@@ -28,16 +29,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 },
                             },
                             location: true,
-                            author  : true,
+                            author: true,
                         },
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
-                        return;
-                    } else {
-                        res.status(422).json({ message: `Le fait historique d'id ${fid} n\'existe pas.` });
-                        return;
+                        break;
                     }
+                    res.status(422).json({ message: `Le fait historique d'id ${fid} n\'existe pas.` });
                 } else if (userId) {
                     prismaResult = await prisma.user.findUnique({
                         where: {
@@ -56,14 +55,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         }
                     });
-                    let result = [];
+                    const result = [];
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult.facts });
-                        return;
-                    } else {
-                        res.status(422).json({ message: `L'utilisateur d'id ${userId} n\'existe pas.` });
-                        return;
+                        break;
                     }
+                    res.status(422).json({ message: `L'utilisateur d'id ${userId} n\'existe pas.` });
                 } else if (description) {
                     prismaResult = await prisma.fact.findMany({
                         where: {
@@ -80,17 +77,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             },
                             location: true,
                             author: true,
-                        },                        
+                        },
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
-                        return;
-                    } else {
-                        res.status(422).json({ message: `Aucun fait historique ne contient la description ${description}.` });
-                        return;
+                        break;
                     }
+                    res.status(422).json({ message: `Aucun fait historique ne contient la description ${description}.` });
                 } else if (startDate && !endDate || endDate && !startDate) {
-                    let date = startDate || endDate;
+                    const date = startDate || endDate;
                     // Extraire l'année de la date passée en paramètre
                     const inputDate = new Date(Array.isArray(date) ? date[0] : date);
 
@@ -104,35 +99,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                     });
 
-                    /*
-                    prismaResult = await prisma.fact.findMany({
-                    where: {
-                        AND: [
-                        hasSome({
-                            keyDates: {
-                            gte: inputYearStart,
-                            },
-                        }),
-                        hasSome({
-                            keyDates: {
-                            lt: inputYearEnd,
-                            },
-                        }),
-                        ],
-                    },
-                    });
-                    */
-
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
-                        return;
-                    } else {
-                        res.status(422).json({ message: `Aucun fait historique ne contient la date ${date}.` });
-                        return;
+                        break;
                     }
+                    res.status(422).json({ message: `Aucun fait historique ne contient la date ${date}.` });
                 } else if (startDate && endDate) {
-                    let dateStart = startDate;
-                    let dateEnd = endDate;
+                    const dateStart = startDate;
+                    const dateEnd = endDate;
                     // Extraire l'année de la date passée en paramètre
                     const inputDateStart = new Date(Array.isArray(dateStart) ? dateStart[0] : dateStart);
                     const inputDateEnd = new Date(Array.isArray(dateEnd) ? dateEnd[0] : dateEnd);
@@ -145,32 +119,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                     });
 
-                    /*
-                    prismaResult = await prisma.fact.findMany({
-                    where: {
-                        AND: [
-                        hasSome({
-                            keyDates: {
-                            gte: inputYearStart,
-                            },
-                        }),
-                        hasSome({
-                            keyDates: {
-                            lt: inputYearEnd,
-                            },
-                        }),
-                        ],
-                    },
-                    });
-                    */
-
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: prismaResult });
-                        return;
-                    } else {
-                        res.status(422).json({ message: `Aucun fait historique ne contient la date ${dateStart} et ${dateEnd}.` });
-                        return;
+                        break;
                     }
+                    res.status(422).json({ message: `Aucun fait historique ne contient la date ${dateStart} et ${dateEnd}.` });
                 } else if (histPersonName) {
                     prismaResult = await prisma.historicalPerson.findMany({
                         where: {
@@ -206,11 +159,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: result });
-                        return;
-                    } else {
-                        res.status(422).json({ message: `Aucun personnage historique ne contient le nom ${histPersonName}.` });
-                        return;
+                        break;
                     }
+                    res.status(422).json({ message: `Aucun personnage historique ne contient le nom ${histPersonName}.` });
                 } else if (histPersonId) {
                     prismaResult = await prisma.historicalPerson.findMany({
                         where: {
@@ -243,13 +194,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             ));
                         });
                         res.status(200).json({ statusCode: 200, data: result });
-                        return;
-                    } else {
-                        res.status(422).json({ message: `Le personnage historique d'id ${histPersonId} n\'existe pas.` });
-                        return;
+                        break;
                     }
-
-                } else if (locationId || locationName || (latitude && longitude)){
+                    res.status(422).json({ message: `Le personnage historique d'id ${histPersonId} n\'existe pas.` });
+                } else if (locationId || locationName || (latitude && longitude)) {
                     prismaResult = await prisma.location.findMany({
                         where: {
                             OR: [
@@ -277,22 +225,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 },
                             },
                         },
-                    });  
+                    });
                     let result = [];
                     prismaResult.forEach((location) => {
                         result = result.concat(location.facts);
                     });
                     if (prismaResult) {
                         res.status(200).json({ statusCode: 200, data: result });
-                        return;
+                        break;
                     }
-                    else {
-                        res.status(422).json({ message: `Aucun lieu ne contient l'id ${locationId}, le nom ${locationName} ou les coordonnées ${latitude}, ${longitude}.` });
-                        return;
-                    }
-                              
-                }  else {
-                    prismaResult = await prisma.fact.findMany({take: 50});
+                    res.status(422).json({ message: `Aucun lieu ne contient l'id ${locationId}, le nom ${locationName} ou les coordonnées ${latitude}, ${longitude}.` });
+                } else {
+                    prismaResult = await prisma.fact.findMany({ take: 50 });
                     res.status(200).json({ statusCode: 200, data: prismaResult });
                     return;
                 }
@@ -301,17 +245,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (!session) {
                     res.status(401).json({ message: 'Non authentifié !' });
-                    
-                    return;
+                    break;
                 }
 
                 if (!req.body.location) {
                     res.status(422).json({ message: `Le lieu n\'est pas renseigné.` });
-                    return;
+                    break;
                 }
 
-
-                let createLocation: boolean = false;
+                let createLocation = false;
                 let location;
                 // search location by id
                 if (req.body.location.hasOwnProperty("id") && req.body.location.id !== "") {
@@ -323,33 +265,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                     if (!location) {
                         res.status(422).json({ message: `Le lieu n\'existe pas.` });
-                        return;
+                        break;
                     }
                 }
                 // search location by [coordinates, name] pair
                 else {
                     if (!req.body.location.latitude || !req.body.location.longitude) {
                         res.status(422).json({ message: `Les coordonnées du lieu ne sont pas renseignées.` });
-                        return;
+                        break;
                     }
                     if (!req.body.location.name) {
                         res.status(422).json({ message: `Le nom du lieu n'est pas renseigné.` });
-                        return;
+                        break;
                     }
 
                     // check if the location doesn't already exist
                     location = await prisma.location.findFirst({
                         where: {
-                            
-                                    latitude: parseFloat(req.body.location.latitude),
-                               
-                                    longitude: parseFloat(req.body.location.longitude),
-                                
-                                    name: req.body.location.name,
-                                }        
-                        
+
+                            latitude: parseFloat(req.body.location.latitude),
+
+                            longitude: parseFloat(req.body.location.longitude),
+
+                            name: req.body.location.name,
+                        }
+
                     });
-                    
+
                     if (location) {
                         if (!location.hasFact) {
                             await prisma.location.update({
@@ -365,7 +307,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         createLocation = true;
                     }
                 }
-                
+
                 let locPayload;
                 if (createLocation) {
                     locPayload = {
@@ -407,14 +349,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
 
 
-                try{
-                    const id = ObjectID().toHexString();               
-                    var personsInvolved = req.body.idHistoricalFigure.map((person: any) => ({
-                    historicalPerson: {
-                        connect: {
-                        id: person,
+                try {
+                    const id = ObjectID().toHexString();
+                    const personsInvolved = req.body.idHistoricalFigure.map((person: any) => ({
+                        historicalPerson: {
+                            connect: {
+                                id: person,
+                            },
                         },
-                    },
                     }));
 
                     const fact: any = {
@@ -432,51 +374,48 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             create: personsInvolved,
                         },
                         author: {
-                            connect:{
+                            connect: {
                                 id: session.user.id,
                             }
                         },
                         location: locPayload,
                         sources: req.body.sources || []
                     };
-                    
+
                     prismaResult = await prisma.fact.create({
                         data: fact,
                     });
                 }
-                catch(e){
-                    console.log(e);
+                catch (e) {
+                    console.error("Error in /api/facts.ts when receiving a " + method + " request:", e);
                 }
 
                 if (prismaResult) {
                     res.status(201).json({ statusCode: 201, data: prismaResult });
-                    return;
-                } else {
-                    res.status(422).json({ message: `Le fait historique n\'a pas pu être créé.` });
-                    return;
+                    break;
                 }
+                res.status(422).json({ message: `Le fait historique n\'a pas pu être créé.` });
                 break;
             case "PUT": // used for partial modification of a resource
 
                 if (!session) {
                     res.status(401).json({ message: 'Non authentifié !' });
-                    
-                    return;
+                    break;
                 }
 
                 if (!fid) {
                     res.status(422).json({ message: `L'id du fait historique n\'est pas renseigné.` });
-                    return;
+                    break;
                 }
                 // Check if the foundFact exists
-                var foundFact = await prisma.fact.findUnique({
+                foundFact = await prisma.fact.findUnique({
                     where: {
                         id: Array.isArray(fid) ? fid[0] : fid
                     },
                 });
-                if (!foundFact ) {
+                if (!foundFact) {
                     res.status(422).json({ message: `Le fait historique d'id ${fid} n\'existe pas.` });
-                    return;
+                    break;
                 }
 
                 // if the user is an admin, he can create a foundFact for another user
@@ -492,7 +431,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         });
                         if (!author) {
                             res.status(422).json({ message: `L'auteur n\'existe pas.` });
-                            return;
+                            break;
                         }
                     }
                 } else {
@@ -522,22 +461,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (prismaResult) {
                     res.status(200).json({ statusCode: 200, data: prismaResult });
-                    return;
-                } else {
-                    res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être mis à jour.` });
-                    return;
+                    break;
                 }
+                res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être mis à jour.` });
                 break;
             case "PATCH":
 
                 if (!session) {
                     res.status(401).json({ message: 'Non authentifié !' });
-                    return;
+                    break;
                 }
 
                 if (!fid) {
                     res.status(422).json({ message: `L'id du fait historique n\'est pas renseigné.` });
-                    return;
+                    break;
                 }
                 // Check if the foundFact exists
                 foundFact = await prisma.fact.findUnique({
@@ -545,13 +482,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         id: Array.isArray(fid) ? fid[0] : fid
                     },
                 });
-                if (!foundFact ) {
+                if (!foundFact) {
                     res.status(422).json({ message: `Le fait historique d'id ${fid} n\'existe pas.` });
-                    return;
+                    break;
                 }
                 // the difference between http put and http patch is that put is idempotent
                 // so we can't use put to update a fact, we have to use patch
-                let patchData = {}
+                const patchData = {}
                 if (req.body.title) {
                     patchData["title"] = req.body.title
                 }
@@ -595,33 +532,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (res) {
                     res.status(200).json({ statusCode: 200, data: prismaResult });
-                    return;
-                } else {
-                    res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être mis à jour.` });
-                    return;
+                    break;
                 }
-
+                res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être mis à jour.` });
                 break;
             case "DELETE":
 
                 if (!session) {
                     res.status(401).json({ message: 'Non authentifié !' });
-                    return;
+                    break;
                 }
 
                 if (!fid) {
                     res.status(422).json({ message: `L'id du fait historique n\'est pas renseigné.` });
-                    return;
+                    break;
                 }
                 // Check if the foundFactexists
-                foundFact= await prisma.fact.findUnique({
+                foundFact = await prisma.fact.findUnique({
                     where: {
                         id: Array.isArray(fid) ? fid[0] : fid
                     },
                 });
-                if (!foundFact ) {
+                if (!foundFact) {
                     res.status(422).json({ message: `Le fait historique d'id ${fid} n\'existe pas.` });
-                    return;
+                    break;
                 }
 
                 // if the user is an admin, he can delete a foundFactfor another user
@@ -631,13 +565,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             id: Array.isArray(fid) ? fid[0] : fid
                         },
                     });
-                    if(prismaResult){
+                    if (prismaResult) {
                         const fact = await prisma.fact.findFirst({
                             where: {
-                                locationId: foundFact.locationId    
+                                locationId: foundFact.locationId
                             }
                         });
-                        if(!fact){
+                        if (!fact) {
                             await prisma.location.update({
                                 where: {
                                     id: foundFact.locationId
@@ -648,23 +582,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             })
                         }
                         res.status(200).json({ statusCode: 200, data: prismaResult });
-                        return;
-                    }else{
-                        res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être supprimé.` });
-                        return;
+                        break;
                     }
-                } else {
-                    res.status(401).json({ message: 'Non autorisé !' });
-                    return;
+                    res.status(422).json({ message: `Le fait historique d'id ${fid} n\'a pas pu être supprimé.` });
+                    break
                 }
-
+                res.status(401).json({ message: 'Non autorisé !' });
                 break;
             default:
                 res.status(405).end(`Method ${method} Not Allowed`);
-                return;
+                break;
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ statusCode: 500, message: JSON.stringify(error) });
         return;
     }

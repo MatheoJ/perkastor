@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { SearchFilters, SearchResult } from 'types/types';
+import { type NextApiRequest, type NextApiResponse } from 'next';
+import { type SearchFilters, type SearchResult } from 'types/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
@@ -98,7 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     if (filters.historicalFigure){
                         //check if query is a date
-                        var date = new Date(query as string);
+                        let date = new Date(query as string);
                         if(isNaN(date.getTime())){
                             date = undefined;
                         }
@@ -158,7 +158,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 break;
             }
     } catch (error) {
-        console.log(error)
+        console.error("Error in /api/search.ts when receiving a " + method + " request:", error);
         res.status(500).json({ message: "Erreur serveur" });
     }  
 }

@@ -1,26 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, {  } from 'react';
 import Image from 'next/image';
-import { FactChainItem as FactChainItemType } from '@prisma/client'
-import { Fact as FactType } from '@prisma/client'
-import { FactChainItemProps } from '../../types/types'
-import { NextPage } from 'next';
-import { bus } from '../utils/bus';
-import selectLocationItem from '../events/SelectSearchBarResultEvent';
+import { type FactChainItemProps } from '../../types/types'
+import { type NextPage } from 'next';
 interface Props {
     item: FactChainItemProps;
 }
 
 const Fact: NextPage<Props> = (props) => {
     const { item } = props;
-    /*
-    const [location, setLocation] = useState<FactType['location']>(item.fact.location);
-    useEffect(() => {
-        if (item.fact.location !== location) {
-            setLocation(item.fact.location);
-            bus.publish(selectLocationItem(item.fact.location));
-        }
-      }, [location]);
-      */
+
     const formatDate = (dateStr: string): string => {
         const date = new Date(dateStr);
         if (date.getFullYear() === 1 || date.getFullYear() === 4) {
@@ -52,7 +40,7 @@ const Fact: NextPage<Props> = (props) => {
                     <div className="factHeadBottomRight">
                         <div className="date-container">
                             {item.fact.keyDates.map((keyDate) => (
-                                <li >{formatDate(keyDate)}</li>
+                                <li >{formatDate(keyDate as unknown as string)}</li>
                             ))}
                         </div>
                     </div>
@@ -64,7 +52,7 @@ const Fact: NextPage<Props> = (props) => {
                 </div>
                 <div className='content-right'>
                     <div className="factImage">
-                        {<Image src={item.fact.bannerImg ? item.fact.bannerImg :  "/resources/404-error.png"} alt="" width={300} height={200} />}
+                        {<Image key={item.fact.bannerImg} src={item.fact.bannerImg ? item.fact.bannerImg :  "/resources/404-error.png"} alt="" width={300} height={200} />}
                     </div>
                     <ul>
                         {item.fact.personsInvolved.map((person) => (

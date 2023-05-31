@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { LngLatLike } from 'maplibre-gl';
+import { type LngLatLike } from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { NextPage } from 'next';
+import { type NextPage } from 'next';
 
 
 interface FlyToProps {
@@ -12,7 +12,7 @@ interface FlyToProps {
 
 const FlyTo: NextPage<FlyToProps> = ({ map, lngLat = [0, 0] }) => {
 
-    var end: LngLatLike = [2.3160431, 48.7791939 ];    
+    const end: LngLatLike = [2.3160431, 48.7791939 ];    
 
     const handleButtonClick = () => {
         if (!map) return;
@@ -44,7 +44,7 @@ const FlyTo: NextPage<FlyToProps> = ({ map, lngLat = [0, 0] }) => {
           position: 'absolute',
           bottom: '110px',
           left: '10px',
-          padding: '5px 10px',
+          padding: 0,
           margin: 0,
           fontSize: '11px',
           lineHeight: '18px',

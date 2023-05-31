@@ -1,4 +1,4 @@
-import React, { ImgHTMLAttributes, useState } from 'react'
+import React, { type ImgHTMLAttributes, useState } from 'react'
 
 interface Props extends ImgHTMLAttributes<any> {
   fallback: string

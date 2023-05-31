@@ -11,7 +11,7 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
         return; 
     }
 
-    var typeOfLocation ;
+    let typeOfLocation: string;
 
     if (Number(req.query.type) > 13) {
       typeOfLocation = "rue";
@@ -32,7 +32,7 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
     const maxLongitude = Array.isArray(req.query.maxLongitude) ? req.query.maxLongitude[0] : req.query.maxLongitude;
 
 
-    var query = {
+    const query = {
       $and: [
         { "longitude": { $gte: parseFloat(minLongitude), $lte: parseFloat(maxLongitude) } },
         { "latitude": { $gte: parseFloat(minLatitude), $lte: parseFloat(maxLatitude) } },
@@ -40,17 +40,13 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
       ],
     };
 
-  try {    
-   /*  const collection = (await clientPromise).db().collection("locations");
-    const cursor = collection.find(query); */
-
-   
-
+  try {
+    // Use MongoClient to connect to the Database instead of prisma to use geo queries
     const client = await connectToDatabase();
     const collection = client.db().collection("locations");
     const cursor = collection.find(query);
 
-    var geojson = {
+    const geojson = {
       type: "FeatureCollection",
       features: [],
     };
@@ -63,7 +59,7 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
     return;
 
   } catch(error) {
-    console.log(error);
+    console.error("Error in /api/locationFact.ts when receiving a " + req.method + " request:", error);
     res.status(500).json({ message: 'Impossible de se connecter à la base de données !' });
     return;    
   }

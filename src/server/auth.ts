@@ -17,7 +17,7 @@ import { prisma } from "~/server/db";
  */
 declare module "next-auth" {
 
-  type accessToken = String | null;
+  type accessToken = string | null;
   
   interface Session extends DefaultSession {
     user: {

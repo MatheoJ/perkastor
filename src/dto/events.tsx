@@ -1,4 +1,4 @@
-import { bool } from "aws-sdk/clients/signer";
+import { type bool } from "aws-sdk/clients/signer";
 
 interface EventDto {
     name: string;

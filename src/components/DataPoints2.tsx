@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import maplibregl from "maplibre-gl";
+import type maplibregl from "maplibre-gl";
 import { MongoClient } from "mongodb";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 
 interface DataPointsProps {
   map: maplibregl.Map;
@@ -11,8 +11,6 @@ interface DataPointsProps {
 const DataPoints: NextPage<DataPointsProps> = ({ map }) => {
   useEffect(() => {
     map.on("zoomend", async function () {
-      console.log("A zoomend event occurred.");
-      console.log(map.getBounds());
 
       const queryParams = new URLSearchParams({
         type: map.getZoom().toString(),
@@ -28,7 +26,6 @@ const DataPoints: NextPage<DataPointsProps> = ({ map }) => {
 
       if (response.status === 200) { // Check if the response status is 200
         const responseData = await response.json();
-        console.log(responseData);
     
         if (!map.getSource("dataLoc")) {
           map.addSource("dataLoc", {

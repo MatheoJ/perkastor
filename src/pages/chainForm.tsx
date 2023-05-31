@@ -75,8 +75,6 @@ const ChainForm = () => {
 
   useEffect(() => {
     const unsub = bus.subscribe(selectFact, event => {
-      console.log("chain handle");
-      console.log(event);
       const fact = event.payload;
       setTmpFacts(previous => [...previous, fact]);
     });

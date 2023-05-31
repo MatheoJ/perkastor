@@ -11,14 +11,9 @@ import withReactContent from 'sweetalert2-react-content'
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Button } from '@mui/material';
-import { SearchFilters } from 'types/types';
+import { type SearchFilters } from 'types/types';
 import SearchBarLieux from '~/components/searchbar/SearchBarLieux';
-import { useEffect } from 'react';
-<style jsx>{`
-  .button_submit {
-    cursor: pointer;
-  }
-`}</style>
+
 interface EventData {
   name: string;
   typeLieux: string;
@@ -70,13 +65,8 @@ const Event = () => {
 
   const onSubmit = async (data: EventData) => {
 
-    var selectedFigureId: string[] = selectedFigures.map(elem => elem.id);
-    console.log(data);
-
-
-
-    var dataEvent;
-    var location = {
+    const selectedFigureId: string[] = selectedFigures.map(elem => elem.id);
+    const location = {
       id: data.idLieux,
       name: data.NomLieux,
       type: data.typeLieux,
@@ -85,7 +75,7 @@ const Event = () => {
       area: 0
     };
 
-    dataEvent = {
+    const dataEvent = {
       title: data.name,
       shortDesc: "",
       content: data.description,
@@ -109,7 +99,6 @@ const Event = () => {
       const responseData = await response.json();
       // change image related to the fact whose id is responseData.id
       if (imageSrc) {
-        console.log("Image insérée");
         const image = await ref.current?.triggerUpload(responseData.data.id);
 
         if (image) {
@@ -131,7 +120,7 @@ const Event = () => {
           // if he doesn't, redirect to his profile page
 
           MySwal.fire({
-            title: "Erreur lors de l'ajout de l'image de l'évènement",
+            title: "Erreur lors de l'ajout de l'image de l'événement",
             text: "Voulez-vous réessayer ?",
             icon: "error",
             showCancelButton: true,
@@ -155,7 +144,7 @@ const Event = () => {
                 })
               } else {
                 MySwal.fire({
-                  title: "L'image n'a pas pu être ajoutée à l'évènement",
+                  title: "L'image n'a pas pu être ajoutée à l'événement",
                   icon: "error",
                   showCancelButton: false,
                   confirmButtonText: "Ok",
@@ -171,7 +160,6 @@ const Event = () => {
 
         };
       } else {
-        console.log("Pas d'image");
         MySwal.fire({
           title: "Anecdote historique ajoutée avec succès",
           icon: "success",
@@ -200,7 +188,6 @@ const Event = () => {
   };
 
   const onResultClick = (locSelected: any) => {
-    console.log(locSelected);
     setValue("coordinatesLong", locSelected.longitude);
     setValue("coordinatesLat", locSelected.latitude);
     setValue("NomLieux", locSelected.name);
@@ -211,7 +198,7 @@ const Event = () => {
   const [query, setQuery] = useState('');
 
   async function handleSearch(e) {
-    var filter: SearchFilters = {
+    const filter: SearchFilters = {
       event: false,
       chain: false,
       historicalFigure: true,
@@ -222,7 +209,7 @@ const Event = () => {
     e.preventDefault();
 
     if (query !== '') {
-      var queryParams2 = new URLSearchParams({
+      const queryParams2 = new URLSearchParams({
         query: query,
         filtersParam: JSON.stringify(filter)
       });
@@ -231,7 +218,7 @@ const Event = () => {
         method: "GET",
       });
 
-      var histfig = await response2.json();
+      const histfig = await response2.json();
       setHistFigToDisplay(histfig.data.historicalPersons);
     }
   }

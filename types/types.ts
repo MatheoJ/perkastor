@@ -19,8 +19,7 @@ export type SearchFilters = {
     user: boolean
 }
 export type SearchResult = {
-    slice(arg0: number, arg1: number): unknown
-    length: number
+    length: number,
     events: Fact[],
     //anecdotes: Fact[],
     chains: FactChain[],
@@ -32,22 +31,18 @@ export type SearchResult = {
 export interface PersonProps extends HistoricalPerson {
     facts: FactProps[];
 }
+
 export interface FactProps extends Fact {
-    author: {
+    author?: {
         id: string;
         name: string;
     };
-    tags: {
+    tags?: {
         id: string;
         name: string;
     }[];
-    location: {
-        id: string;
-        name: string;
-        type: string;
-    };
-    personsInvolved: PersonProps[];
-    keyDates : Date[];
+    location?: Location;
+    personsInvolved?: PersonProps[];
 }
 
 export interface FactListProps {

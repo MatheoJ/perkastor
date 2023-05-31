@@ -1,5 +1,5 @@
-import { NextPage } from "next"
-import React, { ReactElement, useState } from "react"
+import { type NextPage } from "next"
+import React, { type ReactElement, useState } from "react"
 import RingLoader from "react-spinners/RingLoader";
 
 import TabTitle from "./TabTitle"
@@ -7,7 +7,9 @@ import TabTitle from "./TabTitle"
 type Props = {
   children: ReactElement[],
   selectedTab: number,
-  setSelectedTab: React.Dispatch<React.SetStateAction<number>>
+  setSelectedTab: React.Dispatch<React.SetStateAction<number>>,
+  isLoading: boolean,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const Tabs: NextPage<Props> = ({ children, selectedTab, setSelectedTab, isLoading, setIsLoading }) => {

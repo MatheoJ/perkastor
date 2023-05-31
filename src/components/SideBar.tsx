@@ -1,6 +1,4 @@
 
-import Head from 'next/head';
-import FolderSharedIcon from '@mui/icons-material/FolderShared';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { bus } from '../utils/bus';
 import { contributionClickEvent } from '../events/ContributionClickEvent';
@@ -11,19 +9,19 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Button } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { usePosition } from 'use-position';
 import {selectLocationFromSearchBar} from '../events/SelectSearchBarResultEvent';
-import { Geometry } from "geojson";
-import { useRouter } from 'next/router';
-function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setInsertMode }:
-    { isOpen: boolean, toggleSidebar: () => void, onSidebarItemClick: ({ item }: { item: String }) => void, insertMode: boolean, setInsertMode: ({ insertMode }: { insertMode: boolean }) => void }) {
-    //const router  = useRouter();
+import { type Geometry } from "geojson";
+import { type NextPage } from 'next';
+
+interface Props {
+    isOpen: boolean;
+}
+const Sidebar: NextPage<Props> = ({ isOpen }) => {
     const [editMode, setEditMode] = useState(false);
     const { data: session, status } = useSession();
     const [position, setPosition] = useState({ latitude: 0, longitude: 0 });
 
-    const handleClick = ({ item }: { item: String }) => { 
-        onSidebarItemClick({ item });
+    const handleClick = ({ item }: { item: string }) => { 
 
         if(item == "edit"){
             // si l'utilisateur n'est pas connecté, on le redirige vers la page de connexion
@@ -53,7 +51,8 @@ function Sidebar({ isOpen, toggleSidebar, onSidebarItemClick, insertMode, setIns
     }
     useEffect(() => {
         const geoObj: Geometry = {
-            geometry: 'Point',
+            // @ts-ignore
+            geometry: 'Point', // DO NOT MODIFY THIS LINE
             longitude: position.longitude,
             latitude: position.latitude
         };

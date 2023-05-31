@@ -4,8 +4,8 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import { Fact as FactType, HistoricalPerson } from '@prisma/client'
 import logo from "src/images/perecastor.png";
-import { NextPage } from 'next';
-import { FactProps } from 'types/types';
+import { type NextPage } from 'next';
+import { type FactProps } from 'types/types';
 import { selectHistoricalFigureFromSearchBar } from '~/events/SelectSearchBarResultEvent';
 import { bus } from "../utils/bus";
 import { classNames } from 'react-easy-crop/helpers';
@@ -54,6 +54,72 @@ const Fact: NextPage<Props> = ({ fact }) => {
             month: 'long',
             day: 'numeric'
         });
+    }
+
+    function renderFactBody(fact: FactProps): React.ReactNode {
+        if (fact.bannerImg && fact.personsInvolved && fact.personsInvolved.length) {
+            return (
+                <>
+                    <div className="content-left">
+                        <strong>Description</strong>
+                        <p>{fact.content}</p>
+                    </div>
+                    <div className='content-right'>
+                        <div className="factImage">
+                            <ImageWithFallback src={fact.bannerImg} alt="" width={300} height={200} fallback='/resources/404-error.png' />
+                        </div>
+                        <ul>
+                            {fact.personsInvolved.map((person) => (
+                                <li onClick={() => { bus.publish(selectHistoricalFigureFromSearchBar(person)) }} style={{ cursor: "pointer", color: '#3366cc', }} key={person.id}>
+                                    {person.name}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </>
+            )
+        }
+        else if (fact.bannerImg) {
+            return (
+                <>
+                    <div className="content-left">
+                        <strong>Description</strong>
+                        <p>{fact.content}</p>
+                    </div>
+                    <div className='content-right'>
+                        <div className="factImage">
+                            <ImageWithFallback src={fact.bannerImg} alt="" width={300} height={200} fallback='/resources/404-error.png' />
+                        </div>
+                    </div>
+                </>
+            )
+        }
+        else if (fact.personsInvolved && fact.personsInvolved.length) {
+            return (
+                <>
+                    <div className="content-left">
+                        <strong>Description</strong>
+                        <p>{fact.content}</p>
+                    </div>
+                    <div className='content-right'>
+                        <strong>Personnages historiques</strong>
+                        <ul className='no-margin'>
+                            {fact.personsInvolved.map((person) => (
+                                <li onClick={() => { bus.publish(selectHistoricalFigureFromSearchBar(person)) }} style={{ cursor: "pointer", color: '#3366cc', }} key={person.id}>
+                                    {person.name}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </>
+            )
+        }
+        return (
+            <div className="fact-content">
+                <strong>Description</strong>
+                <p>{fact.content}</p>
+            </div>
+        )
     }
 
     return (
@@ -110,7 +176,7 @@ const Fact: NextPage<Props> = ({ fact }) => {
                     </> :
                     <div className="factHeadTop">
                         <h1 className={'display-2'}>
-                            L'évènement {sortedDates.length > 1 ? 'des ' : (formatDate(sortedDates[0]) === 'N/A' ? '' : formatDate(sortedDates[0]).length > 4 ? 'du ' : 'de ')}
+                            L'événement {sortedDates.length > 1 ? 'des ' : (formatDate(sortedDates[0]) === 'N/A' ? '' : formatDate(sortedDates[0]).length > 4 ? 'du ' : 'de ')}
                             {sortedDates.map((date, index) => {
                                 const formattedDate = formatDate(date);
                                 return (
@@ -135,75 +201,7 @@ const Fact: NextPage<Props> = ({ fact }) => {
             </div>
             <div className="divider-line" />
             <div className="factBody">
-                {fact.bannerImg && fact.personsInvolved && fact.personsInvolved.length ? ( //test : there are both images and personsInvolved
-                    <>
-                        <div className="content-left">
-                            <strong>Description</strong>
-                            <p>{fact.content}</p>
-                        </div>
-                        <div className='content-right'>
-                            {
-                                fact.title ?
-                                    null :
-                                    <div className="factImage">
-                                        <ImageWithFallback src={fact.bannerImg} alt="" width={300} height={200} fallback='/resources/404-error.png' />
-                                    </div>
-                            }
-                            <ul>
-                                {fact.personsInvolved.map((person) => (
-                                    <li onClick={() => { bus.publish(selectHistoricalFigureFromSearchBar(person.historicalPerson as HistoricalPerson)) }} style={{ cursor: "pointer", color: '#3366cc', }} key={person.historicalPerson.id}>
-                                        {person.historicalPerson.name}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </>
-                ) : fact.bannerImg ? (//test : there is an image and no personsInvolved
-                    <>
-                        {
-                            fact.title ?
-                                <div className='column'>
-                                    <strong>Description</strong>
-                                    <p>{fact.content}</p>
-                                </div> :
-                                <>
-                                    <div className="content-left">
-                                        <strong>Description</strong>
-                                        <p>{fact.content}</p>
-                                    </div>
-                                    <div className='content-right'>
-                                        <div className="factImage">
-                                            <ImageWithFallback src={fact.bannerImg} alt="" width={300} height={200} fallback='/resources/404-error.png' />
-                                        </div>
-                                    </div>
-                                </>
-                        }
-
-                    </>
-                ) : fact.personsInvolved && fact.personsInvolved.length ? ( //test : there are personsInvolved and no image 
-                    <>
-                        <div className="content-left">
-                            <strong>Description</strong>
-                            <p>{fact.content}</p>
-                        </div>
-                        <div className='content-right'>
-                            <strong>Personnages historiques</strong>
-                            <ul className='no-margin'>
-                                {fact.personsInvolved.map((person) => (
-                                    <li onClick={() => { bus.publish(selectHistoricalFigureFromSearchBar(person.historicalPerson as HistoricalPerson)) }} style={{ cursor: "pointer", color: '#3366cc', }} key={person.historicalPerson.id}>
-                                        {person.historicalPerson.name}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </>
-                ) : ( //test : there are no personsInvolved and no image
-                    <div className="fact-content">
-                        <strong>Description</strong>
-                        <p>{fact.content}</p>
-                    </div>
-
-                )}
+                {renderFactBody(fact)}
             </div>
             {(fact.video.length || fact.audio.length) ? (
                 <>

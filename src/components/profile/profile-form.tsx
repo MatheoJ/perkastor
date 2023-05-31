@@ -1,8 +1,15 @@
 import { useRef, useState } from 'react';
 
 import classes from './profile-form.module.css';
+import { type NextPage } from 'next';
 
-function ProfileForm(props: any) {
+interface Props {
+  onChangePassword: (data: { oldPassword: string; newPassword: string }) => void;
+  formError: string;
+  formSuccess: string;
+}
+
+const ProfileForm: NextPage<Props> = ({onChangePassword, formError, formSuccess}) => {
   const oldPasswordRef = useRef<HTMLInputElement>(null);
   const newPasswordRef = useRef<HTMLInputElement>(null);
 
@@ -14,7 +21,7 @@ function ProfileForm(props: any) {
 
     // optional: Add validation
 
-    props.onChangePassword({
+    onChangePassword({
       oldPassword: enteredOldPassword,
       newPassword: enteredNewPassword
     });
@@ -30,8 +37,8 @@ function ProfileForm(props: any) {
         <label htmlFor='new-password'>Nouveau mot de passe</label>
         <input type='password' id='new-password' ref={newPasswordRef} />
       </div>
-      {props.formError && <span className="px-4 py-3" style={{color: "#f56565"}}>{props.formError}</span>}
-      {props.formSuccess && <span className="px-4 py-3" style={{color: "#90EE90"}}>{props.formSuccess}</span>}
+      {formError && <span className="px-4 py-3" style={{color: "#f56565"}}>{formError}</span>}
+      {formSuccess && <span className="px-4 py-3" style={{color: "#90EE90"}}>{formSuccess}</span>}
       <div className={classes.action}>
         <button>Modifier le mot de passe</button>
       </div>

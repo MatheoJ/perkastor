@@ -3,7 +3,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Swal from 'sweetalert2';
-import {FactProps} from 'types/types';
+import {type FactProps} from 'types/types';
 import ImageWithFallback from './ImageWithFallback';
 import { Alert, AlertTitle } from '@mui/material';
 interface FactChainEditionProps {
@@ -25,7 +25,7 @@ const FactChainEdition = ({ facts, setTmpFacts} : FactChainEditionProps) => {
 
   const handleDeleteFact = async (factIndex: number) => {
     await Swal.fire({
-      title: 'Êtes-vous sûr de vouloir supprimer cet évènement ?',
+      title: 'Êtes-vous sûr de vouloir supprimer cet événement ?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Supprimer',
@@ -36,12 +36,11 @@ const FactChainEdition = ({ facts, setTmpFacts} : FactChainEditionProps) => {
         const newFactList = [...facts];
         newFactList.splice(factIndex, 1);       
         setTmpFacts(newFactList);
-        await Swal.fire('Évènement supprimé', '', 'success');
+        await Swal.fire('Événement supprimé', '', 'success');
       }
     });
   };
 
-  console.log(facts);
   return (
     <>
       <div className="factChainEdition">
@@ -67,7 +66,7 @@ const FactChainEdition = ({ facts, setTmpFacts} : FactChainEditionProps) => {
               <div className='factTitleText'> 
                 {(() => {
                     if (fact.title.length < 1) {
-                        const date = fact.keyDates[0].slice(0,4);
+                        const date = (fact.keyDates[0] as unknown as string).slice(0,4);
                         let content: string = fact.content;
         
                         if (fact.content.length > 30) {

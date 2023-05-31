@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth, { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
@@ -14,21 +14,13 @@ import { encode, decode } from 'next-auth/jwt'
 import { verifyPassword } from '../../../lib/auth';
 
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { NextApiRequest, NextApiResponse } from 'next/types';
+import { type NextApiRequest, type NextApiResponse } from 'next/types';
 import { prisma } from '../../../lib/db'
 
 // calculate the maxAge for a cookie from a expiresIn value in seconds
 const fromDate = (time: number, date = Date.now()) => {
     return new Date(date + time * 1000)
 }
-
-const GOOGLE_AUTHORIZATION_URL =
-    "https://accounts.google.com/o/oauth2/v2/auth?" +
-    new URLSearchParams({
-        prompt: "consent",
-        access_type: "offline",
-        response_type: "code",
-    })
 
 // An Adapter in NextAuth.js connects your application to whatever database or backend system you want to use to store data for users, their accounts, sessions, etc.
 const prismaAdapter = PrismaAdapter(prisma);
@@ -58,7 +50,7 @@ async function refreshAccessToken(token) {
                 client_secret: process.env.GOOGLE_CLIENT_SECRET,
                 grant_type: "refresh_token",
                 refresh_token: token.refreshToken,
-            })
+            }).toString()
 
         const response = await fetch(url, {
             headers: {
@@ -80,7 +72,7 @@ async function refreshAccessToken(token) {
             refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
         }
     } catch (error) {
-        console.log("Couldn't refresh Google authentication token: " + error)
+        console.error("Couldn't refresh Google authentication token: ", error)
 
         return {
             ...token,
@@ -100,6 +92,9 @@ export const authOptions: NextAuthOptions = {
         updateAge: 24 * 60 * 60, // 24 hours
     },
     secret: process.env.NEXTAUTH_SECRET,
+    pages: {
+        signIn: '/auth',
+    },
     providers: [
         GithubProvider({
             clientId: process.env.GITHUB_CLIENT_ID!,
@@ -178,6 +173,13 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
+        redirect({ url, baseUrl }) {
+            // Allows relative callback URLs
+            if (url.startsWith("/")) return `${baseUrl}${url}`
+            // Allows callback URLs on the same origin
+            else if (new URL(url).origin === baseUrl) return url
+            return baseUrl
+        },
         async jwt({ token, user, account, profile }) {
             // Persist the OAuth access_token to the token right after signin
             // if (user) {

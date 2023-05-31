@@ -1,19 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import Marker from './Marker';
-import FlyTo from './FlyTo';
-import DataPoints from './DataPoints';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import Batf from './batf/Batf';
-import Button from './buttons/Button';
 import DisplayLocation from './DisplayLocation';
 import { bus } from '../utils/bus';
 import { selectMapEvent } from '../events/map/SelectMapEvent';
 import { selectLocationFromSearchBar, selectLocationItem } from '~/events/SelectSearchBarResultEvent';
-import { LngLatLike } from 'maplibre-gl';
-import { NextPage } from "next";
-
-const MapTilerApiKey = process.env.MAPTILER_API_KEY;
+import { type LngLatLike } from 'maplibre-gl';
+import { type NextPage } from "next";
 
 interface MapPageProps {
   locationSelected : any;
@@ -23,12 +17,10 @@ interface MapPageProps {
 const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
-  const [idSelected, setIdSelected] = useState('');
 
-  const handleSelectLocation = (location : any) => {
+  const handleSelectLocation = () => {
   };
   
-
   useEffect(() => {
     if (!mapContainer.current) return;
 
@@ -40,7 +32,7 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
     });
 
     map.on('click', function(e) {
-      var features = map.queryRenderedFeatures(e.point, { layers: ['unclustered-point_loc'] });
+      const features = map.queryRenderedFeatures(e.point, { layers: ['unclustered-point_loc'] });
       if (!features.length) {
         bus.publish(selectMapEvent(null));
       }
@@ -59,19 +51,25 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
     );
     const unsubItem = bus.subscribe(selectLocationItem, event => {
       const handlePayload = async () => {
-        const [type, location] = event.payload;
+        const location = event.payload;
         const endPoints : LngLatLike = [location.longitude, location.latitude]; // DO NOT MODIFY THIS LINE
-        var zoom;
-        if(type == "rue"){
-          zoom = 17;
-        }else if(type == "ville"){
-          zoom = 10;
-        }else if(type == "departement"){
-          zoom = 8;
-        }else if(type == "region"){
-          zoom = 6;
-        }else{
-          zoom = 4;
+        let zoom;
+        switch (location.type) {
+          case "rue":
+            zoom = 17;
+            break;
+          case "ville":
+            zoom = 10;
+            break;
+          case "departement":
+            zoom = 8;
+            break;
+          case "region":
+            zoom = 6;
+            break;
+          default:
+            zoom = 4;
+            break;
         }
 
         map?.flyTo({
@@ -100,8 +98,6 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
         const payload = await Promise.resolve(event.payload);
         // @ts-ignore
         const endPoints: LngLatLike = [payload.longitude, payload.latitude]; // DO NOT MODIFY THIS LINE
-
-        console.log(endPoints);
 
         map?.flyTo({
           center: endPoints,

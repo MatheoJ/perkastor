@@ -6,3 +6,5 @@ services:
     image: perkastor-prod
     build:
       target: production
+    env_file:
+      - .env.prod

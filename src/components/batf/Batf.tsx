@@ -2,22 +2,20 @@ import React, { useState, useEffect, use } from "react";
 import BatfTabContainer from "./BatfTabContainer";
 import { bus } from "../../utils/bus";
 import { selectMapEvent } from "~/events/map/SelectMapEvent";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import MenuIcon from '@mui/icons-material/Menu';
 
 interface BatfProps {
-    children: React.ReactNode
+    children?: React.ReactNode
 }
 
 const Batf: NextPage<BatfProps> = ({ children }) => {
-    const [isLoading, setIsLoading] = useState(false);
     const [state, setState] = useState<"normal" | "fullscreen" | "minimized">("minimized");
-    //const [selectedTab, setSelectedTab] = useState<"Événements" | "Anecdotes" | "Chaînes">("Événements");
+    
     useEffect(() => {
         const handleMapChange = bus.subscribe(selectMapEvent, event => {
             if (event.payload != null) {
                 setState("normal");
-                //setSelectedTab("Événements");
             }
         });
         return () => {

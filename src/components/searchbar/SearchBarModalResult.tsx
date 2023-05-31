@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
-import { FactProps } from 'types/types';
+import { type FactProps } from 'types/types';
 import { bus } from "../../utils/bus";
 import Fact from "../Fact";
 
@@ -82,7 +82,7 @@ const SearchBarModalResult = ({fact, open, setOpen}: Props) => {
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
         {(() => {
             if (fact.title.length < 1) {
-                const date = fact.keyDates[0].slice(0,4);
+                const date = (fact.keyDates[0] as unknown as string).slice(0,4);
                 let content: string = fact.content;
 
                 if (fact.content.length > 30) {

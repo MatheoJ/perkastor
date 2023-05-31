@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { HistoricalPerson, Fact } from '@prisma/client';
-import { NextPage } from 'next';
+import { type HistoricalPerson, type Fact } from '@prisma/client';
+import { type NextPage } from 'next';
 import crypto from 'crypto';
 import FactList from '../FactList';
 
@@ -24,7 +24,7 @@ function getImageUrl(filename: string): string {
 
 const HistoricalFigureView: NextPage<Props> = (props) => {
     const { historicalPerson } = props;
-    var errorDeathDate = false;
+    let errorDeathDate = false;
     if (!historicalPerson) {
         return null;
     }
@@ -108,13 +108,4 @@ const HistoricalFigureView: NextPage<Props> = (props) => {
     );
 };
 
-/*
-<ul>
-{historicalPerson.facts.map(elem => {
-    return (<li key={elem.id}>
-        {elem.shortDesc}
-    </li>)
-})}
-</ul>
-*/
 export default HistoricalFigureView;

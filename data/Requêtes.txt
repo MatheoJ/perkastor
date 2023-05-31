@@ -8,13 +8,13 @@ FILTER LANGMATCHES(lang(?name), 'fr')
 }
 
 
-# Renvoie des évènements historiques (n'importe quel pays)
+# Renvoie des événements historiques (n'importe quel pays)
 
 select distinct ?p where {
 ?p rdf:type dbo:HistoricalEvent .
 }
 
-# Renvoie les évènements historiques liés à la France
+# Renvoie les événements historiques liés à la France
 
 select distinct ?p where {
 ?p rdf:type dbo:HistoricalEvent .
