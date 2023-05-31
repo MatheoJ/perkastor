@@ -19,8 +19,7 @@ export type SearchFilters = {
     user: boolean
 }
 export type SearchResult = {
-    slice(arg0: number, arg1: number): unknown
-    length: number
+    length: number,
     events: Fact[],
     //anecdotes: Fact[],
     chains: FactChain[],

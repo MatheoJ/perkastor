@@ -59,7 +59,7 @@ async function handler(req : NextApiRequest, res : NextApiResponse) {
     return;
 
   } catch(error) {
-    console.log(error);
+    console.error("Error in /api/locationFact.ts when receiving a " + req.method + " request:", error);
     res.status(500).json({ message: 'Impossible de se connecter à la base de données !' });
     return;    
   }

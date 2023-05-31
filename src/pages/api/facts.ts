@@ -387,7 +387,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     });
                 }
                 catch (e) {
-                    console.log(e);
+                    console.error("Error in /api/facts.ts when receiving a " + method + " request:", e);
                 }
 
                 if (prismaResult) {

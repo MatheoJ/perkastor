@@ -99,8 +99,6 @@ const MapPage: NextPage<MapPageProps> = ({ locationSelected, onLocationSelect })
         // @ts-ignore
         const endPoints: LngLatLike = [payload.longitude, payload.latitude]; // DO NOT MODIFY THIS LINE
 
-        console.log(endPoints);
-
         map?.flyTo({
           center: endPoints,
           zoom: 15,

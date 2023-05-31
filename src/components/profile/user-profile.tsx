@@ -13,24 +13,24 @@ import { Button } from '@mui/material';
 function UserProfile() {
   const [formSuccess, setFormSuccess] = useState<string>();
   const [formError, setFormError] = useState<string>();
+  const router = useRouter();
 
   const { data: session, status, update } = useSession({
-    required: false
+    required: true
   })
-  console.log(session)
 
-  function copyUrl() {
-    const { asPath } = useRouter();
+  const copyUrlRef = useCallback(async function copyUrl() {
+    const { asPath } = router;
     const origin =
         typeof window !== 'undefined' && window.location.origin
             ? window.location.origin
             : '';
 
     const URL = `${origin}${asPath}`;
-    navigator.clipboard.writeText(`${URL}/profile/${session.user.id}`)
-  }
+    await navigator.clipboard.writeText(`${URL}/profile/${session.user.id}`)
+  });
 
-  async function changePasswordHandler(passwordData: Object) {
+  async function changePasswordHandler(passwordData: object) {
     const response = await fetch('/api/user/change-password', {
       method: 'PATCH',
       body: JSON.stringify(passwordData),
@@ -54,7 +54,7 @@ function UserProfile() {
       <CropperView toUpdate='user' toUpdateId={session.user.id} uploadOnSubmit={true} image={session.user.image} alt='Picture profile' />
       {/* Share profile url icon button */}
       <IconButton  size='small' color='primary' aria-label='share profile' component='button'
-        onClick={() => {() => copyUrl()}}
+        onClick={copyUrlRef}
       >
         <Share />
       </IconButton>
@@ -66,7 +66,7 @@ function UserProfile() {
         <li>Email vérifié: {session.user.emailVerified ? "Oui" : "Non"}</li>
       </ul>
       <ProfileForm onChangePassword={changePasswordHandler} formError={formError} formSuccess={formSuccess} />
-      <Button variant="outlined" color="primary" onClick={() => update()}>
+      <Button variant="outlined" color="primary" onClick={update}>
         Mettre à jour la session
       </Button>
     </section>

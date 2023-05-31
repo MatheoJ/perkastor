@@ -1,5 +1,5 @@
-import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
-import { Button, IconButton } from "@mui/material";
+import { ArrowDownward, ArrowUpward, KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import { Avatar, Button, IconButton } from "@mui/material";
 import { type NextPage } from "next";
 import { useState } from "react";
 
@@ -18,9 +18,9 @@ interface Props{
           <span className="dataItem__name" onClick={onClick}
             data-category={category}>{extanded ? untruncatedText : text}</span>
             {/* show the rest of the resultTitle when clicking on the extend button*/}
-            {truncated && <IconButton onClick={() => setExtanded(!extanded)}>
-                {extanded ? <ArrowDownward fontSize={"small"} /> : <ArrowUpward fontSize={"small"} />}
-            </IconButton>}
+            {truncated && <Avatar onClick={() => setExtanded(!extanded)} className="right-icon" sx={{ width: 16, height: 16, color: '#333', backgroundColor: '#fff' }}>
+                {extanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </Avatar>}
         </div>
     )
   };

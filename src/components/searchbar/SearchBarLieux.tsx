@@ -36,8 +36,6 @@ const SearchBarLieu: NextPage<Props> = ({ showChecklist, usedInForm, onResultCli
     const results = await fetch(`/api/search?query=${searchTerm}&filtersParam=${JSON.stringify(filters)}`);
     const resultat = await results.json();
 
-    console.log("résultat api");
-    console.log(results);
     setSearchResults(resultat.data);
     setIsLoading(false);
   };

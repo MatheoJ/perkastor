@@ -99,7 +99,6 @@ const Event = () => {
       const responseData = await response.json();
       // change image related to the fact whose id is responseData.id
       if (imageSrc) {
-        console.log("Image insérée");
         const image = await ref.current?.triggerUpload(responseData.data.id);
 
         if (image) {
@@ -161,7 +160,6 @@ const Event = () => {
 
         };
       } else {
-        console.log("Pas d'image");
         MySwal.fire({
           title: "Anecdote historique ajoutée avec succès",
           icon: "success",
@@ -190,7 +188,6 @@ const Event = () => {
   };
 
   const onResultClick = (locSelected: any) => {
-    console.log(locSelected);
     setValue("coordinatesLong", locSelected.longitude);
     setValue("coordinatesLat", locSelected.latitude);
     setValue("NomLieux", locSelected.name);

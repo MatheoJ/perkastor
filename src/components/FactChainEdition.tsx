@@ -41,7 +41,6 @@ const FactChainEdition = ({ facts, setTmpFacts} : FactChainEditionProps) => {
     });
   };
 
-  console.log(facts);
   return (
     <>
       <div className="factChainEdition">

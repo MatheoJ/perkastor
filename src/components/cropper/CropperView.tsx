@@ -57,7 +57,7 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
     const [zoom, setZoom] = useState(1)
     const onCropComplete = useCallback(
         (croppedArea: Area, croppedAreaPixels: Area) => {
-            console.log(croppedArea, croppedAreaPixels)
+            // console.log(croppedArea, croppedAreaPixels)
             setCropAreaPixels(croppedAreaPixels)
         },
         []
@@ -176,7 +176,7 @@ const CropperView: NextPage<Props> = forwardRef(({ apiRoute, defaultFilename, de
             <div>
                 <input ref={profileImageRef} hidden accept="image/*" type="file" onChange={(event) => {
                     if (event.target.files) {
-                        console.log(event.target.files[0])
+                        // console.log(event.target.files[0])
                         setVisible(true)
                         setImageSrc(event.target.files[0])
                         setImageUrl(URL.createObjectURL(event.target.files[0]))

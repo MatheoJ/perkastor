@@ -21,7 +21,6 @@ interface Props {
 
 const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
   const staticResults = React.useRef<SearchResult>(null);
-  const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -48,34 +47,43 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
       locations: [],
       users: [],
       chains: [],
+      length: 0,
     };
 
-    if (staticResults) {
+    if (staticResults && staticResults.current) {
+      let length = 0;
       if (filters.event) {
-        filteredResults.events = staticResults.events;
+        filteredResults.events = staticResults.current.events;
+        length += filteredResults.events.length;
       }
       if (filters.historicalFigure) {
-        filteredResults.historicalPersons = staticResults.historicalPersons;
+        filteredResults.historicalPersons = staticResults.current.historicalPersons;
+        length += filteredResults.historicalPersons.length;
       }
       if (filters.location) {
-        filteredResults.locations = staticResults.locations;
+        filteredResults.locations = staticResults.current.locations;
+        length += filteredResults.locations.length;
       }
       if (filters.user) {
-        filteredResults.users = staticResults.users;
+        filteredResults.users = staticResults.current.users;
+        length += filteredResults.users.length;
       }
       if (filters.chain) {
-        filteredResults.chains = staticResults.chains;
+        filteredResults.chains = staticResults.current.chains;
+        length += filteredResults.chains.length;
       }
+      filteredResults.length = length;
     }
+    
+    // console.log("RESULTS: ")
+    // console.log(searchResults)
+    // console.log("FILTERS: ")
+    // console.log(filters)
+    // console.log("STATIC RESULTS: ")
+    // console.log(staticResults.current)
+    // console.log("FILTERED RESULTS")
+    // console.log(filteredResults)
 
-    console.log("RESULTS: ")
-    console.log(searchResults)
-    console.log("FILTERS: ")
-    console.log(filters)
-    console.log("STATIC RESULTS: ")
-    console.log(staticResults)
-    console.log("FILTERED RESULTS")
-    console.log(filteredResults)
     setSearchResults(filteredResults);
   }, [filters])
 
@@ -83,21 +91,20 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
     setSearchResultsVisibility(false);
   });
 
-  const toggleSearchBar = () => {
-    setShowSearchBar(!showSearchBar);
-  };
-
   const handleSubmit = async () => {
     setIsLoading(true);
 
     const results = await fetch(`/api/search?query=${searchTerm}&filtersParam=${JSON.stringify(filters)}`);
     const resultat = await results.json();
 
-    staticResults.current = results.data;
+    staticResults.current = resultat.data;
 
+    // console.log("STATIC RESULTS: ")
+    // console.log(staticResults.current)
+    
     setSearchResults(resultat.data);
     setIsLoading(false);
-    setSearchResultsVisibility(true);
+    setSearchResultsVisibility(resultat.data && Object.values(resultat.data).some(cat => cat?.length > 0));
   };
 
   function renderResults(results: any, category: string) {
@@ -195,7 +202,6 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
           break;
         case 'locations':
           bus.publish(selectLocationFromSearchBar(results[i] as Geometry));
-          console.log(results[i]);
           break;
         case 'chains':
           bus.publish(selectChainFromSearchBar(results[i] as Fact[]));
@@ -224,7 +230,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
 
   return (
     <div className={`searchbar active ${usedInForm ? 'searchbar-form' : ''}`} ref={ref2}>
-      <div className="searching-area" style={{ borderRadius: `5px 5px ${searchResultsVisibility && searchResults && Object.entries(searchResults).length > 0 ? '0 0' : '5px 5px'}` }}>
+      <div className="searching-area" style={{ borderRadius: `5px 5px ${searchResultsVisibility ? '0 0' : '5px 5px'}` }}>
         <div className="row">
           <div className={`searchBar__form`} style={{ width: usedInForm ? '100%' : 'auto' }}>
             <input
@@ -256,11 +262,11 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
           }
         </div>
       </div>
-      {searchResultsVisibility && searchResults && searchResults.length > 0 && Object.values(searchResults).some(cat => cat.length > 0) && (
+      {searchResultsVisibility && (
         <div className="searchResults">
           <div className="searchResults-content">
-
-            {Object.entries(searchResults).map(([category, results]) => (
+            
+            {searchResults ? Object.entries(searchResults).map(([category, results]) => (
               <React.Fragment key={category}>
                 {results.length > 0 && (
                   <React.Fragment>
@@ -269,7 +275,7 @@ const SearchBar: NextPage<Props> = ({ showChecklist, usedInForm }) => {
                   </React.Fragment>
                 )}
               </React.Fragment>
-            ))}
+            )) : null}
           </div>
         </div>
       )}

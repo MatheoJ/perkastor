@@ -260,7 +260,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     }
     catch (error) {
-        console.log(error);
+        console.error("Error in /api/chains.ts when receiving a " + method + " request:", error);
         res.status(500).json({ message: error });
         return;
     }

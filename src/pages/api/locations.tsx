@@ -75,7 +75,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     res.status(200).json(geojson);
     return;
   } catch (error) {
-    console.log(error.message)
+    console.error("Error in /api/locations.ts when receiving a " + req.method + " request:", error);
     res.status(500).json({ message: 'Impossible de se connecter à la base de données !' });
     return;
   }

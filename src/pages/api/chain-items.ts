@@ -81,7 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 },
                             },
                         });
-                        console.log("nouvelle chaine : ", newChain);
+                        
                         if (newChain) {
                             res.status(200).json({ data: newChain });
                             break;
@@ -188,7 +188,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         await prisma.$disconnect();
     }
     catch (error) {
-        console.log(error);
+        console.error("Error in /api/chain-items.ts when receiving a " + method + " request :", error);
         res.status(500).json({ message: error });
         return;
     }

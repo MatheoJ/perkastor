@@ -112,6 +112,7 @@
 .loading{
   margin-top: 2px;
   margin-left: 5px;
+  margin-right: 5px;
 }
 
 .searchResults-content {
@@ -121,7 +122,7 @@
   //box-shadow: rgba(37, 0, 0, 0.35) 0px 5px 15px;
   box-shadow: 0 4px 3px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  overflow-y: auto;
+  overflow-y: scroll;
   border-radius: 0 0 5px 5px;
 
   font-size: 12px;
@@ -141,24 +142,20 @@
 
 
 .searchResults .dataItem {
-  width: 100%;
   padding-left: 15px;
-  height: 25px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: calc(300px - 15px - 15px - 7px);
   display: flex;
-  align-items: center;
   border-bottom: 1px solid #ccc;
   cursor: pointer;
+  justify-content: space-between;
 
   &:hover {
     background-color: $primary-color;
     color: white;
   }
-}
-
-.dataItem__name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .searchResults-content::-webkit-scrollbar {
@@ -254,11 +251,6 @@
   position: relative; /* Add this line */
 }
 
-.loading{
-  margin-top: 2px;
-  margin-left: 5px;
-}
-
 .searchResultslieu-content {
   width: 100%;
   max-height: 130px;
@@ -282,12 +274,6 @@
     background-color: $primary-color;
     color: white;
   }
-}
-
-.dataItem__name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .searchResultslieu-content::-webkit-scrollbar {

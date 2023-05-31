@@ -2,17 +2,18 @@
 //
 // Path: src\components\searchbar\FiltersChecklist.tsx
 
-import React, { useState, useEffect } from 'react';
-import { Checkbox, FormControlLabel, FormGroup, FormLabel, Grid, Typography } from '@mui/material';
+import React, { useState } from 'react';
 import { type SearchFilters } from 'types/types';
 
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import EventIcon from '@mui/icons-material/Event';
-import Person4Icon from '@mui/icons-material/Person4';
-import PersonIcon from '@mui/icons-material/Person';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import LinkIcon from '@mui/icons-material/Link';
-import { NextPage } from 'next';
+import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
+import { type NextPage } from 'next';
 interface Props {
     filters: SearchFilters;
     setFilters: (filters: SearchFilters) => void;
@@ -23,7 +24,7 @@ const FiltersChecklist: NextPage<Props> = ({ filters, setFilters }) => {
     const WRAP_MODE = 'break-spaces';
     const BUTTON_WIDTH = 75;
     const WORD_BREAK = 'break-all';
-    const [localFilters, setLocalFilters] = useState(['event', 'chain', 'historicalFigure', 'location', 'user']);
+    const [localFilters, setLocalFilters] = useState(Object.keys(filters).map(key => filters[key] ? key : '').filter(key => key !== ''));
 
     const handleFilterChange = (event: React.MouseEvent<HTMLElement>, filterNames: string[]) => {
         setLocalFilters(filterNames);
@@ -50,11 +51,11 @@ const FiltersChecklist: NextPage<Props> = ({ filters, setFilters }) => {
             aria-label="Type"
             fullWidth={true}
         >
-            <ToggleButton value="event" aria-label="event" style={{ fontSize: FONT_SIZE, wordBreak: WORD_BREAK, whiteSpace: WRAP_MODE }} sx={{ width: BUTTON_WIDTH }}>Événements</ToggleButton>
-            <ToggleButton value="chain" aria-label="chain" style={{ fontSize: FONT_SIZE, wordBreak: WORD_BREAK, whiteSpace: WRAP_MODE }} sx={{ width: BUTTON_WIDTH }}>Chaine d&apos;Événements</ToggleButton>
-            <ToggleButton value="historicalFigure" aria-label="historicalFigure" style={{ fontSize: FONT_SIZE, wordBreak: WORD_BREAK, whiteSpace: WRAP_MODE }} sx={{ width: BUTTON_WIDTH }}>Personnages Historiques</ToggleButton>
-            <ToggleButton value="location" aria-label="location" style={{ fontSize: FONT_SIZE, wordBreak: WORD_BREAK, whiteSpace: WRAP_MODE }} sx={{ width: BUTTON_WIDTH }}>Lieux</ToggleButton>
-            <ToggleButton value="user" aria-label="user" style={{ fontSize: FONT_SIZE, wordBreak: WORD_BREAK, whiteSpace: WRAP_MODE }} sx={{ width: BUTTON_WIDTH }}>Utilisateurs</ToggleButton>
+            <ToggleButton value="event" aria-label="Événements" style={{ fontSize: FONT_SIZE, wordBreak: WORD_BREAK, whiteSpace: WRAP_MODE }} sx={{ width: BUTTON_WIDTH }}><AutoStoriesIcon /></ToggleButton>
+            <ToggleButton value="chain" aria-label="Chaine d&apos;Événements" style={{ fontSize: FONT_SIZE, wordBreak: WORD_BREAK, whiteSpace: WRAP_MODE }} sx={{ width: BUTTON_WIDTH }}><LinkIcon /></ToggleButton>
+            <ToggleButton value="historicalFigure" aria-label="Personnages Historiques" style={{ fontSize: FONT_SIZE, wordBreak: WORD_BREAK, whiteSpace: WRAP_MODE }} sx={{ width: BUTTON_WIDTH }}><PsychologyAltIcon /></ToggleButton>
+            <ToggleButton value="location" aria-label="Lieux" style={{ fontSize: FONT_SIZE, wordBreak: WORD_BREAK, whiteSpace: WRAP_MODE }} sx={{ width: BUTTON_WIDTH }}><PinDropIcon /></ToggleButton>
+            <ToggleButton value="user" aria-label="Utilisateurs" style={{ fontSize: FONT_SIZE, wordBreak: WORD_BREAK, whiteSpace: WRAP_MODE }} sx={{ width: BUTTON_WIDTH }}><AccountCircleIcon /></ToggleButton>
         </ToggleButtonGroup>
     );
 

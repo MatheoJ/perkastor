@@ -44,7 +44,7 @@ const FlyTo: NextPage<FlyToProps> = ({ map, lngLat = [0, 0] }) => {
           position: 'absolute',
           bottom: '110px',
           left: '10px',
-          padding: '5px 10px',
+          padding: 0,
           margin: 0,
           fontSize: '11px',
           lineHeight: '18px',

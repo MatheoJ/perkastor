@@ -1,6 +1,5 @@
 const { MongoClient } = require('mongodb');
 
-console.log(MONGO_URI)
 const DATABASE_NAME = 'test'; // Remplacez par le nom de votre base de données
 
 async function migrateCoordinates() {

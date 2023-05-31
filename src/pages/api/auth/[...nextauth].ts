@@ -72,7 +72,7 @@ async function refreshAccessToken(token) {
             refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
         }
     } catch (error) {
-        console.log("Couldn't refresh Google authentication token: " + error)
+        console.error("Couldn't refresh Google authentication token: ", error)
 
         return {
             ...token,

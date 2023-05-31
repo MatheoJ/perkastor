@@ -28,7 +28,6 @@ const HistoricalFigureList: React.FC<HistoricalFigureListProps> = ({ historicalP
     } else {
       setSelectedFigures([]);
     }
-    console.log(selectedFigures)
   };
 
   useEffect(() => {

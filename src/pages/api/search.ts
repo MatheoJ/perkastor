@@ -158,7 +158,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 break;
             }
     } catch (error) {
-        console.log(error)
+        console.error("Error in /api/search.ts when receiving a " + method + " request:", error);
         res.status(500).json({ message: "Erreur serveur" });
     }  
 }
