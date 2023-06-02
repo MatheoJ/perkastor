@@ -91,6 +91,12 @@ docker run -p 80:80 --name perkastor-prod perkastor-prod
 // 80 is the nginx's exposed port
 ```
 
+To push the image:
+```
+docker tag perkastor-prod pheonbest/intelnuc:perkastor-X.Y
+docker push pheonbest/intelnuc:perkastor-X.Y
+```
+
 # License
 [License](!src/assets/license.png)
 This work is licensed under a Creative Commons Attribution 4.0 International License.
